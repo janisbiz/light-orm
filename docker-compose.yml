@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  mysql:
+    build:
+      context: .docker/build/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: $DOCKER_MYSQL_PASSWORD
+    ports:
+      - $DOCKER_MYSQL_LOCAL_PORT:3306
+    volumes:
+      - .docker/config/mysql/light_orm.sql:/docker-entrypoint-initdb.d/light_orm.sql:ro
+    networks:
+      - janisbiz_light-orm
+  php-cli:
+    build:
+      context: .docker/build/php-cli
+      args:
+        LOCAL_USER_ID: $DOCKER_LOCAL_USER_ID
+        LOCAL_GROUP_ID: $DOCKER_LOCAL_USER_GROUP
+    user: $DOCKER_LOCAL_USER_ID:$DOCKER_LOCAL_USER_GROUP
+    volumes:
+      - ./:/var/www
+    tty: true
+    stdin_open: true
+    networks:
+      - janisbiz_light-orm
+networks:
+  janisbiz_light-orm:
+    driver: bridge

@@ -1,0 +1,20 @@
+---
+default:
+  formatters:
+    progress:
+      verbose: true
+      paths: true
+      snippets: true
+
+  exceptions:
+    verbosity: 2
+
+  gherkin:
+    cache: '%paths.base%/var/behat/cache'
+
+#  suites:
+#    feature:
+#      paths:
+#        - '%paths.base%/tests/Behat/Features/'
+#      contexts:
+#        - Janisbiz\LightOrm\Tests\Behat\Features\

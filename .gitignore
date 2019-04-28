@@ -1,0 +1,15 @@
+# Misc
+/.idea
+
+# Composer
+/vendor
+/composer.lock
+
+# Docker
+/.env
+
+# Behat
+/var/behat
+
+# Generated
+/var/light-orm
