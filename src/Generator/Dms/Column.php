@@ -1,6 +1,6 @@
 <?php
 
-namespace Janisbiz\LightOrm\Generator;
+namespace Janisbiz\LightOrm\Generator\Dms;
 
 class Column
 {

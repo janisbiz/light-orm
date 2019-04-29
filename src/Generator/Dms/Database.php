@@ -1,8 +1,6 @@
 <?php
 
-namespace Janisbiz\LightOrm\Generator;
-
-use Janisbiz\LightOrm\Generator\Table;
+namespace Janisbiz\LightOrm\Generator\Dms;
 
 class Database
 {

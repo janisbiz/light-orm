@@ -4,9 +4,9 @@ namespace Janisbiz\LightOrm\Dms\MySQL\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Generator\AbstractGeneratorFactory;
-use Janisbiz\LightOrm\Generator\Column;
-use Janisbiz\LightOrm\Generator\Database;
-use Janisbiz\LightOrm\Generator\Table;
+use Janisbiz\LightOrm\Generator\Dms\Column;
+use Janisbiz\LightOrm\Generator\Dms\Database;
+use Janisbiz\LightOrm\Generator\Dms\Table;
 
 class GeneratorFactory extends AbstractGeneratorFactory
 {

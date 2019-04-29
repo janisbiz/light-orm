@@ -2,8 +2,7 @@
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
-use Janisbiz\LightOrm\Generator\Table;
-use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
+use Janisbiz\LightOrm\Generator\Dms\Table;
 
 abstract class AbstractWriter implements WriterInterface
 {

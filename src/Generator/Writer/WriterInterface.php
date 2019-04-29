@@ -2,8 +2,8 @@
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
-use Janisbiz\LightOrm\Generator\Database;
-use Janisbiz\LightOrm\Generator\Table;
+use Janisbiz\LightOrm\Generator\Dms\Database;
+use Janisbiz\LightOrm\Generator\Dms\Table;
 
 interface WriterInterface
 {

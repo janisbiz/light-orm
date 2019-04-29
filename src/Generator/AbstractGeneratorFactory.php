@@ -3,6 +3,8 @@
 namespace Janisbiz\LightOrm\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
+use Janisbiz\LightOrm\Generator\Dms\Column;
+use Janisbiz\LightOrm\Generator\Dms\Table;
 
 abstract class AbstractGeneratorFactory implements GeneratorFactoryInterface
 {

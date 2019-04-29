@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
+use Janisbiz\LightOrm\Generator\Dms\Database;
 
 interface GeneratorFactoryInterface
 {

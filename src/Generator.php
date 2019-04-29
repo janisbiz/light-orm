@@ -3,7 +3,7 @@
 namespace Janisbiz\LightOrm;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Generator\Database;
+use Janisbiz\LightOrm\Generator\Dms\Database;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\GeneratorFactory;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter;

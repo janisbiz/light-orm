@@ -3,8 +3,8 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
-use Janisbiz\LightOrm\Generator\Database;
-use Janisbiz\LightOrm\Generator\Table;
+use Janisbiz\LightOrm\Generator\Dms\Database;
+use Janisbiz\LightOrm\Generator\Dms\Table;
 use Janisbiz\Heredoc\HeredocTrait;
 
 class RepositoryClassWriter extends AbstractWriter
