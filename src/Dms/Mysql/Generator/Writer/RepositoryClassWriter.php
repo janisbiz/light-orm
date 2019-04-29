@@ -44,7 +44,7 @@ class RepositoryClassWriter extends AbstractWriter
 <?php
 namespace {$database->getPhpName()}\Repository;
 
-use Janisbiz\LightOrm\Repository\AbstractRepository;
+use Janisbiz\LightOrm\Dms\Mysql\Repository\AbstractRepository;
 use {$database->getPhpName()}\\{$table->getPhpName()};
 
 class {$table->getPhpName()}{$this->heredoc(self::FILE_NAME_SUFFIX)} extends AbstractRepository
