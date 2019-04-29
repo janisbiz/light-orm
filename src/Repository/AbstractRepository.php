@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Repository;
 
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
-use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseModelClassWriter;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
 use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 
@@ -220,7 +220,7 @@ abstract class AbstractRepository
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
         return (new QueryBuilder($this, $entity))
-            ->from($this->getModelClassConstant(BaseModelClassWriter::CLASS_CONSTANT_TABLE_NAME))
+            ->from($this->getModelClassConstant(BaseEntityClassWriter::CLASS_CONSTANT_TABLE_NAME))
         ;
     }
 
@@ -230,7 +230,7 @@ abstract class AbstractRepository
     protected function getConnection()
     {
         return ConnectionPool::getConnectionStatic(
-            $this->getModelClassConstant(BaseModelClassWriter::CLASS_CONSTANT_DATABASE_NAME)
+            $this->getModelClassConstant(BaseEntityClassWriter::CLASS_CONSTANT_DATABASE_NAME)
         );
     }
 

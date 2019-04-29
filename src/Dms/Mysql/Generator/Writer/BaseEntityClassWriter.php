@@ -8,7 +8,7 @@ use Janisbiz\LightOrm\Generator\Database;
 use Janisbiz\LightOrm\Generator\Table;
 use Janisbiz\Heredoc\HeredocTrait;
 
-class BaseModelClassWriter extends AbstractWriter
+class BaseEntityClassWriter extends AbstractWriter
 {
     use HeredocTrait;
 
@@ -23,7 +23,7 @@ class BaseModelClassWriter extends AbstractWriter
      * @param string $directory
      * @param array $existingFiles
      *
-     * @return BaseModelClassWriter
+     * @return BaseEntityClassWriter
      */
     public function write(Database $database, Table $table, $directory, array &$existingFiles)
     {
@@ -120,7 +120,7 @@ use Janisbiz\LightOrm\Entity\BaseEntity;
 /**
 {$phpDoc}
 **/
-class {$this->heredoc(self::FILE_NAME_PREFIX)}{$table->getPhpName()} extends BaseModel
+class {$this->heredoc(self::FILE_NAME_PREFIX)}{$table->getPhpName()} extends BaseEntity
 {
     const {$this->heredoc(self::CLASS_CONSTANT_DATABASE_NAME)} = '{$database->getName()}';
     const {$this->heredoc(self::CLASS_CONSTANT_TABLE_NAME)} = '{$database->getName()}.{$table->getName()}';

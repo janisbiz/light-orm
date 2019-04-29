@@ -5,8 +5,8 @@ namespace Janisbiz\LightOrm;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Generator\Database;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\GeneratorFactory;
-use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseModelClassWriter;
-use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\ModelClassWriter;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\RepositoryClassWriter;
 use Janisbiz\Heredoc\HeredocTrait;
 
@@ -54,8 +54,8 @@ class Generator
          */
         \extract($this->getExistingFiles($modelsDirectory, $modelsBaseDirectory, $modelsRepositoryDirectory));
 
-        $baseModelClassWriter = new BaseModelClassWriter();
-        $modelClassWriter = new ModelClassWriter();
+        $baseModelClassWriter = new BaseEntityClassWriter();
+        $modelClassWriter = new EntityClassWriter();
         $repositoryClassWriter = new RepositoryClassWriter();
 
         foreach ($database->getTables() as $table) {

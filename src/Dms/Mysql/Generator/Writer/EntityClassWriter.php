@@ -6,7 +6,7 @@ use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
 use Janisbiz\LightOrm\Generator\Database;
 use Janisbiz\LightOrm\Generator\Table;
 
-class ModelClassWriter extends AbstractWriter
+class EntityClassWriter extends AbstractWriter
 {
     /**
      * @param Database $database
@@ -14,7 +14,7 @@ class ModelClassWriter extends AbstractWriter
      * @param string $directory
      * @param array $existingFiles
      *
-     * @return ModelClassWriter
+     * @return EntityClassWriter
      */
     public function write(Database $database, Table $table, $directory, array &$existingFiles)
     {
