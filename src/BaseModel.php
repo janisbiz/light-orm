@@ -11,36 +11,36 @@ class BaseModel implements EntityInterface
     /**
      * @var array
      */
-    public $primaryKeys;
+    protected $primaryKeys;
 
     /**
      * @var array
      */
-    public $primaryKeysAutoIncrement;
+    protected $primaryKeysAutoIncrement;
     /**
      * @var array
      */
-    public $columns;
+    protected $columns;
 
     /**
      * @var array
      */
-    public $data = [];
+    protected $data = [];
 
     /**
      * @var array
      */
-    public $dataOriginal = [];
+    protected $dataOriginal = [];
 
     /**
      * @var bool $isNew
      */
-    public $isNew;
+    protected $isNew;
 
     /**
      * @var bool $isSaved
      */
-    public $isSaved;
+    protected $isSaved;
 
     /**
      * @param string $name

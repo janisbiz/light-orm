@@ -13,10 +13,10 @@ parameters:
     failed: nopecat.txt
     succeeded: me-gusta.txt
   tasks:
-    behat:
-      config: ./behat.yml
-      format: ~
-      stop_on_failure: false
+#    behat:
+#      config: ./behat.yml
+#      format: ~
+#      stop_on_failure: false
     composer:
       file: ./composer.json
       no_check_all: false
