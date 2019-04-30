@@ -2,7 +2,7 @@
 
 namespace Janisbiz\LightOrm\Dms\Mysql\Repository;
 
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository as BaseAbstractRepository;
 

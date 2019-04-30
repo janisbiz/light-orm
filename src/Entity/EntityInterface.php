@@ -4,6 +4,8 @@ namespace Janisbiz\LightOrm\Entity;
 
 interface EntityInterface
 {
+    const TABLE_NAME = null;
+
     /**
      * @return array
      */

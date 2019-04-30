@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm;
 
+use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
 use Janisbiz\LightOrm\Connection\ConnectionConfig;
 
@@ -36,17 +37,7 @@ class ConnectionPool
      */
     public function getConnection($dbName)
     {
-        return self::getConnectionStatic($dbName);
-    }
-
-    /**
-     * @param string $dbName
-     *
-     * @return Connection
-     */
-    public static function getConnectionStatic($dbName)
-    {
-        if (!isset(self::$connectionConfig[$dbName])) {
+        if (empty(self::$connectionConfig[$dbName])) {
             throw new \InvalidArgumentException(
                 empty(self::$connectionConfig)
                     ? \sprintf('Could not find connection by name "%s"!', $dbName)
@@ -58,18 +49,38 @@ class ConnectionPool
             );
         }
 
-        if (!isset(self::$connections[$dbName])) {
-            $connectionConfig = self::$connectionConfig[$dbName];
+        $connectionConfig = self::$connectionConfig[$dbName];
 
-            if (!isset(self::$connections[$dbName])) {
-                self::$connections[$dbName] = new Connection(
-                    $connectionConfig->generateDsn(),
-                    $connectionConfig->getUsername(),
-                    $connectionConfig->getPassword()
-                );
-            }
+        if (!isset(self::$connections[$dbName])) {
+            self::$connections[$dbName] = $this->createConnection($connectionConfig);
         }
 
         return self::$connections[$dbName];
+    }
+
+    /**
+     * @param string $dbName
+     *
+     * @return Connection
+     */
+    public static function getConnectionStatic($dbName)
+    {
+        return (new self())->getConnection($dbName);
+    }
+
+    /**
+     * @param ConnectionConfig $connectionConfig
+     *
+     * @return ConnectionInterface
+     */
+    protected function createConnection(ConnectionConfig $connectionConfig)
+    {
+        $adapterConnectionClass = $connectionConfig->getAdapterConnectionClass();
+
+        return new $adapterConnectionClass(
+            $connectionConfig->generateDsn(),
+            $connectionConfig->getUsername(),
+            $connectionConfig->getPassword()
+        );
     }
 }

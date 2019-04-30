@@ -2,26 +2,22 @@
 
 namespace Janisbiz\LightOrm\Entity;
 
-use Janisbiz\LightOrm\Dms\MySQL\Traits\Traits;
-use Janisbiz\LightOrm\Entity\EntityInterface;
-
 class BaseEntity implements EntityInterface
 {
-    use Traits;
+    /**
+     * @var array
+     */
+    protected $primaryKeys = [];
 
     /**
      * @var array
      */
-    protected $primaryKeys;
+    protected $primaryKeysAutoIncrement = [];
 
     /**
      * @var array
      */
-    protected $primaryKeysAutoIncrement;
-    /**
-     * @var array
-     */
-    protected $columns;
+    protected $columns = [];
 
     /**
      * @var array
@@ -36,17 +32,50 @@ class BaseEntity implements EntityInterface
     /**
      * @var bool $isNew
      */
-    protected $isNew;
+    protected $isNew = true;
 
     /**
      * @var bool $isSaved
      */
-    protected $isSaved;
+    protected $isSaved = false;
+
+    /**
+     * @deprecated 30.04.2019 Should have proper getters & setters
+     *
+     * @param string $name
+     *
+     * @return string|int|bool
+     */
+    public function __get($name)
+    {
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @deprecated 30.04.2019 Should have proper getters & setters
+     *
+     * @param string $name
+     * @param string|int|bool $value
+     */
+    public function __set($name, $value)
+    {
+        $this->data[$name] = $value;
+
+        /** Construct values, for update queries */
+        if (!isset($this->dataOriginal[$name])) {
+            $this->dataOriginal[$name] = $this->data[$name];
+        }
+    }
 
     /**
      * @param string $name
      * @param array|null $arguments
      *
+     * @throws \Exception
      * @return bool|null|string|$this
      */
     public function __call($name, $arguments)
@@ -71,22 +100,16 @@ class BaseEntity implements EntityInterface
                 break;
 
             case 'set':
-                if (!isset($arguments[0]) || $arguments[0] === "") {
+                if (!isset($arguments[0]) || $arguments[0] === '') {
                     $arguments[0] = null;
                 }
 
                 $this->data[\strtolower(\implode('_', $results[0]))] = $arguments[0];
 
                 return $this;
-
-            default:
-                \trigger_error(
-                    \sprintf('Call to undefined method %s::%s()', __CLASS__, $name),
-                    E_USER_ERROR
-                );
         }
 
-        return null;
+        throw new \Exception(\sprintf('Call to undefined method %s::%s()', __CLASS__, $name));
     }
 
     /**

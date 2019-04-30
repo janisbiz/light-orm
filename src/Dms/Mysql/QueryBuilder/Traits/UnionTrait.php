@@ -1,10 +1,9 @@
 <?php
 
-namespace Janisbiz\LightOrm\Dms\MySQL\Traits;
+namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Entity\BaseEntity;
-use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
 
 trait UnionTrait
 {

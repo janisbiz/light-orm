@@ -6,7 +6,7 @@ use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
 use Janisbiz\LightOrm\ConnectionPool;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
 
 abstract class AbstractRepository
 {

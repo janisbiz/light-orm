@@ -1,6 +1,6 @@
 <?php
 
-namespace Janisbiz\LightOrm\Dms\MySQL\Traits;
+namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait GroupTrait
 {
