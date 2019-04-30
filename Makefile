@@ -10,5 +10,6 @@ help:
 
 .PHONY: test
 test: ## Run tests
-	$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs -p ./src --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
+	$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs -p ./src -p ./tests --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
+	$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpunit -c phpunit.xml
 #	$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/behat

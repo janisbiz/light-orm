@@ -24,6 +24,7 @@
     "jakub-onderka/php-parallel-lint": "^1.0",
     "phpmd/phpmd": "^2.6",
     "phpro/grumphp": "^0.14.3",
+    "phpunit/phpunit": "^5.7",
     "squizlabs/php_codesniffer": "^3.4",
     "symfony/var-dumper": "^3.4",
     "wimg/php-compatibility": "^9.1"
