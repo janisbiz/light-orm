@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Connection;
 
+use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
+
 class ConnectionConfig
 {
     const ADAPTER_MYSQL = 'mysql';
@@ -88,6 +90,20 @@ class ConnectionConfig
     public function getDbname()
     {
         return $this->dbname;
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getAdapterConnectionClass()
+    {
+        switch ($this->adapter) {
+            case self::ADAPTER_MYSQL:
+                return Connection::class;
+        }
+
+        throw new \Exception('Could not get adapter connection class!');
     }
 
     /**
