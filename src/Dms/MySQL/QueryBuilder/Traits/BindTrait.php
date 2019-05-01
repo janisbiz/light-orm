@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait BindTrait
 {
-    public $bind = [];
+    protected $bind = [];
 
     /**
      * @param array $bind
