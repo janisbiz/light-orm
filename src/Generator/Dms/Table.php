@@ -38,7 +38,7 @@ class Table
     public function getPhpName()
     {
         return \ucfirst(\preg_replace_callback(
-            '/\_(?<name>\w{1})/i',
+            '/[^a-z0-9]+(?<name>\w{1})/i',
             function ($matches) {
                 return \strtoupper($matches['name']);
             },
