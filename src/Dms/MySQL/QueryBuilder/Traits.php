@@ -1,0 +1,39 @@
+<?php
+
+namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
+
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ColumnTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\CommandTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\FromTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\JoinTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OnDuplicateKeyUpdateTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\SetTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\UnionTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ValueTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\WhereTrait;
+
+trait Traits
+{
+    /** Base traits */
+    use BindTrait;
+
+    /** MySQL specific traits */
+    use CommandTrait;
+    use JoinTrait;
+    use WhereTrait;
+    use OrderTrait;
+    use LimitOffsetTrait;
+    use GroupTrait;
+    use SetTrait;
+    use ValueTrait;
+    use ColumnTrait;
+    use FromTrait;
+    use HavingTrait;
+    use OnDuplicateKeyUpdateTrait;
+    use UnionTrait;
+}

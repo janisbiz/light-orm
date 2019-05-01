@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Traits;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository;
 
