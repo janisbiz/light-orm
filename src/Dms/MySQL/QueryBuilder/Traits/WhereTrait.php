@@ -4,34 +4,10 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait WhereTrait
 {
-    public $where = [];
-
     /**
-     * @param string $column
-     * @param array $params
-     *
-     * @return $this
+     * @var array
      */
-    public function whereIn($column, array $params = [])
-    {
-        if (!empty($params)) {
-            $bind = [];
-            $bindParams = [];
-            foreach ($params as $i => $param) {
-                $bindParamName = \sprintf('%d%sIn', $i, \str_replace('.', '', $column));
-
-                $bind[$bindParamName] = $param;
-                $bindParams[] = \sprintf(':%s', $bindParamName);
-            }
-
-            $this->where(
-                \sprintf('%s IN (%s)', $column, \implode(', ', $bindParams)),
-                $bind
-            );
-        }
-
-        return $this;
-    }
+    protected $where = [];
 
     /**
      * @param string $condition
@@ -46,11 +22,38 @@ trait WhereTrait
             throw new \Exception('You must pass $condition name to where method!');
         }
 
+        $this->where[] = $condition;
+
         if (!empty($bind)) {
             $this->bind($bind);
         }
 
-        $this->where[] = $condition;
+        return $this;
+    }
+
+    /**
+     * @param string $column
+     * @param array $params
+     *
+     * @return $this
+     */
+    public function whereIn($column, array $params = [])
+    {
+        if (!empty($params)) {
+            $bind = [];
+            $bindParams = [];
+            foreach ($params as $i => $param) {
+                $bindParamName = \sprintf('%d_%s_In', $i, \str_replace('.', '', $column));
+
+                $bind[$bindParamName] = $param;
+                $bindParams[] = \sprintf(':%s', $bindParamName);
+            }
+
+            $this->where(
+                \sprintf('%s IN (%s)', $column, \implode(', ', $bindParams)),
+                $bind
+            );
+        }
 
         return $this;
     }
@@ -67,7 +70,7 @@ trait WhereTrait
             $bind = [];
             $bindParams = [];
             foreach ($params as $i => $param) {
-                $bindParamName = \sprintf('%d%sNotIn', $i, \str_replace('.', '', $column));
+                $bindParamName = \sprintf('%d_%s_NotIn', $i, \str_replace('.', '', $column));
 
                 $bind[$bindParamName] = $param;
                 $bindParams[] = \sprintf(':%s', $bindParamName);

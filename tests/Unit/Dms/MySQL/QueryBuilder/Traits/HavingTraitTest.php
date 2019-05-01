@@ -11,21 +11,21 @@ class HavingTraitTest extends AbstractTraitTest
     use HavingTrait;
 
     const HAVING_CONDITION_DEFAULT = [
-        'value1 = :value1Bind',
+        'column1 = :value1Bind',
     ];
     const HAVING_CONDITION_BIND_DEFAULT = [
         'value1Bind' => 'value1',
     ];
     const HAVING_CONDITION_EMPTY = null;
-    const HAVING_CONDITION = 'value2 = :value2Bind';
+    const HAVING_CONDITION = 'column2 = :value2Bind';
     const HAVING_CONDITION_BIND = [
         'value2Bind' => 'value2',
     ];
 
     public function setUp()
     {
-        $this->having = self::HAVING_CONDITION_DEFAULT;
         $this->bind = self::HAVING_CONDITION_BIND_DEFAULT;
+        $this->having = self::HAVING_CONDITION_DEFAULT;
     }
 
     public function testHaving()
@@ -34,7 +34,10 @@ class HavingTraitTest extends AbstractTraitTest
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(HavingTrait::class, $object);
         $this->assertEquals(\array_merge(self::HAVING_CONDITION_DEFAULT, [self::HAVING_CONDITION]), $this->having);
-        $this->assertEquals(\array_merge(self::HAVING_CONDITION_BIND_DEFAULT, self::HAVING_CONDITION_BIND), $this->bind);
+        $this->assertEquals(
+            \array_merge(self::HAVING_CONDITION_BIND_DEFAULT, self::HAVING_CONDITION_BIND),
+            $this->bind
+        );
     }
 
     /**
