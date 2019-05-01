@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait CommandTrait
 {
-    public $command;
+    protected $command;
 
     /**
      * @param string $command
