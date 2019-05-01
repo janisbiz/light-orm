@@ -21,7 +21,7 @@ class TraitsTest extends AbstractTraitTest
         $this->assertObjectUsesTrait(Traits\JoinTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\LimitOffsetTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\OnDuplicateKeyUpdateTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\OrderTrait::class, $this);
+        $this->assertObjectUsesTrait(Traits\OrderByTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\SetTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\UnionTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\ValueTrait::class, $this);

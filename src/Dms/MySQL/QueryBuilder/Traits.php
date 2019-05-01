@@ -11,7 +11,7 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\JoinTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OnDuplicateKeyUpdateTrait;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderByTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\SetTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\UnionTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ValueTrait;
@@ -26,7 +26,7 @@ trait Traits
     use CommandTrait;
     use JoinTrait;
     use WhereTrait;
-    use OrderTrait;
+    use OrderByTrait;
     use LimitOffsetTrait;
     use GroupByTrait;
     use SetTrait;
