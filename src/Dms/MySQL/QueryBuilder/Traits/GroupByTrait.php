@@ -2,9 +2,12 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
-trait GroupTrait
+trait GroupByTrait
 {
-    public $groupBy = [];
+    /**
+     * @var array
+     */
+    protected $groupBy = [];
 
     /**
      * @param array|string $groupBy
@@ -18,7 +21,7 @@ trait GroupTrait
             throw new \Exception('You must pass $groupBy to groupBy method!');
         }
 
-        if (!is_array($groupBy)) {
+        if (!\is_array($groupBy)) {
             $groupBy = [$groupBy];
         }
 
