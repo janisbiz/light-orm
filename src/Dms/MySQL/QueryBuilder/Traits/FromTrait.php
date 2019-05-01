@@ -4,7 +4,10 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait FromTrait
 {
-    public $from = [];
+    /**
+     * @var array
+     */
+    protected $from = [];
 
     /**
      * @param array|string $from
