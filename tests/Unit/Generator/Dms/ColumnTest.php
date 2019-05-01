@@ -3,8 +3,9 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Generator\Dms;
 
 use Janisbiz\LightOrm\Generator\Dms\Column;
+use PHPUnit\Framework\TestCase;
 
-class ColumnTest extends \PHPUnit_Framework_TestCase
+class ColumnTest extends TestCase
 {
     const COLUMN_NAME = 'name_snake_case';
     const COLUMN_NAME_PHP = 'NameSnakeCase';
