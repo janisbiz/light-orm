@@ -13,11 +13,12 @@ abstract class AbstractTraitTest extends TestCase
      */
     protected function assertObjectUsesTrait($trait, $object, $message = '')
     {
+
+        $traits = [];
+        $this->getTraits($object, $traits);
+
         parent::assertThat(
-            \in_array(
-                $trait,
-                \array_keys((new \ReflectionClass($object))->getTraits())
-            ),
+            \in_array($trait, $traits),
             static::isTrue(),
             \mb_strlen($message)
                 ? $message
@@ -27,5 +28,20 @@ abstract class AbstractTraitTest extends TestCase
                     \get_class($object)
                 )
         );
+    }
+
+    /**
+     * @param string $class
+     * @param array $traits
+     */
+    private function getTraits($class, array& $traits)
+    {
+        $classTraits = \array_keys((new \ReflectionClass($class))->getTraits());
+
+        $traits = \array_merge($traits, $classTraits);
+
+        foreach ($classTraits as $classTrait) {
+            $this->getTraits($classTrait, $traits);
+        }
     }
 }
