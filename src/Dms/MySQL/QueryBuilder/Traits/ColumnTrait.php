@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait ColumnTrait
 {
-    public $column = [];
+    protected $column = [];
 
     /**
      * @param array|string $column
@@ -19,7 +19,7 @@ trait ColumnTrait
             throw new \Exception('You must pass $column to column method!');
         }
 
-        if (!is_array($column)) {
+        if (!\is_array($column)) {
             $column = [$column];
         }
 
