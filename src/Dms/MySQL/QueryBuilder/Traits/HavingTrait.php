@@ -4,7 +4,10 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait HavingTrait
 {
-    public $having = [];
+    /**
+     * @var array
+     */
+    protected $having = [];
 
     /**
      * @param string $condition
@@ -21,7 +24,7 @@ trait HavingTrait
 
         $this->having[] = $condition;
 
-        if ($bind) {
+        if (!empty($bind)) {
             $this->bind($bind);
         }
 
