@@ -6,19 +6,10 @@ use Janisbiz\LightOrm\Dms\MySQL\Enum\JoinEnum;
 
 trait JoinTrait
 {
-    public $join = [];
-
     /**
-     * @param string $tableName
-     * @param string $condition
-     * @param array $bind
-     *
-     * @return $this
+     * @var array
      */
-    public function innerJoin($tableName, $condition, array $bind = [])
-    {
-        return $this->join(JoinEnum::INNER, $tableName, $condition, $bind);
-    }
+    protected $join = [];
 
     /**
      * @param string $join
@@ -43,14 +34,9 @@ trait JoinTrait
             throw new \Exception('You must pass $condition name to join method!');
         }
 
-        $joinString = \sprintf(
-            '%s %s ON (%s)',
-            $join,
-            $tableName,
-            $condition
-        );
+        $joinString = \sprintf('%s %s ON (%s)', $join, $tableName, $condition);
 
-        if (array_search($joinString, $this->join, false) === false) {
+        if (\array_search($joinString, $this->join, false) === false) {
             $this->join[] = $joinString;
         }
 
@@ -59,6 +45,18 @@ trait JoinTrait
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $condition
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function innerJoin($tableName, $condition, array $bind = [])
+    {
+        return $this->join(JoinEnum::INNER, $tableName, $condition, $bind);
     }
 
     /**

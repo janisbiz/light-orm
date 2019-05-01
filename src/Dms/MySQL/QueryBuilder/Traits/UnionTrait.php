@@ -7,13 +7,15 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
 
 trait UnionTrait
 {
-    public $unionAll = [];
+    /**
+     * @var array
+     */
+    protected $unionAll = [];
 
     /**
-     * @param BaseEntity $object
+     * @param QueryBuilder $queryBuilder
      *
      * @return $this
-     * @throws \Exception
      */
     public function unionAll(QueryBuilder $queryBuilder)
     {

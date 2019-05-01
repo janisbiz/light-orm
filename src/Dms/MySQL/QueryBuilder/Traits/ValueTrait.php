@@ -7,12 +7,12 @@ trait ValueTrait
     /**
      * @var array
      */
-    public $value = [];
+    protected $value = [];
 
     /**
      * @var array
      */
-    public $bindValue = [];
+    protected $bindValue = [];
 
     /**
      * @param string $column

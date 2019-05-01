@@ -4,7 +4,10 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait SetTrait
 {
-    public $set = [];
+    /**
+     * @var array
+     */
+    protected $set = [];
 
     /**
      * @param string $column

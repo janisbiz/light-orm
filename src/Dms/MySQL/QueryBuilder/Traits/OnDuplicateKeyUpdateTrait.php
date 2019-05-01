@@ -4,7 +4,10 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait OnDuplicateKeyUpdateTrait
 {
-    public $onDuplicateKeyUpdate = [];
+    /**
+     * @var array
+     */
+    protected $onDuplicateKeyUpdate = [];
 
     /**
      * @param string $onDuplicateKeyUpdate
@@ -15,7 +18,7 @@ trait OnDuplicateKeyUpdateTrait
      */
     public function onDuplicateKeyUpdate($onDuplicateKeyUpdate, array $saveBind = [])
     {
-        if (!$onDuplicateKeyUpdate) {
+        if (empty($onDuplicateKeyUpdate)) {
             throw new \Exception('You must pass $onDuplicateKeyUpdate to onDuplicateKeyUpdate function!');
         }
 
@@ -33,7 +36,10 @@ trait OnDuplicateKeyUpdateTrait
         }
 
         $this->onDuplicateKeyUpdate = \array_merge($this->onDuplicateKeyUpdate, [$onDuplicateKeyUpdate]);
-        $this->bindValue = \array_merge($this->bindValue, $saveBindParsed);
+
+        if (!empty($saveBindParsed)) {
+            $this->bindValue($saveBindParsed);
+        }
 
         return $this;
     }

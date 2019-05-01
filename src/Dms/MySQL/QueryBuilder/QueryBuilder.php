@@ -223,30 +223,30 @@ class QueryBuilder implements QueryBuilderInterface
 
         switch ($this->query['command']) {
             case CommandEnum::SELECT:
-                if (!empty($this->from)) {
-                    $this->query['table'] = \sprintf(
-                        '%s %s',
-                        ConditionEnum::FROM,
-                        \implode(', ', $this->from)
-                    );
-                }
-
-                $userQueries = [
-                    $this->query['command'],
-                    $this->query['column'],
-                    $this->query['table'],
-                    $this->query['join'],
-                    $this->query['where'],
-                    $this->query['groupBy'],
-                    $this->query['having'],
-                    $this->query['orderBy'],
-                    $this->query['limit'],
-                    $this->query['offset'],
-                ];
-
                 if (isset($this->query['unionAll']) && \mb_strlen($this->query['unionAll']) > 0) {
                     $userQueries = [
                         $this->query['unionAll'],
+                        $this->query['orderBy'],
+                        $this->query['limit'],
+                        $this->query['offset'],
+                    ];
+                } else {
+                    if (!empty($this->from)) {
+                        $this->query['table'] = \sprintf(
+                            '%s %s',
+                            ConditionEnum::FROM,
+                            \implode(', ', $this->from)
+                        );
+                    }
+
+                    $userQueries = [
+                        $this->query['command'],
+                        $this->query['column'],
+                        $this->query['table'],
+                        $this->query['join'],
+                        $this->query['where'],
+                        $this->query['groupBy'],
+                        $this->query['having'],
                         $this->query['orderBy'],
                         $this->query['limit'],
                         $this->query['offset'],
