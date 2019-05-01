@@ -4,8 +4,15 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait LimitOffsetTrait
 {
-    public $limit;
-    public $offset;
+    /**
+     * @var null|int
+     */
+    protected $limit;
+
+    /**
+     * @var null|int
+     */
+    protected $offset;
 
     /**
      * @param int $limit
@@ -26,11 +33,11 @@ trait LimitOffsetTrait
      */
     public function offset($offset)
     {
-        if (!isset($offset)) {
+        if (empty($offset)) {
             throw new \Exception('You must pass $offset to offset method!');
         }
 
-        if (!isset($this->limit)) {
+        if (empty($this->limit)) {
             throw new \Exception('You must set LIMIT before calling offset method!');
         }
 
@@ -47,7 +54,7 @@ trait LimitOffsetTrait
      */
     public function limit($limit)
     {
-        if (!isset($limit)) {
+        if (empty($limit)) {
             throw new \Exception('You must pass $limit to limit method!');
         }
 
