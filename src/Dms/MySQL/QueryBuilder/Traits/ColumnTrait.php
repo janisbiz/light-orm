@@ -4,6 +4,9 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait ColumnTrait
 {
+    /**
+     * @var array
+     */
     protected $column = [];
 
     /**
