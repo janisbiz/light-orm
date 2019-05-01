@@ -29,13 +29,13 @@ class CommandTraitTest extends AbstractTraitTest
     {
 
         return \array_map(
-                function ($val) {
-                    return [
-                        $val,
-                        $val
-                    ];
-                },
-                CommandEnum::COMMANDS
+            function ($val) {
+                return [
+                    $val,
+                    $val
+                ];
+            },
+            CommandEnum::COMMANDS
         );
     }
 }
