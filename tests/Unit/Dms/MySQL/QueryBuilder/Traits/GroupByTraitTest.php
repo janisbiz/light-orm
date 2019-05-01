@@ -16,6 +16,7 @@ class GroupByTraitTest extends AbstractTraitTest
         'group_by3',
         'group_by4',
     ];
+    const GROUP_BY_EMPTY = '';
     const GROUP_BY = 'group_by5';
 
     public function setUp()
@@ -40,5 +41,14 @@ class GroupByTraitTest extends AbstractTraitTest
             \array_merge(self::GROUP_BY_DEFAULT, self::GROUP_BY_ARRAY, [self::GROUP_BY]),
             $this->groupBy
         );
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage You must pass $groupBy to groupBy method!
+     */
+    public function testGroupByWhenEmpty()
+    {
+        $this->groupBy(self::GROUP_BY_EMPTY);
     }
 }

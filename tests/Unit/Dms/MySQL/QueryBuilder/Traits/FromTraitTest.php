@@ -16,6 +16,7 @@ class FromTraitTest extends AbstractTraitTest
         'from3',
         'from4',
     ];
+    const FROM_EMPTY = '';
     const FROM = 'from5';
 
     public function setUp()
@@ -46,5 +47,14 @@ class FromTraitTest extends AbstractTraitTest
     {
         $this->from(self::FROM, true);
         $this->assertEquals([self::FROM], $this->from);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage You must pass $from to from method!
+     */
+    public function testFromWhenEmpty()
+    {
+        $this->from(self::FROM_EMPTY);
     }
 }

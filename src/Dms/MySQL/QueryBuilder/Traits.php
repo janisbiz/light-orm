@@ -6,7 +6,7 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ColumnTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\CommandTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\FromTrait;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupByTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\JoinTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
@@ -28,7 +28,7 @@ trait Traits
     use WhereTrait;
     use OrderTrait;
     use LimitOffsetTrait;
-    use GroupTrait;
+    use GroupByTrait;
     use SetTrait;
     use ValueTrait;
     use ColumnTrait;

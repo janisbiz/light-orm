@@ -16,6 +16,7 @@ class ColumnTraitTest extends AbstractTraitTest
         'column3',
         'column4',
     ];
+    const COLUMN_EMPTY = '';
     const COLUMN = 'column5';
 
     public function setUp()
@@ -46,5 +47,14 @@ class ColumnTraitTest extends AbstractTraitTest
     {
         $this->column(self::COLUMN, true);
         $this->assertEquals([self::COLUMN], $this->column);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage You must pass $column to column method!
+     */
+    public function testColumnWhenEmpty()
+    {
+        $this->column(self::COLUMN_EMPTY);
     }
 }
