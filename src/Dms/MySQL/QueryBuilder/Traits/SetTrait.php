@@ -20,7 +20,7 @@ trait SetTrait
         $columnNormalised = \sprintf(
             '%s_Update',
             \implode(
-                '',
+                '_',
                 \array_map(
                     function ($columnPart) {
                         return \mb_convert_case($columnPart, MB_CASE_TITLE);
