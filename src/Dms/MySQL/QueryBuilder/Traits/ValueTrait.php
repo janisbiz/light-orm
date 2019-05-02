@@ -16,16 +16,16 @@ trait ValueTrait
 
     /**
      * @param string $column
-     * @param null|int|string $value
+     * @param null|int|string|double $value
      *
      * @return $this
      */
     public function value($column, $value)
     {
         $columnNormalised = \sprintf(
-            '%s_Insert',
+            '%s_Value',
             \implode(
-                '',
+                '_',
                 \array_map(
                     function ($columnPart) {
                         return \mb_convert_case($columnPart, MB_CASE_TITLE);
