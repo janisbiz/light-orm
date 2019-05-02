@@ -102,6 +102,9 @@ class SetTraitTest extends AbstractTraitTest
         );
     }
 
+    /**
+     * @return array
+     */
     public function setData()
     {
         return [
