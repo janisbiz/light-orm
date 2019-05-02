@@ -171,7 +171,8 @@ class JoinTraitTest extends AbstractTraitTest
      */
     public function testJoinWithInvalidJoin()
     {
-        $this->join(self::JOIN_INVALID_JOIN,
+        $this->join(
+            self::JOIN_INVALID_JOIN,
             self::JOIN_DEFAULT_TABLE,
             self::JOIN_DEFAULT_ON_CONDITION,
             self::JOIN_BIND_DEFAULT
@@ -184,7 +185,8 @@ class JoinTraitTest extends AbstractTraitTest
      */
     public function testJoinWithEmptyTable()
     {
-        $this->join(self::JOIN_DEFAULT_JOIN,
+        $this->join(
+            self::JOIN_DEFAULT_JOIN,
             self::JOIN_EMPTY_TABLE,
             self::JOIN_DEFAULT_ON_CONDITION,
             self::JOIN_BIND_DEFAULT
@@ -197,7 +199,8 @@ class JoinTraitTest extends AbstractTraitTest
      */
     public function testJoinWithEmptyOnCondition()
     {
-        $this->join(self::JOIN_DEFAULT_JOIN,
+        $this->join(
+            self::JOIN_DEFAULT_JOIN,
             self::JOIN_DEFAULT_TABLE,
             self::JOIN_EMPTY_ON_CONDITION,
             self::JOIN_BIND_DEFAULT
@@ -331,7 +334,8 @@ class JoinTraitTest extends AbstractTraitTest
      */
     public function testJoinAsWithEmptyAlias()
     {
-        $this->joinAs(self::JOIN_DEFAULT_JOIN,
+        $this->joinAs(
+            self::JOIN_DEFAULT_JOIN,
             self::JOIN_DEFAULT_TABLE,
             self::JOIN_EMPTY_ALIAS,
             self::JOIN_EMPTY_ON_CONDITION,
