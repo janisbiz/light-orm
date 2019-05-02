@@ -14,13 +14,13 @@ trait JoinTrait
     /**
      * @param string $join
      * @param string $tableName
-     * @param string $condition
+     * @param string $onCondition
      * @param array $bind
      *
      * @return $this
      * @throws \Exception
      */
-    public function join($join, $tableName, $condition, array $bind = [])
+    public function join($join, $tableName, $onCondition, array $bind = [])
     {
         if (!\in_array($join, JoinEnum::JOINS)) {
             throw new \Exception(\sprintf('$join "%s" is not a valid join type', $join));
@@ -30,11 +30,11 @@ trait JoinTrait
             throw new \Exception('You must pass $table name to join method!');
         }
 
-        if (empty($condition)) {
-            throw new \Exception('You must pass $condition name to join method!');
+        if (empty($onCondition)) {
+            throw new \Exception('You must pass $onCondition name to join method!');
         }
 
-        $joinString = \sprintf('%s %s ON (%s)', $join, $tableName, $condition);
+        $joinString = \sprintf('%s %s ON (%s)', $join, $tableName, $onCondition);
 
         if (\array_search($joinString, $this->join, false) === false) {
             $this->join[] = $joinString;
@@ -48,127 +48,146 @@ trait JoinTrait
     }
 
     /**
+     * @param string $join
      * @param string $tableName
-     * @param string $condition
+     * @param string $alias
+     * @param string $onCondition
      * @param array $bind
      *
      * @return $this
+     * @throws \Exception
      */
-    public function innerJoin($tableName, $condition, array $bind = [])
+    public function joinAs($join, $tableName, $alias, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::INNER, $tableName, $condition, $bind);
+        if (empty($alias)) {
+            throw new \Exception('You must pass $alias name to join method!');
+        }
+
+        return $this->join($join, \sprintf('%s AS %s', $tableName, $alias), $onCondition, $bind);
     }
 
     /**
      * @param string $tableName
-     * @param string $condition
+     * @param string $onCondition
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function innerJoin($tableName, $onCondition, array $bind = [])
+    {
+        return $this->join(JoinEnum::INNER_JOIN, $tableName, $onCondition, $bind);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $onCondition
      * @param string $alias
      * @param array $bind
      *
      * @return $this
      */
-    public function innerJoinAs($tableName, $alias, $condition, array $bind = [])
+    public function innerJoinAs($tableName, $alias, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::INNER, \sprintf('%s AS %s', $tableName, $alias), $condition, $bind);
+        return $this->joinAs(JoinEnum::INNER_JOIN, $tableName, $alias, $onCondition, $bind);
     }
 
     /**
      * @param string $tableName
-     * @param string $condition
+     * @param string $onCondition
      * @param array $bind
      *
      * @return $this
      */
-    public function leftJoin($tableName, $condition, array $bind = [])
+    public function leftJoin($tableName, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::LEFT, $tableName, $condition, $bind);
+        return $this->join(JoinEnum::LEFT_JOIN, $tableName, $onCondition, $bind);
     }
 
     /**
      * @param string $tableName
-     * @param string $condition
+     * @param string $onCondition
      * @param string $alias
      * @param array $bind
      *
      * @return $this
      */
-    public function leftJoinAs($tableName, $alias, $condition, array $bind = [])
+    public function leftJoinAs($tableName, $alias, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::LEFT, \sprintf('%s AS %s', $tableName, $alias), $condition, $bind);
+        return $this->joinAs(JoinEnum::LEFT_JOIN, $tableName, $alias, $onCondition, $bind);
     }
 
     /**
      * @param string $tableName
-     * @param string $condition
+     * @param string $onCondition
      * @param array $bind
      *
      * @return $this
      */
-    public function rightJoin($tableName, $condition, array $bind = [])
+    public function rightJoin($tableName, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::RIGHT, $tableName, $condition, $bind);
+        return $this->join(JoinEnum::RIGHT_JOIN, $tableName, $onCondition, $bind);
     }
 
     /**
      * @param string $tableName
-     * @param string $condition
+     * @param string $alias
+     * @param string $onCondition
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function rightJoinAs($tableName, $alias, $onCondition, array $bind = [])
+    {
+        return $this->joinAs(JoinEnum::RIGHT_JOIN, $tableName, $alias, $onCondition, $bind);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $onCondition
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function crossJoin($tableName, $onCondition, array $bind = [])
+    {
+        return $this->join(JoinEnum::CROSS_JOIN, $tableName, $onCondition, $bind);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $onCondition
      * @param string $alias
      * @param array $bind
      *
      * @return $this
      */
-    public function rightJoinAs($tableName, $condition, $alias, array $bind = [])
+    public function crossJoinAs($tableName, $alias, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::RIGHT, \sprintf('%s AS %s', $tableName, $alias), $condition, $bind);
+        return $this->joinAs(JoinEnum::CROSS_JOIN, $tableName, $alias, $onCondition, $bind);
     }
 
     /**
      * @param string $tableName
-     * @param string $condition
+     * @param string $onCondition
      * @param array $bind
      *
      * @return $this
      */
-    public function crossJoin($tableName, $condition, array $bind = [])
+    public function fullOuterJoin($tableName, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::CROSS, $tableName, $condition, $bind);
+        return $this->join(JoinEnum::FULL_OUTER_JOIN, $tableName, $onCondition, $bind);
     }
 
     /**
      * @param string $tableName
-     * @param string $condition
      * @param string $alias
+     * @param string $onCondition
      * @param array $bind
      *
      * @return $this
      */
-    public function crossJoinAs($tableName, $alias, $condition, array $bind = [])
+    public function fullOuterJoinAs($tableName, $alias, $onCondition, array $bind = [])
     {
-        return $this->join(JoinEnum::CROSS, \sprintf('%s AS %s', $tableName, $alias), $condition, $bind);
-    }
-
-    /**
-     * @param string $tableName
-     * @param string $condition
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function fullOuterJoin($tableName, $condition, array $bind = [])
-    {
-        return $this->join(JoinEnum::FULL_OUTER, $tableName, $condition, $bind);
-    }
-
-    /**
-     * @param string $tableName
-     * @param string $condition
-     * @param string $alias
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function fullOuterJoinAs($tableName, $alias, $condition, array $bind = [])
-    {
-        return $this->join(JoinEnum::FULL_OUTER, \sprintf('%s AS %s', $tableName, $alias), $condition, $bind);
+        return $this->joinAs(JoinEnum::FULL_OUTER_JOIN, $tableName, $alias, $onCondition, $bind);
     }
 }
