@@ -13,7 +13,7 @@ class QueryBuilder implements QueryBuilderInterface
 {
     use Traits;
 
-    private $query = [
+    protected $query = [
         'command' => null,
         'column' => null,
         'table' => null,
@@ -33,12 +33,12 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @var AbstractRepository
      */
-    private $repository;
+    protected $repository;
 
     /**
      * @var null|EntityInterface
      */
-    private $entity;
+    protected $entity;
 
     /**
      * @param AbstractRepository $repository
@@ -338,7 +338,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @return $this
      */
-    private function resetQuery()
+    protected function resetQuery()
     {
         $this->query = [
             'command' => $this->query['command'],
@@ -365,7 +365,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return string
      */
-    private function generateSqlExecuteString($query)
+    protected function generateSqlExecuteString($query)
     {
         foreach ($this->bind as $bindName => $bindValue) {
             $query = \preg_replace(

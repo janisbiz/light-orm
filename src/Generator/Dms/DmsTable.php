@@ -7,12 +7,12 @@ class DmsTable
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var DmsColumn[]
      */
-    private $columns = [];
+    protected $columns = [];
 
     /**
      * @param string $name

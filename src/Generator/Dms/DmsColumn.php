@@ -30,32 +30,32 @@ class DmsColumn
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $type;
+    protected $type;
 
     /**
      * @var bool
      */
-    private $nullable;
+    protected $nullable;
 
     /**
      * @var string
      */
-    private $key;
+    protected $key;
 
     /**
      * @var string
      */
-    private $default;
+    protected $default;
 
     /**
      * @var string
      */
-    private $extra;
+    protected $extra;
 
     /**
      * @param string $name

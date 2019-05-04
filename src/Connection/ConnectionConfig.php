@@ -11,27 +11,27 @@ class ConnectionConfig
     /**
      * @var string
      */
-    private $host;
+    protected $host;
 
     /**
      * @var string
      */
-    private $username;
+    protected $username;
 
     /**
      * @var string
      */
-    private $password;
+    protected $password;
 
     /**
      * @var string
      */
-    private $dbname;
+    protected $dbname;
 
     /**
      * @var string
      */
-    private $adapter;
+    protected $adapter;
 
     /**
      * @param string $host
@@ -112,7 +112,7 @@ class ConnectionConfig
      * @throws \InvalidArgumentException
      * @return string
      */
-    private function validateAdapter($adapter)
+    protected function validateAdapter($adapter)
     {
         $adapter = \mb_strtolower($adapter);
 

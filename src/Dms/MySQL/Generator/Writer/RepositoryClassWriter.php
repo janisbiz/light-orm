@@ -37,7 +37,7 @@ class RepositoryClassWriter extends AbstractWriter
      *
      * @return string
      */
-    private function generateFileContents(DmsDatabase $database, DmsTable $table)
+    protected function generateFileContents(DmsDatabase $database, DmsTable $table)
     {
         return /** @lang PHP */
             <<<PHP

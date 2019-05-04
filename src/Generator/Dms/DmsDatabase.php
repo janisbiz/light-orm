@@ -7,12 +7,12 @@ class DmsDatabase
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var DmsTable[]
      */
-    private $tables = [];
+    protected $tables = [];
 
     /**
      * @param $name

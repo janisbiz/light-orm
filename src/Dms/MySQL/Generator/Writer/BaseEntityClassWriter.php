@@ -41,7 +41,7 @@ class BaseEntityClassWriter extends AbstractWriter
      *
      * @return string
      */
-    private function generateFileContents(DmsDatabase $database, DmsTable $table)
+    protected function generateFileContents(DmsDatabase $database, DmsTable $table)
     {
         $phpDoc = $table->getColumns();
         $phpDoc = \implode("\n *\n", \array_map(function (DmsColumn $column) {

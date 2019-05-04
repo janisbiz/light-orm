@@ -241,7 +241,7 @@ abstract class AbstractRepository
      *
      * @return string|int
      */
-    private function getModelClassConstant($constant)
+    protected function getModelClassConstant($constant)
     {
         return \constant(\sprintf('%s::%s', $this->getModelClass(), $constant));
     }

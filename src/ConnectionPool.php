@@ -11,12 +11,12 @@ class ConnectionPool
     /**
      * @var ConnectionConfig[]
      */
-    private static $connectionConfig = [];
+    protected static $connectionConfig = [];
 
     /**
      * @var Connection[]
      */
-    private static $connections = [];
+    protected static $connections = [];
 
     /**
      * @param ConnectionConfig $connectionConfig
