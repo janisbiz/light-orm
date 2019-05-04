@@ -3,18 +3,18 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Generator\AbstractGeneratorFactory;
-use Janisbiz\LightOrm\Generator\Dms\Column;
-use Janisbiz\LightOrm\Generator\Dms\Database;
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\AbstractDmsFactory;
+use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 
-class GeneratorFactory extends AbstractGeneratorFactory
+class DmsFactory extends AbstractDmsFactory
 {
     /**
      * @param string $databaseName
      * @param ConnectionInterface $connection
      *
-     * @return Database
+     * @return DmsDatabase
      */
     public function createDatabase($databaseName, ConnectionInterface $connection)
     {
@@ -26,14 +26,14 @@ class GeneratorFactory extends AbstractGeneratorFactory
             $tables[] = $this->createTable($tableInDatabase->{\sprintf('Tables_in_%s', $databaseName)}, $connection);
         }
 
-        return new Database($databaseName, $tables);
+        return new DmsDatabase($databaseName, $tables);
     }
 
     /**
      * @param string $tableName
      * @param ConnectionInterface $connection
      *
-     * @return Table
+     * @return DmsTable
      */
     protected function createTable($tableName, ConnectionInterface $connection)
     {
@@ -55,7 +55,7 @@ class GeneratorFactory extends AbstractGeneratorFactory
             );
         }
 
-        return new Table($tableName, $columns);
+        return new DmsTable($tableName, $columns);
     }
 
     /**
@@ -66,10 +66,10 @@ class GeneratorFactory extends AbstractGeneratorFactory
      * @param string $default
      * @param null|string $extra
      *
-     * @return Column
+     * @return DmsColumn
      */
     protected function createColumn($name, $type, $nullable, $key, $default, $extra)
     {
-        return new Column($name, $type, $nullable, $key, $default, $extra);
+        return new DmsColumn($name, $type, $nullable, $key, $default, $extra);
     }
 }

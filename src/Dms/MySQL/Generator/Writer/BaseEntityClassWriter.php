@@ -3,9 +3,9 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
-use Janisbiz\LightOrm\Generator\Dms\Column;
-use Janisbiz\LightOrm\Generator\Dms\Database;
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 use Janisbiz\Heredoc\HeredocTrait;
 
 class BaseEntityClassWriter extends AbstractWriter
@@ -18,14 +18,14 @@ class BaseEntityClassWriter extends AbstractWriter
     const CLASS_CONSTANT_TABLE_NAME = 'TABLE_NAME';
 
     /**
-     * @param Database $database
-     * @param Table $table
+     * @param DmsDatabase $database
+     * @param DmsTable $table
      * @param string $directory
      * @param array $existingFiles
      *
      * @return BaseEntityClassWriter
      */
-    public function write(Database $database, Table $table, $directory, array &$existingFiles)
+    public function write(DmsDatabase $database, DmsTable $table, $directory, array &$existingFiles)
     {
         $fileName = $this->generateFileName($table, $directory, self::FILE_NAME_PREFIX);
 
@@ -36,15 +36,15 @@ class BaseEntityClassWriter extends AbstractWriter
     }
 
     /**
-     * @param Database $database
-     * @param Table $table
+     * @param DmsDatabase $database
+     * @param DmsTable $table
      *
      * @return string
      */
-    private function generateFileContents(Database $database, Table $table)
+    private function generateFileContents(DmsDatabase $database, DmsTable $table)
     {
         $phpDoc = $table->getColumns();
-        $phpDoc = \implode("\n *\n", \array_map(function (Column $column) {
+        $phpDoc = \implode("\n *\n", \array_map(function (DmsColumn $column) {
             return \sprintf(
                 " * @method %s get%s(bool \$escapeHtml = false)\n * @method \$this set%s(%s \$val)",
                 \implode('|', \array_unique([$column->getPhpDefaultType(), $column->getPhpType()])),
@@ -58,7 +58,7 @@ class BaseEntityClassWriter extends AbstractWriter
         $columnsConstants = \implode(
             "\n    ",
             \array_map(
-                function (Column $column) {
+                function (DmsColumn $column) {
                     return \sprintf(
                         'const COLUMN_%s = \'%s\';',
                         \mb_strtoupper($column->getName()),
@@ -73,7 +73,7 @@ class BaseEntityClassWriter extends AbstractWriter
         $primaryKeys = \implode(
             "\n            ",
             \array_filter(\array_map(
-                function (Column $column) {
+                function (DmsColumn $column) {
                     if ($column->getKey() !== 'PRI') {
                         return null;
                     }
@@ -88,7 +88,7 @@ class BaseEntityClassWriter extends AbstractWriter
         $primaryKeysAutoIncrement = \implode(
             "\n            ",
             \array_filter(\array_map(
-                function (Column $column) {
+                function (DmsColumn $column) {
                     if ($column->getExtra() !== 'auto_increment') {
                         return null;
                     }
@@ -103,7 +103,7 @@ class BaseEntityClassWriter extends AbstractWriter
         $columns = \implode(
             "\n            ",
             \array_map(
-                function (Column $column) {
+                function (DmsColumn $column) {
                     return \sprintf('self::COLUMN_%s,', \mb_strtoupper($column->getName()));
                 },
                 $columns

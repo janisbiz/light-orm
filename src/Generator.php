@@ -3,8 +3,8 @@
 namespace Janisbiz\LightOrm;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Generator\Dms\Database;
-use Janisbiz\LightOrm\Dms\MySQL\Generator\GeneratorFactory;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\RepositoryClassWriter;
@@ -15,7 +15,7 @@ class Generator
     use HeredocTrait;
 
     /**
-     * @var GeneratorFactory
+     * @var DmsFactory
      */
     private $generatorFactory;
 
@@ -25,11 +25,11 @@ class Generator
     private $generatePath;
 
     /**
-     * @param GeneratorFactory $generatorFactory
+     * @param DmsFactory $generatorFactory
      * @param string $generatePath
      */
     public function __construct(
-        GeneratorFactory $generatorFactory,
+        DmsFactory $generatorFactory,
         $generatePath
     ) {
         $this->generatorFactory = $generatorFactory;
@@ -75,11 +75,11 @@ class Generator
     }
 
     /**
-     * @param Database $database
+     * @param DmsDatabase $database
      *
      * @return array
      */
-    private function createDirectories(Database $database)
+    private function createDirectories(DmsDatabase $database)
     {
         $modelsDirectory = \sprintf('%s/%s', $this->generatePath, $database->getPhpName());
         $modelsBaseDirectory = \sprintf('%s/Base/', $modelsDirectory);

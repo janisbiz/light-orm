@@ -2,19 +2,19 @@
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 
 abstract class AbstractWriter implements WriterInterface
 {
     /**
-     * @param Table $table
+     * @param DmsTable $table
      * @param string $directory
      * @param string $prefix
      * @param string $suffix
      *
      * @return string
      */
-    protected function generateFileName(Table $table, $directory, $prefix = '', $suffix = '')
+    protected function generateFileName(DmsTable $table, $directory, $prefix = '', $suffix = '')
     {
         return \sprintf('%s/%s%s%s.php', $directory, $prefix, $table->getPhpName(), $suffix);
     }

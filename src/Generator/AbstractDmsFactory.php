@@ -3,16 +3,16 @@
 namespace Janisbiz\LightOrm\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Generator\Dms\Column;
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 
-abstract class AbstractGeneratorFactory implements GeneratorFactoryInterface
+abstract class AbstractDmsFactory implements DmsFactoryInterface
 {
     /**
      * @param string $tableName
      * @param ConnectionInterface $connection
      *
-     * @return Table
+     * @return DmsTable
      */
     abstract protected function createTable($tableName, ConnectionInterface $connection);
 
@@ -24,7 +24,7 @@ abstract class AbstractGeneratorFactory implements GeneratorFactoryInterface
      * @param string $default
      * @param null|string $extra
      *
-     * @return Column
+     * @return DmsColumn
      */
     abstract protected function createColumn($name, $type, $nullable, $key, $default, $extra);
 }

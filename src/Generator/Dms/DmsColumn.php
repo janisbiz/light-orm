@@ -2,7 +2,7 @@
 
 namespace Janisbiz\LightOrm\Generator\Dms;
 
-class Column
+class DmsColumn
 {
     const TYPE_BIGINT = 'bigint';
     const TYPE_CHAR = 'char';

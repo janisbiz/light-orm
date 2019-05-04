@@ -2,18 +2,18 @@
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
-use Janisbiz\LightOrm\Generator\Dms\Database;
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 
 interface WriterInterface
 {
     /**
-     * @param Database $database
-     * @param Table $table
+     * @param DmsDatabase $database
+     * @param DmsTable $table
      * @param string $directory
      * @param array $existingFiles
      *
      * @return $this
      */
-    public function write(Database $database, Table $table, $directory, array &$existingFiles);
+    public function write(DmsDatabase $database, DmsTable $table, $directory, array &$existingFiles);
 }

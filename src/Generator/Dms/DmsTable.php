@@ -2,7 +2,7 @@
 
 namespace Janisbiz\LightOrm\Generator\Dms;
 
-class Database
+class DmsTable
 {
     /**
      * @var string
@@ -10,18 +10,18 @@ class Database
     private $name;
 
     /**
-     * @var Table[]
+     * @var DmsColumn[]
      */
-    private $tables = [];
+    private $columns = [];
 
     /**
-     * @param $name
-     * @param $tables
+     * @param string $name
+     * @param array $columns
      */
-    public function __construct($name, $tables)
+    public function __construct($name, array $columns)
     {
         $this->name = $name;
-        $this->tables = $tables;
+        $this->columns = $columns;
     }
 
     /**
@@ -47,10 +47,10 @@ class Database
     }
 
     /**
-     * @return Table[]
+     * @return DmsColumn[]
      */
-    public function getTables()
+    public function getColumns()
     {
-        return $this->tables;
+        return $this->columns;
     }
 }

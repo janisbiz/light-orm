@@ -2,10 +2,10 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Generator\Dms;
 
-use Janisbiz\LightOrm\Generator\Dms\Column;
+use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
 use PHPUnit\Framework\TestCase;
 
-class ColumnTest extends TestCase
+class DmsColumnTest extends TestCase
 {
     const COLUMN_NAME = 'name_snake_case';
     const COLUMN_NAME_PHP = 'NameSnakeCase';
@@ -20,7 +20,7 @@ class ColumnTest extends TestCase
 
     public function testGetName()
     {
-        $column = new Column(
+        $column = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -34,7 +34,7 @@ class ColumnTest extends TestCase
 
     public function testGetType()
     {
-        $column = new Column(
+        $column = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -48,7 +48,7 @@ class ColumnTest extends TestCase
 
     public function testGetExtra()
     {
-        $column = new Column(
+        $column = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -68,7 +68,7 @@ class ColumnTest extends TestCase
      */
     public function testGetPhpName($name, $phpName)
     {
-        $column = new Column(
+        $column = new DmsColumn(
             $name,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -115,7 +115,7 @@ class ColumnTest extends TestCase
 
     public function testGetDefault()
     {
-        $column = new Column(
+        $column = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -136,7 +136,7 @@ class ColumnTest extends TestCase
      */
     public function testGetPhpDefaultType($default, $dmsType, $phpDefaultType)
     {
-        $column = new Column(
+        $column = new DmsColumn(
             self::COLUMN_NAME,
             $dmsType,
             self::COLUMN_NULLABLE,
@@ -177,7 +177,7 @@ class ColumnTest extends TestCase
      */
     public function testIsNullable($isNullable, $expectedIsNullable)
     {
-        $column = new Column(
+        $column = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             $isNullable,
@@ -214,7 +214,7 @@ class ColumnTest extends TestCase
      */
     public function testGetKey($key, $expectedKey)
     {
-        $column = new Column(
+        $column = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -256,7 +256,7 @@ class ColumnTest extends TestCase
     public function testGetPhpType(array $dmsTypes, $phpType)
     {
         foreach ($dmsTypes as $dmsType) {
-            $column = new Column(
+            $column = new DmsColumn(
                 self::COLUMN_NAME,
                 $dmsType,
                 self::COLUMN_NULLABLE,
@@ -314,7 +314,7 @@ class ColumnTest extends TestCase
      */
     public function testGetPhpTypeInvalid()
     {
-        (new Column(
+        (new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE_INVALID,
             self::COLUMN_NULLABLE,

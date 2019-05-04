@@ -3,8 +3,8 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
-use Janisbiz\LightOrm\Generator\Dms\Database;
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 use Janisbiz\Heredoc\HeredocTrait;
 
 class RepositoryClassWriter extends AbstractWriter
@@ -14,14 +14,14 @@ class RepositoryClassWriter extends AbstractWriter
     const FILE_NAME_SUFFIX = 'Repository';
 
     /**
-     * @param Database $database
-     * @param Table $table
+     * @param DmsDatabase $database
+     * @param DmsTable $table
      * @param string $directory
      * @param array $existingFiles
      *
      * @return RepositoryClassWriter
      */
-    public function write(Database $database, Table $table, $directory, array &$existingFiles)
+    public function write(DmsDatabase $database, DmsTable $table, $directory, array &$existingFiles)
     {
         $fileName = $this->generateFileName($table, $directory, '', self::FILE_NAME_SUFFIX);
 
@@ -32,12 +32,12 @@ class RepositoryClassWriter extends AbstractWriter
     }
 
     /**
-     * @param Database $database
-     * @param Table $table
+     * @param DmsDatabase $database
+     * @param DmsTable $table
      *
      * @return string
      */
-    private function generateFileContents(Database $database, Table $table)
+    private function generateFileContents(DmsDatabase $database, DmsTable $table)
     {
         return /** @lang PHP */
             <<<PHP

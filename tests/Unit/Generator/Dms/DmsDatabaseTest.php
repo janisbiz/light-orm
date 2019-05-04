@@ -2,22 +2,22 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Generator\Dms;
 
-use Janisbiz\LightOrm\Generator\Dms\Column;
-use Janisbiz\LightOrm\Generator\Dms\Database;
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 use PHPUnit\Framework\TestCase;
 
-class DatabaseTest extends TestCase
+class DmsDatabaseTest extends TestCase
 {
     const DATABASE_NAME = 'database_name_snake_case';
 
     /**
-     * @var Table[]
+     * @var DmsTable[]
      */
     private $tables = [];
 
     /**
-     * @var Database
+     * @var DmsDatabase
      */
     private $database;
 
@@ -25,24 +25,24 @@ class DatabaseTest extends TestCase
     {
         $columns = [];
         for ($i = 1; $i <= 3; $i++) {
-            $columns[] = new Column(
-                \sprintf('%s_%d', ColumnTest::COLUMN_NAME, $i),
-                ColumnTest::COLUMN_TYPE,
-                ColumnTest::COLUMN_NULLABLE,
-                ColumnTest::COLUMN_KEY,
-                ColumnTest::COLUMN_DEFAULT,
-                ColumnTest::COLUMN_EXTRA
+            $columns[] = new DmsColumn(
+                \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
+                DmsColumnTest::COLUMN_TYPE,
+                DmsColumnTest::COLUMN_NULLABLE,
+                DmsColumnTest::COLUMN_KEY,
+                DmsColumnTest::COLUMN_DEFAULT,
+                DmsColumnTest::COLUMN_EXTRA
             );
         }
 
         for ($i = 1; $i <=3; $i++) {
-            $this->tables[] = new Table(
-                \sprintf('%s_%d', TableTest::TABLE_NAME, $i),
+            $this->tables[] = new DmsTable(
+                \sprintf('%s_%d', DmsTableTest::TABLE_NAME, $i),
                 $columns
             );
         }
 
-        $this->database = new Database(self::DATABASE_NAME, $this->tables);
+        $this->database = new DmsDatabase(self::DATABASE_NAME, $this->tables);
     }
 
     public function testGetName()
@@ -58,7 +58,7 @@ class DatabaseTest extends TestCase
      */
     public function testGetPhpName($name, $phpName)
     {
-        $column = new Database(
+        $column = new DmsDatabase(
             $name,
             $this->tables
         );

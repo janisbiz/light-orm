@@ -3,15 +3,15 @@
 namespace Janisbiz\LightOrm\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Generator\Dms\Database;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
 
-interface GeneratorFactoryInterface
+interface DmsFactoryInterface
 {
     /**
      * @param string $databaseName
      * @param ConnectionInterface $connection
      *
-     * @return Database
+     * @return DmsDatabase
      */
     public function createDatabase($databaseName, ConnectionInterface $connection);
 }

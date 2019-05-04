@@ -2,38 +2,38 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Generator\Dms;
 
-use Janisbiz\LightOrm\Generator\Dms\Column;
-use Janisbiz\LightOrm\Generator\Dms\Table;
+use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 use PHPUnit\Framework\TestCase;
 
-class TableTest extends TestCase
+class DmsTableTest extends TestCase
 {
     const TABLE_NAME = 'table_name_snake_case';
 
     /**
-     * @var Column[]
+     * @var DmsColumn[]
      */
     private $columns = [];
 
     /**
-     * @var Table
+     * @var DmsTable
      */
     private $table;
 
     public function setUp()
     {
         for ($i = 1; $i <= 3; $i++) {
-            $this->columns[] = new Column(
-                \sprintf('%s_%d', ColumnTest::COLUMN_NAME, $i),
-                ColumnTest::COLUMN_TYPE,
-                ColumnTest::COLUMN_NULLABLE,
-                ColumnTest::COLUMN_KEY,
-                ColumnTest::COLUMN_DEFAULT,
-                ColumnTest::COLUMN_EXTRA
+            $this->columns[] = new DmsColumn(
+                \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
+                DmsColumnTest::COLUMN_TYPE,
+                DmsColumnTest::COLUMN_NULLABLE,
+                DmsColumnTest::COLUMN_KEY,
+                DmsColumnTest::COLUMN_DEFAULT,
+                DmsColumnTest::COLUMN_EXTRA
             );
         }
 
-        $this->table = new Table(self::TABLE_NAME, $this->columns);
+        $this->table = new DmsTable(self::TABLE_NAME, $this->columns);
     }
 
     public function testGetName()
@@ -49,7 +49,7 @@ class TableTest extends TestCase
      */
     public function testGetPhpName($name, $phpName)
     {
-        $table = new Table(
+        $table = new DmsTable(
             $name,
             $this->columns
         );
