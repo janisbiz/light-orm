@@ -12,7 +12,7 @@ abstract class AbstractWriterConfig implements WriterConfigInterface
     /**
      * @var string
      */
-    protected $namespace;
+    protected $namespace = '';
 
     /**
      * @var string
@@ -45,7 +45,7 @@ abstract class AbstractWriterConfig implements WriterConfigInterface
      */
     public function getClassPrefix()
     {
-        return \trim($this->classPrefix);
+        return \mb_convert_case(\trim($this->classPrefix), MB_CASE_TITLE);
     }
 
     /**
@@ -53,6 +53,6 @@ abstract class AbstractWriterConfig implements WriterConfigInterface
      */
     public function getClassSuffix()
     {
-        return \trim($this->classSuffix);
+        return \mb_convert_case(\trim($this->classSuffix), MB_CASE_TITLE);
     }
 }
