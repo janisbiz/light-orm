@@ -73,7 +73,8 @@ class Generator
      *
      * @return $this
      */
-    protected function removeExistingFiles(array &$existingFiles) {
+    protected function removeExistingFiles(array &$existingFiles)
+    {
         foreach (\array_keys($existingFiles) as $path) {
             if (!\is_dir($path)) {
                 \unlink($path);
