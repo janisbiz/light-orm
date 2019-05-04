@@ -1,8 +1,8 @@
 <?php
 
-namespace Janisbiz\LightOrm\Tests\Unit\Generator\Dms;
+namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
-use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
 use PHPUnit\Framework\TestCase;
 
 class DmsColumnTest extends TestCase
@@ -20,7 +20,7 @@ class DmsColumnTest extends TestCase
 
     public function testGetName()
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -29,12 +29,12 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_NAME, $column->getName());
+        $this->assertEquals(self::COLUMN_NAME, $dmsColumn->getName());
     }
 
     public function testGetType()
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -43,12 +43,12 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_TYPE, $column->getType());
+        $this->assertEquals(self::COLUMN_TYPE, $dmsColumn->getType());
     }
 
     public function testGetExtra()
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -57,7 +57,7 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_EXTRA, $column->getExtra());
+        $this->assertEquals(self::COLUMN_EXTRA, $dmsColumn->getExtra());
     }
 
     /**
@@ -68,7 +68,7 @@ class DmsColumnTest extends TestCase
      */
     public function testGetPhpName($name, $phpName)
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             $name,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -77,7 +77,7 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals($phpName, $column->getPhpName());
+        $this->assertEquals($phpName, $dmsColumn->getPhpName());
     }
 
     /**
@@ -115,7 +115,7 @@ class DmsColumnTest extends TestCase
 
     public function testGetDefault()
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -124,7 +124,7 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_DEFAULT, $column->getDefault());
+        $this->assertEquals(self::COLUMN_DEFAULT, $dmsColumn->getDefault());
     }
 
     /**
@@ -136,7 +136,7 @@ class DmsColumnTest extends TestCase
      */
     public function testGetPhpDefaultType($default, $dmsType, $phpDefaultType)
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             self::COLUMN_NAME,
             $dmsType,
             self::COLUMN_NULLABLE,
@@ -145,7 +145,7 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals($phpDefaultType, $column->getPhpDefaultType());
+        $this->assertEquals($phpDefaultType, $dmsColumn->getPhpDefaultType());
     }
 
     public function defaultData()
@@ -177,7 +177,7 @@ class DmsColumnTest extends TestCase
      */
     public function testIsNullable($isNullable, $expectedIsNullable)
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             $isNullable,
@@ -186,7 +186,7 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals($expectedIsNullable, $column->isNullable());
+        $this->assertEquals($expectedIsNullable, $dmsColumn->isNullable());
     }
 
     /**
@@ -214,7 +214,7 @@ class DmsColumnTest extends TestCase
      */
     public function testGetKey($key, $expectedKey)
     {
-        $column = new DmsColumn(
+        $dmsColumn = new DmsColumn(
             self::COLUMN_NAME,
             self::COLUMN_TYPE,
             self::COLUMN_NULLABLE,
@@ -223,7 +223,7 @@ class DmsColumnTest extends TestCase
             self::COLUMN_EXTRA
         );
 
-        $this->assertEquals($expectedKey, $column->getKey());
+        $this->assertEquals($expectedKey, $dmsColumn->getKey());
     }
 
     /**
@@ -256,7 +256,7 @@ class DmsColumnTest extends TestCase
     public function testGetPhpType(array $dmsTypes, $phpType)
     {
         foreach ($dmsTypes as $dmsType) {
-            $column = new DmsColumn(
+            $dmsColumn = new DmsColumn(
                 self::COLUMN_NAME,
                 $dmsType,
                 self::COLUMN_NULLABLE,
@@ -265,7 +265,7 @@ class DmsColumnTest extends TestCase
                 self::COLUMN_EXTRA
             );
 
-            $this->assertEquals($phpType, $column->getPhpType());
+            $this->assertEquals($phpType, $dmsColumn->getPhpType());
         }
     }
 

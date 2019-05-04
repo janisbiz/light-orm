@@ -32,7 +32,8 @@
   "autoload": {
     "psr-4": {
       "Janisbiz\\LightOrm\\": "src/",
-      "Janisbiz\\LightOrm\\Tests\\": "tests/"
+      "Janisbiz\\LightOrm\\Tests\\": "tests/",
+      "Janisbiz\\LightOrm\\Variable\\": "var/light-orm/"
     }
   },
   "scripts": {

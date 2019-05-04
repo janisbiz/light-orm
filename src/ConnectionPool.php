@@ -2,28 +2,27 @@
 
 namespace Janisbiz\LightOrm;
 
+use Janisbiz\LightOrm\Connection\ConnectionConfigInterface;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
-use Janisbiz\LightOrm\Connection\ConnectionConfig;
 
 class ConnectionPool
 {
     /**
-     * @var ConnectionConfig[]
+     * @var ConnectionConfigInterface[]
      */
     protected static $connectionConfig = [];
 
     /**
-     * @var Connection[]
+     * @var ConnectionInterface[]
      */
     protected static $connections = [];
 
     /**
-     * @param ConnectionConfig $connectionConfig
+     * @param ConnectionConfigInterface $connectionConfig
      *
      * @return $this
      */
-    public function addConnectionConfig(ConnectionConfig $connectionConfig)
+    public function addConnectionConfig(ConnectionConfigInterface $connectionConfig)
     {
         self::$connectionConfig[$connectionConfig->getDbname()] = $connectionConfig;
 
@@ -33,7 +32,7 @@ class ConnectionPool
     /**
      * @param string $dbName
      *
-     * @return null|Connection
+     * @return null|ConnectionInterface
      */
     public function getConnection($dbName)
     {
@@ -61,7 +60,7 @@ class ConnectionPool
     /**
      * @param string $dbName
      *
-     * @return Connection
+     * @return ConnectionInterface
      */
     public static function getConnectionStatic($dbName)
     {
@@ -69,11 +68,11 @@ class ConnectionPool
     }
 
     /**
-     * @param ConnectionConfig $connectionConfig
+     * @param ConnectionConfigInterface $connectionConfig
      *
      * @return ConnectionInterface
      */
-    protected function createConnection(ConnectionConfig $connectionConfig)
+    protected function createConnection(ConnectionConfigInterface $connectionConfig)
     {
         $adapterConnectionClass = $connectionConfig->getAdapterConnectionClass();
 

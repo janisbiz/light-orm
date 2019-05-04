@@ -1,6 +1,6 @@
 <?php
 
-namespace Janisbiz\LightOrm\Dms\Mysql\Repository;
+namespace Janisbiz\LightOrm\Dms\MySQL\Repository;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
 use Janisbiz\LightOrm\Entity\EntityInterface;

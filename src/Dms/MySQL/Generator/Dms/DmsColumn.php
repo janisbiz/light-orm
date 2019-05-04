@@ -1,8 +1,10 @@
 <?php
 
-namespace Janisbiz\LightOrm\Generator\Dms;
+namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Dms;
 
-class DmsColumn
+use Janisbiz\LightOrm\Generator\Dms\DmsColumnInterface;
+
+class DmsColumn implements DmsColumnInterface
 {
     const TYPE_BIGINT = 'bigint';
     const TYPE_CHAR = 'char';

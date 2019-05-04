@@ -2,43 +2,71 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
+use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
-use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
-use Janisbiz\LightOrm\Generator\Dms\DmsTable;
+use Janisbiz\LightOrm\Generator\Writer\WriterConfigInterface;
 
 class EntityClassWriter extends AbstractWriter
 {
     /**
-     * @param DmsDatabase $database
-     * @param DmsTable $table
-     * @param string $directory
+     * @var BaseEntityClassWriter
+     */
+    protected $baseEntityClassWriter;
+
+    /**
+     * @param WriterConfigInterface $writerConfig
+     * @param BaseEntityClassWriter $baseEntityClassWriter
+     */
+    public function __construct(WriterConfigInterface $writerConfig, BaseEntityClassWriter $baseEntityClassWriter)
+    {
+        $this->writerConfig = $writerConfig;
+        $this->baseEntityClassWriter = $baseEntityClassWriter;
+    }
+
+    /**
+     * @param DmsDatabaseInterface $dmsDatabase
+     * @param DmsTableInterface $dmsTable
      * @param array $existingFiles
      *
      * @return EntityClassWriter
      */
-    public function write(DmsDatabase $database, DmsTable $table, $directory, array &$existingFiles)
-    {
-        $fileName = $this->generateFileName($table, $directory);
+    public function write(
+        DmsDatabaseInterface $dmsDatabase,
+        DmsTableInterface $dmsTable,
+        array &$existingFiles
+    ) {
+        $fileName = $this->generateFileName($dmsDatabase, $dmsTable);
 
         return $this
-            ->writeFile($fileName, $this->generateFileContents($database, $table), true)
+            ->writeFile($fileName, $this->generateFileContents($dmsDatabase, $dmsTable), true)
             ->removeFileFromExistingFiles($fileName, $existingFiles)
         ;
     }
 
     /**
-     * @param DmsDatabase $database
-     * @param DmsTable $table
+     * @return WriterConfigInterface
+     */
+    protected function getWriterConfig()
+    {
+        return $this->writerConfig;
+    }
+
+    /**
+     * @param DmsDatabaseInterface $dmsDatabase
+     * @param DmsTableInterface $dmsTable
      *
      * @return string
      */
-    protected function generateFileContents(DmsDatabase $database, DmsTable $table)
+    protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable)
     {
         return /** @lang PHP */<<<PHP
 <?php
-namespace {$database->getPhpName()};
+namespace {$this->generateNamespace($dmsDatabase)};
 
-class {$table->getPhpName()} extends Base\Base{$table->getPhpName()}
+use {$this->baseEntityClassWriter->generateFQDN($dmsDatabase, $dmsTable)};
+
+class {$this->generateClassName($dmsTable)} extends {$this->baseEntityClassWriter->generateClassName($dmsTable)}
 {
 }
 

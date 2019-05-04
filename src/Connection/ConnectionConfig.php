@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Connection;
 
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
 
-class ConnectionConfig
+class ConnectionConfig implements ConnectionConfigInterface
 {
     const ADAPTER_MYSQL = 'mysql';
 

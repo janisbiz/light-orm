@@ -10,36 +10,30 @@ trait OnDuplicateKeyUpdateTrait
     protected $onDuplicateKeyUpdate = [];
 
     /**
-     * @param string $onDuplicateKeyUpdate
-     * @param array $saveBind
+     * @param string $column
+     * @param null|int|string|double $value
      *
      * @throws \Exception
      * @return $this
      */
-    public function onDuplicateKeyUpdate($onDuplicateKeyUpdate, array $saveBind = [])
+    public function onDuplicateKeyUpdate($column, $value)
     {
-        if (empty($onDuplicateKeyUpdate)) {
-            throw new \Exception('You must pass $onDuplicateKeyUpdate to onDuplicateKeyUpdate function!');
+        if (empty($column)) {
+            throw new \Exception('You must pass $column to onDuplicateKeyUpdate function!');
         }
 
-        $saveBindParsed = [];
-        foreach ($saveBind as $placeholder => $value) {
-            $newPlaceholder = \sprintf('%s_DK', $placeholder);
+        $bindValuePlaceholder = \sprintf('%s_OnDuplicateKeyUpdate', $column);
 
-            $saveBindParsed[$newPlaceholder] = $value;
+        $this->onDuplicateKeyUpdate = \array_merge(
+            $this->onDuplicateKeyUpdate,
+            [
+                \sprintf('%s = :%s', $column, $bindValuePlaceholder),
+            ]
+        );
 
-            $onDuplicateKeyUpdate = \str_replace(
-                \sprintf(':%s', $placeholder),
-                \sprintf(':%s', $newPlaceholder),
-                $onDuplicateKeyUpdate
-            );
-        }
-
-        $this->onDuplicateKeyUpdate = \array_merge($this->onDuplicateKeyUpdate, [$onDuplicateKeyUpdate]);
-
-        if (!empty($saveBindParsed)) {
-            $this->bindValue($saveBindParsed);
-        }
+        $this->bindValue([
+            $bindValuePlaceholder => $value,
+        ]);
 
         return $this;
     }

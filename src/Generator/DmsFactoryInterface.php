@@ -3,7 +3,7 @@
 namespace Janisbiz\LightOrm\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsDatabase;
 
 interface DmsFactoryInterface
 {
@@ -13,5 +13,5 @@ interface DmsFactoryInterface
      *
      * @return DmsDatabase
      */
-    public function createDatabase($databaseName, ConnectionInterface $connection);
+    public function createDmsDatabase($databaseName, ConnectionInterface $connection);
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace Janisbiz\LightOrm\Tests\Unit\Generator\Dms;
+namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
-use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
-use Janisbiz\LightOrm\Generator\Dms\DmsTable;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsTable;
 use PHPUnit\Framework\TestCase;
 
 class DmsTableTest extends TestCase
@@ -13,17 +13,17 @@ class DmsTableTest extends TestCase
     /**
      * @var DmsColumn[]
      */
-    private $columns = [];
+    private $dmsColumns = [];
 
     /**
      * @var DmsTable
      */
-    private $table;
+    private $dmsTable;
 
     public function setUp()
     {
         for ($i = 1; $i <= 3; $i++) {
-            $this->columns[] = new DmsColumn(
+            $this->dmsColumns[] = new DmsColumn(
                 \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
                 DmsColumnTest::COLUMN_TYPE,
                 DmsColumnTest::COLUMN_NULLABLE,
@@ -33,12 +33,12 @@ class DmsTableTest extends TestCase
             );
         }
 
-        $this->table = new DmsTable(self::TABLE_NAME, $this->columns);
+        $this->dmsTable = new DmsTable(self::TABLE_NAME, $this->dmsColumns);
     }
 
     public function testGetName()
     {
-        $this->assertEquals(self::TABLE_NAME, $this->table->getName());
+        $this->assertEquals(self::TABLE_NAME, $this->dmsTable->getName());
     }
 
     /**
@@ -49,12 +49,12 @@ class DmsTableTest extends TestCase
      */
     public function testGetPhpName($name, $phpName)
     {
-        $table = new DmsTable(
+        $dmsTable = new DmsTable(
             $name,
-            $this->columns
+            $this->dmsColumns
         );
 
-        $this->assertEquals($phpName, $table->getPhpName());
+        $this->assertEquals($phpName, $dmsTable->getPhpName());
     }
 
     /**
@@ -92,6 +92,6 @@ class DmsTableTest extends TestCase
 
     public function testGetColumns()
     {
-        $this->assertEquals(\count($this->columns), \count($this->table->getColumns()));
+        $this->assertEquals(\count($this->dmsColumns), \count($this->dmsTable->getDmsColumns()));
     }
 }

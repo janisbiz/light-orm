@@ -1,10 +1,10 @@
 <?php
 
-namespace Janisbiz\LightOrm\Tests\Unit\Generator\Dms;
+namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
-use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
-use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
-use Janisbiz\LightOrm\Generator\Dms\DmsTable;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsTable;
 use PHPUnit\Framework\TestCase;
 
 class DmsDatabaseTest extends TestCase
@@ -14,18 +14,18 @@ class DmsDatabaseTest extends TestCase
     /**
      * @var DmsTable[]
      */
-    private $tables = [];
+    private $dmsTables = [];
 
     /**
      * @var DmsDatabase
      */
-    private $database;
+    private $dmsDatabase;
 
     public function setUp()
     {
-        $columns = [];
+        $dmsColumns = [];
         for ($i = 1; $i <= 3; $i++) {
-            $columns[] = new DmsColumn(
+            $dmsColumns[] = new DmsColumn(
                 \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
                 DmsColumnTest::COLUMN_TYPE,
                 DmsColumnTest::COLUMN_NULLABLE,
@@ -36,18 +36,18 @@ class DmsDatabaseTest extends TestCase
         }
 
         for ($i = 1; $i <=3; $i++) {
-            $this->tables[] = new DmsTable(
+            $this->dmsTables[] = new DmsTable(
                 \sprintf('%s_%d', DmsTableTest::TABLE_NAME, $i),
-                $columns
+                $dmsColumns
             );
         }
 
-        $this->database = new DmsDatabase(self::DATABASE_NAME, $this->tables);
+        $this->dmsDatabase = new DmsDatabase(self::DATABASE_NAME, $this->dmsTables);
     }
 
     public function testGetName()
     {
-        $this->assertEquals(self::DATABASE_NAME, $this->database->getName());
+        $this->assertEquals(self::DATABASE_NAME, $this->dmsDatabase->getName());
     }
 
     /**
@@ -58,12 +58,12 @@ class DmsDatabaseTest extends TestCase
      */
     public function testGetPhpName($name, $phpName)
     {
-        $column = new DmsDatabase(
+        $dmsDatabase = new DmsDatabase(
             $name,
-            $this->tables
+            $this->dmsTables
         );
 
-        $this->assertEquals($phpName, $column->getPhpName());
+        $this->assertEquals($phpName, $dmsDatabase->getPhpName());
     }
 
     /**
@@ -101,6 +101,6 @@ class DmsDatabaseTest extends TestCase
 
     public function testGetTables()
     {
-        $this->assertEquals(\count($this->tables), \count($this->database->getTables()));
+        $this->assertEquals(\count($this->dmsTables), \count($this->dmsDatabase->getDmsTables()));
     }
 }

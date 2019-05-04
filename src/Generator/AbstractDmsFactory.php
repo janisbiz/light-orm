@@ -3,8 +3,8 @@
 namespace Janisbiz\LightOrm\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
-use Janisbiz\LightOrm\Generator\Dms\DmsTable;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsTable;
 
 abstract class AbstractDmsFactory implements DmsFactoryInterface
 {
@@ -14,7 +14,7 @@ abstract class AbstractDmsFactory implements DmsFactoryInterface
      *
      * @return DmsTable
      */
-    abstract protected function createTable($tableName, ConnectionInterface $connection);
+    abstract protected function createDmsTable($tableName, ConnectionInterface $connection);
 
     /**
      * @param string $name
@@ -26,5 +26,5 @@ abstract class AbstractDmsFactory implements DmsFactoryInterface
      *
      * @return DmsColumn
      */
-    abstract protected function createColumn($name, $type, $nullable, $key, $default, $extra);
+    abstract protected function createDmsColumn($name, $type, $nullable, $key, $default, $extra);
 }

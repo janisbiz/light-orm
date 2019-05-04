@@ -4,9 +4,9 @@ namespace Janisbiz\LightOrm\Dms\MySQL\Generator;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Generator\AbstractDmsFactory;
-use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
-use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
-use Janisbiz\LightOrm\Generator\Dms\DmsTable;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsDatabase;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsTable;
 
 class DmsFactory extends AbstractDmsFactory
 {
@@ -16,14 +16,14 @@ class DmsFactory extends AbstractDmsFactory
      *
      * @return DmsDatabase
      */
-    public function createDatabase($databaseName, ConnectionInterface $connection)
+    public function createDmsDatabase($databaseName, ConnectionInterface $connection)
     {
 
         $tablesInDatabase = $connection->query('SHOW TABLES', \PDO::FETCH_CLASS, \stdClass::class);
 
         $tables = [];
         foreach ($tablesInDatabase as $tableInDatabase) {
-            $tables[] = $this->createTable($tableInDatabase->{\sprintf('Tables_in_%s', $databaseName)}, $connection);
+            $tables[] = $this->createDmsTable($tableInDatabase->{\sprintf('Tables_in_%s', $databaseName)}, $connection);
         }
 
         return new DmsDatabase($databaseName, $tables);
@@ -35,7 +35,7 @@ class DmsFactory extends AbstractDmsFactory
      *
      * @return DmsTable
      */
-    protected function createTable($tableName, ConnectionInterface $connection)
+    protected function createDmsTable($tableName, ConnectionInterface $connection)
     {
         $columnsInTable = $connection->query(
             \sprintf('SHOW COLUMNS FROM %s', $tableName),
@@ -45,7 +45,7 @@ class DmsFactory extends AbstractDmsFactory
 
         $columns = [];
         foreach ($columnsInTable as $columnInTable) {
-            $columns[] = $this->createColumn(
+            $columns[] = $this->createDmsColumn(
                 $columnInTable->Field,
                 $columnInTable->Type,
                 $columnInTable->Null === 'YES',
@@ -68,7 +68,7 @@ class DmsFactory extends AbstractDmsFactory
      *
      * @return DmsColumn
      */
-    protected function createColumn($name, $type, $nullable, $key, $default, $extra)
+    protected function createDmsColumn($name, $type, $nullable, $key, $default, $extra)
     {
         return new DmsColumn($name, $type, $nullable, $key, $default, $extra);
     }

@@ -14,7 +14,7 @@ trait CommandTrait
      *
      * @return $this
      */
-    private function setCommand($command)
+    protected function setCommand($command)
     {
         $this->command = $command;
 

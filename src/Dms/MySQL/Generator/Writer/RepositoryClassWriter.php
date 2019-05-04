@@ -2,59 +2,83 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
+use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
-use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
-use Janisbiz\LightOrm\Generator\Dms\DmsTable;
 use Janisbiz\Heredoc\HeredocTrait;
+use Janisbiz\LightOrm\Generator\Writer\WriterConfigInterface;
 
 class RepositoryClassWriter extends AbstractWriter
 {
     use HeredocTrait;
 
-    const FILE_NAME_SUFFIX = 'Repository';
+    /**
+     * @var EntityClassWriter
+     */
+    private $entityClassWriter;
 
     /**
-     * @param DmsDatabase $database
-     * @param DmsTable $table
-     * @param string $directory
+     * @param WriterConfigInterface $writerConfig
+     * @param EntityClassWriter $entityClassWriter
+     */
+    public function __construct(WriterConfigInterface $writerConfig, EntityClassWriter $entityClassWriter)
+    {
+        $this->writerConfig = $writerConfig;
+        $this->entityClassWriter = $entityClassWriter;
+    }
+
+    /**
+     * @param DmsDatabaseInterface $dmsDatabase
+     * @param DmsTableInterface $dmsTable
      * @param array $existingFiles
      *
      * @return RepositoryClassWriter
      */
-    public function write(DmsDatabase $database, DmsTable $table, $directory, array &$existingFiles)
-    {
-        $fileName = $this->generateFileName($table, $directory, '', self::FILE_NAME_SUFFIX);
+    public function write(
+        DmsDatabaseInterface $dmsDatabase,
+        DmsTableInterface $dmsTable,
+        array &$existingFiles
+    ) {
+        $fileName = $this->generateFileName($dmsDatabase, $dmsTable);
 
         return $this
-            ->writeFile($fileName, $this->generateFileContents($database, $table), true)
+            ->writeFile($fileName, $this->generateFileContents($dmsDatabase, $dmsTable), true)
             ->removeFileFromExistingFiles($fileName, $existingFiles)
         ;
     }
 
     /**
-     * @param DmsDatabase $database
-     * @param DmsTable $table
+     * @return WriterConfigInterface
+     */
+    protected function getWriterConfig()
+    {
+        return $this->writerConfig;
+    }
+
+    /**
+     * @param DmsDatabaseInterface $dmsDatabase
+     * @param DmsTableInterface $dmsTable
      *
      * @return string
      */
-    protected function generateFileContents(DmsDatabase $database, DmsTable $table)
+    protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable)
     {
         return /** @lang PHP */
             <<<PHP
 <?php
-namespace {$database->getPhpName()}\Repository;
+namespace {$this->generateNamespace($dmsDatabase)};
 
-use Janisbiz\LightOrm\Dms\Mysql\Repository\AbstractRepository;
-use {$database->getPhpName()}\\{$table->getPhpName()};
+use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
+use {$this->entityClassWriter->generateFQDN($dmsDatabase, $dmsTable)};
 
-class {$table->getPhpName()}{$this->heredoc(self::FILE_NAME_SUFFIX)} extends AbstractRepository
+class {$this->generateClassName($dmsTable)} extends AbstractRepository
 {
     /**
     * @return string
     */
     protected function getModelClass()
     {
-        return {$table->getPhpName()}::class;
+        return {$this->entityClassWriter->generateClassName($dmsTable)}::class;
     }
 }
 

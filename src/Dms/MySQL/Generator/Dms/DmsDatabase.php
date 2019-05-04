@@ -1,8 +1,11 @@
 <?php
 
-namespace Janisbiz\LightOrm\Generator\Dms;
+namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Dms;
 
-class DmsDatabase
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
+use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
+
+class DmsDatabase implements DmsDatabaseInterface
 {
     /**
      * @var string
@@ -10,18 +13,18 @@ class DmsDatabase
     protected $name;
 
     /**
-     * @var DmsTable[]
+     * @var DmsTableInterface[]
      */
-    protected $tables = [];
+    protected $dmsTables = [];
 
     /**
-     * @param $name
-     * @param $tables
+     * @param string $name
+     * @param DmsTableInterface[] $dmsTables
      */
-    public function __construct($name, $tables)
+    public function __construct($name, $dmsTables)
     {
         $this->name = $name;
-        $this->tables = $tables;
+        $this->dmsTables = $dmsTables;
     }
 
     /**
@@ -47,10 +50,10 @@ class DmsDatabase
     }
 
     /**
-     * @return DmsTable[]
+     * @return DmsTableInterface[]
      */
-    public function getTables()
+    public function getDmsTables()
     {
-        return $this->tables;
+        return $this->dmsTables;
     }
 }

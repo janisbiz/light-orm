@@ -2,48 +2,65 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
+use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
-use Janisbiz\LightOrm\Generator\Dms\DmsColumn;
-use Janisbiz\LightOrm\Generator\Dms\DmsDatabase;
-use Janisbiz\LightOrm\Generator\Dms\DmsTable;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
 use Janisbiz\Heredoc\HeredocTrait;
+use Janisbiz\LightOrm\Generator\Writer\WriterConfigInterface;
 
 class BaseEntityClassWriter extends AbstractWriter
 {
     use HeredocTrait;
 
-    const FILE_NAME_PREFIX = 'Base';
-
     const CLASS_CONSTANT_DATABASE_NAME = 'DATABASE_NAME';
     const CLASS_CONSTANT_TABLE_NAME = 'TABLE_NAME';
 
     /**
-     * @param DmsDatabase $database
-     * @param DmsTable $table
-     * @param string $directory
+     * @param WriterConfigInterface $writerConfig
+     */
+    public function __construct(WriterConfigInterface $writerConfig)
+    {
+        $this->writerConfig = $writerConfig;
+    }
+
+    /**
+     * @param DmsDatabaseInterface $dmsDatabase
+     * @param DmsTableInterface $dmsTable
      * @param array $existingFiles
      *
      * @return BaseEntityClassWriter
      */
-    public function write(DmsDatabase $database, DmsTable $table, $directory, array &$existingFiles)
-    {
-        $fileName = $this->generateFileName($table, $directory, self::FILE_NAME_PREFIX);
+    public function write(
+        DmsDatabaseInterface $dmsDatabase,
+        DmsTableInterface $dmsTable,
+        array &$existingFiles
+    ) {
+        $fileName = $this->generateFileName($dmsDatabase, $dmsTable);
 
         return $this
-            ->writeFile($fileName, $this->generateFileContents($database, $table))
+            ->writeFile($fileName, $this->generateFileContents($dmsDatabase, $dmsTable))
             ->removeFileFromExistingFiles($fileName, $existingFiles)
         ;
     }
 
     /**
-     * @param DmsDatabase $database
-     * @param DmsTable $table
+     * @return WriterConfigInterface
+     */
+    protected function getWriterConfig()
+    {
+        return $this->writerConfig;
+    }
+
+    /**
+     * @param DmsDatabaseInterface $dmsDatabase
+     * @param DmsTableInterface $dmsTable
      *
      * @return string
      */
-    protected function generateFileContents(DmsDatabase $database, DmsTable $table)
+    protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable)
     {
-        $phpDoc = $table->getColumns();
+        $phpDoc = $dmsTable->getDmsColumns();
         $phpDoc = \implode("\n *\n", \array_map(function (DmsColumn $column) {
             return \sprintf(
                 " * @method %s get%s(bool \$escapeHtml = false)\n * @method \$this set%s(%s \$val)",
@@ -54,7 +71,7 @@ class BaseEntityClassWriter extends AbstractWriter
             );
         }, $phpDoc));
 
-        $columnsConstants = $table->getColumns();
+        $columnsConstants = $dmsTable->getDmsColumns();
         $columnsConstants = \implode(
             "\n    ",
             \array_map(
@@ -69,7 +86,7 @@ class BaseEntityClassWriter extends AbstractWriter
             )
         );
 
-        $primaryKeys = $table->getColumns();
+        $primaryKeys = $dmsTable->getDmsColumns();
         $primaryKeys = \implode(
             "\n            ",
             \array_filter(\array_map(
@@ -84,7 +101,7 @@ class BaseEntityClassWriter extends AbstractWriter
             ))
         );
 
-        $primaryKeysAutoIncrement = $table->getColumns();
+        $primaryKeysAutoIncrement = $dmsTable->getDmsColumns();
         $primaryKeysAutoIncrement = \implode(
             "\n            ",
             \array_filter(\array_map(
@@ -99,7 +116,7 @@ class BaseEntityClassWriter extends AbstractWriter
             ))
         );
 
-        $columns = $table->getColumns();
+        $columns = $dmsTable->getDmsColumns();
         $columns = \implode(
             "\n            ",
             \array_map(
@@ -113,17 +130,17 @@ class BaseEntityClassWriter extends AbstractWriter
         return /** @lang PHP */
             <<<PHP
 <?php
-namespace {$database->getPhpName()}\Base;
+namespace {$this->generateNamespace($dmsDatabase)};
 
 use Janisbiz\LightOrm\Entity\BaseEntity;
 
 /**
 {$phpDoc}
 **/
-class {$this->heredoc(self::FILE_NAME_PREFIX)}{$table->getPhpName()} extends BaseEntity
+class {$this->generateClassName($dmsTable)} extends BaseEntity
 {
-    const {$this->heredoc(self::CLASS_CONSTANT_DATABASE_NAME)} = '{$database->getName()}';
-    const {$this->heredoc(self::CLASS_CONSTANT_TABLE_NAME)} = '{$database->getName()}.{$table->getName()}';
+    const {$this->heredoc(self::CLASS_CONSTANT_DATABASE_NAME)} = '{$dmsDatabase->getName()}';
+    const {$this->heredoc(self::CLASS_CONSTANT_TABLE_NAME)} = '{$dmsDatabase->getName()}.{$dmsTable->getName()}';
     
     {$columnsConstants}
     
