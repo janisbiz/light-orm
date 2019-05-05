@@ -6,7 +6,7 @@ use Janisbiz\LightOrm\Dms\MySQL\Enum\JoinEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\JoinTrait;
 
-class JoinTraitTest extends AbstractTraitTest
+class JoinTraitTest extends AbstractTraitTestCase
 {
     use BindTrait;
     use JoinTrait;

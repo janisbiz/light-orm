@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
 
-class LimitOffsetTraitTest extends AbstractTraitTest
+class LimitOffsetTraitTest extends AbstractTraitTestCase
 {
     use LimitOffsetTrait;
 

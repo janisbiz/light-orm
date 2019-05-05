@@ -3,11 +3,12 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Entity\EntityInterface;
-use PHPUnit\Framework\TestCase;
+use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\AbstractTraitTestCase;
 
-class QueryBuilderTest extends TestCase
+class QueryBuilderTest extends AbstractTraitTestCase
 {
     const METHOD_INSERT = 'insert';
     const METHOD_INSERT_IGNORE = 'insertIgnore';
@@ -17,6 +18,11 @@ class QueryBuilderTest extends TestCase
     const METHOD_UPDATE = 'update';
     const METHOD_UPDATE_IGNORE = 'updateIgnore';
     const METHOD_DELETE = 'delete';
+
+    /**
+     * @var \ReflectionMethod[]
+     */
+    private $abstractRepositoryPublicMethods = [];
 
     /**
      * @var AbstractRepository
@@ -30,6 +36,10 @@ class QueryBuilderTest extends TestCase
 
     public function setUp()
     {
+        if (empty($this->abstractRepositoryPublicMethods = $this->extractAbstractRepositoryPublicMethods())) {
+            throw new \Exception('There are no AbstractRepository public methods methods!');
+        }
+
         $this->abstractRepository = $this->getMockForAbstractClass(
             AbstractRepository::class,
             [],
@@ -37,19 +47,15 @@ class QueryBuilderTest extends TestCase
             true,
             true,
             true,
-            [
-                self::METHOD_INSERT,
-                self::METHOD_INSERT_IGNORE,
-                self::METHOD_REPLACE,
-                self::METHOD_FIND_ONE,
-                self::METHOD_FIND,
-                self::METHOD_UPDATE,
-                self::METHOD_UPDATE_IGNORE,
-                self::METHOD_DELETE,
-            ]
+            $this->abstractRepositoryPublicMethods
         );
 
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository));
+    }
+
+    public function testQueryBuilderUsesTraits()
+    {
+        $this->assertObjectUsesTrait(Traits::class, $this->queryBuilder);
     }
 
     /**
@@ -68,72 +74,31 @@ class QueryBuilderTest extends TestCase
 
     public function crudData()
     {
-        return [
+        return \array_reduce(
             [
-                self::METHOD_INSERT,
-                false,
-            ],
-            [
-                self::METHOD_INSERT_IGNORE,
-                false,
-            ],
-            [
-                self::METHOD_REPLACE,
-                false,
-            ],
-            [
-                self::METHOD_FIND_ONE,
-                false,
-            ],
-            [
-                self::METHOD_FIND,
-                false,
-            ],
-            [
-                self::METHOD_UPDATE,
-                false,
-            ],
-            [
-                self::METHOD_UPDATE_IGNORE,
-                false,
-            ],
-            [
-                self::METHOD_DELETE,
-                false,
-            ],
-            [
-                self::METHOD_INSERT,
-                true,
-            ],
-            [
-                self::METHOD_INSERT_IGNORE,
-                true,
-            ],
-            [
-                self::METHOD_REPLACE,
-                true,
-            ],
-            [
-                self::METHOD_FIND_ONE,
-                true,
-            ],
-            [
-                self::METHOD_FIND,
-                true,
-            ],
-            [
-                self::METHOD_UPDATE,
-                true,
-            ],
-            [
-                self::METHOD_UPDATE_IGNORE,
-                true,
-            ],
-            [
-                self::METHOD_DELETE,
-                true,
-            ],
-        ];
+                \array_map(
+                    function ($publicMethod) {
+                        return [
+                            $publicMethod,
+                            false
+                        ];
+                    },
+                    $this->extractAbstractRepositoryPublicMethods()
+                ),
+                \array_map(
+                    function ($publicMethod) {
+                        return [
+                            $publicMethod,
+                            true
+                        ];
+                    },
+                    $this->extractAbstractRepositoryPublicMethods()
+                ),
+            ]
+            ,
+            'array_merge',
+            []
+        );
     }
 
     public function testBuildQuery()
@@ -161,5 +126,22 @@ class QueryBuilderTest extends TestCase
 
     public function testToString()
     {
+    }
+
+    /**
+     */
+    private function extractAbstractRepositoryPublicMethods()
+    {
+        $abstractRepositoryReflection = new \ReflectionClass(AbstractRepository::class);
+        return \array_filter(\array_map(
+            function (\ReflectionMethod $abstractRepositoryPublicMethod) {
+                if (2 === \count($abstractRepositoryPublicMethod->getParameters())) {
+                    return $abstractRepositoryPublicMethod->getName();
+                }
+
+                return null;
+            },
+            $abstractRepositoryReflection->getMethods(\ReflectionMethod::IS_PUBLIC)
+        ));
     }
 }

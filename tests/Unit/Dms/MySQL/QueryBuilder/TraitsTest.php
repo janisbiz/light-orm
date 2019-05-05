@@ -3,9 +3,9 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
-use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\AbstractTraitTest;
+use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\AbstractTraitTestCase;
 
-class TraitsTest extends AbstractTraitTest
+class TraitsTest extends AbstractTraitTestCase
 {
     use Traits;
     

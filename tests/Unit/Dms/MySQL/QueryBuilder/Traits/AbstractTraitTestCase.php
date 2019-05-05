@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractTraitTest extends TestCase
+abstract class AbstractTraitTestCase extends TestCase
 {
     /**
      * @param string $trait
@@ -34,7 +34,7 @@ abstract class AbstractTraitTest extends TestCase
      * @param string $class
      * @param array $traits
      */
-    private function getTraits($class, array& $traits)
+    private function getTraits($class, array &$traits)
     {
         $classTraits = \array_keys((new \ReflectionClass($class))->getTraits());
 

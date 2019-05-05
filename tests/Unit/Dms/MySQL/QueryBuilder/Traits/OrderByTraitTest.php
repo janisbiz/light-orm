@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderByTrait;
 
-class OrderByTraitTest extends AbstractTraitTest
+class OrderByTraitTest extends AbstractTraitTestCase
 {
     use OrderByTrait;
 

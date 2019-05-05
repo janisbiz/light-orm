@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\CommandTrait;
 
-class CommandTraitTest extends AbstractTraitTest
+class CommandTraitTest extends AbstractTraitTestCase
 {
     use CommandTrait;
 

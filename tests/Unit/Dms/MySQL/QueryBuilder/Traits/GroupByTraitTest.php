@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupByTrait;
 
-class GroupByTraitTest extends AbstractTraitTest
+class GroupByTraitTest extends AbstractTraitTestCase
 {
     use GroupByTrait;
     

@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
 
-class HavingTraitTest extends AbstractTraitTest
+class HavingTraitTest extends AbstractTraitTestCase
 {
     use BindTrait;
     use HavingTrait;

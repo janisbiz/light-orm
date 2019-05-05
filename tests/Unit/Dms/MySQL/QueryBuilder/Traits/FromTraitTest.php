@@ -4,7 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\FromTrait;
 
-class FromTraitTest extends AbstractTraitTest
+class FromTraitTest extends AbstractTraitTestCase
 {
     use FromTrait;
 

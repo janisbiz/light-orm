@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\WhereTrait;
 
-class WhereTraitTest extends AbstractTraitTest
+class WhereTraitTest extends AbstractTraitTestCase
 {
     use BindTrait;
     use WhereTrait;
