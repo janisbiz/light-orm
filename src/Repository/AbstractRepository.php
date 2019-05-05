@@ -17,6 +17,11 @@ abstract class AbstractRepository
     protected $connectionPool;
 
     /**
+     * @var string
+     */
+    protected $queryBuilderClass;
+
+    /**
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
@@ -184,6 +189,11 @@ abstract class AbstractRepository
     }
 
     /**
+     * @return $this
+     */
+    abstract protected function setQueryBuilderClass();
+
+    /**
      * @return string
      */
     abstract protected function getModelClass();
@@ -195,7 +205,7 @@ abstract class AbstractRepository
      */
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
-        return (new QueryBuilder($this, $entity))
+        return (new $this->queryBuilderClass($this, $entity))
             ->from($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
     }

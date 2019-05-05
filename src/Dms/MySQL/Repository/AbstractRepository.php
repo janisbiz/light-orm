@@ -42,4 +42,14 @@ abstract class AbstractRepository extends BaseAbstractRepository
     {
         return $this->update($queryBuilder, $toString);
     }
+
+    /**
+     * @return $this
+     */
+    protected function setQueryBuilderClass()
+    {
+        $this->queryBuilderClass = QueryBuilder::class;
+
+        return $this;
+    }
 }
