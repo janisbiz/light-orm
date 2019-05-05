@@ -24,7 +24,7 @@ class ConnectionPool
      */
     public function addConnectionConfig(ConnectionConfigInterface $connectionConfig)
     {
-        self::$connectionConfig[$connectionConfig->getDbname()] = $connectionConfig;
+        static::$connectionConfig[$connectionConfig->getDbname()] = $connectionConfig;
 
         return $this;
     }
@@ -36,25 +36,25 @@ class ConnectionPool
      */
     public function getConnection($dbName)
     {
-        if (empty(self::$connectionConfig[$dbName])) {
+        if (empty(static::$connectionConfig[$dbName])) {
             throw new \InvalidArgumentException(
-                empty(self::$connectionConfig)
+                empty(static::$connectionConfig)
                     ? \sprintf('Could not find connection by name "%s"!', $dbName)
                     : \sprintf(
                         'Could not find connection by name "%s"! Available connections: "%s".',
                         $dbName,
-                        \implode('", "', \array_keys(self::$connectionConfig))
+                        \implode('", "', \array_keys(static::$connectionConfig))
                     )
             );
         }
 
-        $connectionConfig = self::$connectionConfig[$dbName];
+        $connectionConfig = static::$connectionConfig[$dbName];
 
-        if (!isset(self::$connections[$dbName])) {
-            self::$connections[$dbName] = $this->createConnection($connectionConfig);
+        if (!isset(static::$connections[$dbName])) {
+            static::$connections[$dbName] = $this->createConnection($connectionConfig);
         }
 
-        return self::$connections[$dbName];
+        return static::$connections[$dbName];
     }
 
     /**
@@ -64,7 +64,7 @@ class ConnectionPool
      */
     public static function getConnectionStatic($dbName)
     {
-        return (new self())->getConnection($dbName);
+        return (new static())->getConnection($dbName);
     }
 
     /**

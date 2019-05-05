@@ -8,13 +8,11 @@ use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
 use Janisbiz\Heredoc\HeredocTrait;
 use Janisbiz\LightOrm\Generator\Writer\WriterConfigInterface;
+use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 
 class BaseEntityClassWriter extends AbstractWriter
 {
     use HeredocTrait;
-
-    const CLASS_CONSTANT_DATABASE_NAME = 'DATABASE_NAME';
-    const CLASS_CONSTANT_TABLE_NAME = 'TABLE_NAME';
 
     /**
      * @param WriterConfigInterface $writerConfig
@@ -139,8 +137,8 @@ use Janisbiz\LightOrm\Entity\BaseEntity;
 **/
 class {$this->generateClassName($dmsTable)} extends BaseEntity
 {
-    const {$this->heredoc(self::CLASS_CONSTANT_DATABASE_NAME)} = '{$dmsDatabase->getName()}';
-    const {$this->heredoc(self::CLASS_CONSTANT_TABLE_NAME)} = '{$dmsDatabase->getName()}.{$dmsTable->getName()}';
+    const {$this->heredoc(WriterInterface::CLASS_CONSTANT_DATABASE_NAME)} = '{$dmsDatabase->getName()}';
+    const {$this->heredoc(WriterInterface::CLASS_CONSTANT_TABLE_NAME)} = '{$dmsDatabase->getName()}.{$dmsTable->getName()}';
     
     {$columnsConstants}
     

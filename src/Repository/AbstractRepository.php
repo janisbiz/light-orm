@@ -3,21 +3,27 @@
 namespace Janisbiz\LightOrm\Repository;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Entity\EntityInterface;
-use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
-use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
+use Janisbiz\LightOrm\Entity\EntityInterface;
+use Janisbiz\LightOrm\ConnectionPool;
+use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
+use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 
 abstract class AbstractRepository
 {
     /**
-     * @param QueryBuilder $queryBuilder
+     * @var ConnectionPool
+     */
+    protected $connectionPool;
+
+    /**
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @throws \Exception
      * @return string|EntityInterface
      */
-    public function insert(QueryBuilder $queryBuilder, $toString = false)
+    public function insert(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (!($entity = $queryBuilder->getEntity())) {
             throw new \Exception(
@@ -56,36 +62,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param bool $toString
-     *
-     * @throws \Exception
-     * @return string|EntityInterface
-     */
-    public function insertIgnore(QueryBuilder $queryBuilder, $toString = false)
-    {
-        return $this->insert($queryBuilder, $toString);
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param bool $toString
-     *
-     * @throws \Exception
-     * @return string|EntityInterface
-     */
-    public function replace(QueryBuilder $queryBuilder, $toString = false)
-    {
-        return $this->insert($queryBuilder, $toString);
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return null|string|EntityInterface
      */
-    public function findOne(QueryBuilder $queryBuilder, $toString = false)
+    public function findOne(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -105,12 +87,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return string|array
      */
-    public function find(QueryBuilder $queryBuilder, $toString = false)
+    public function find(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -130,12 +112,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return null|string|bool|EntityInterface
      */
-    public function update(QueryBuilder $queryBuilder, $toString = false)
+    public function update(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityUpdateQuery($queryBuilder, $entity)) {
             return $entity;
@@ -166,23 +148,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param bool $toString
-     *
-     * @return null|string|bool|EntityInterface
-     */
-    public function updateIgnore(QueryBuilder $queryBuilder, $toString = false)
-    {
-        return $this->update($queryBuilder, $toString);
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return string|bool
      */
-    public function delete(QueryBuilder $queryBuilder, $toString = false)
+    public function delete(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityDeleteQuery($queryBuilder, $entity)) {
             return false;
@@ -213,6 +184,11 @@ abstract class AbstractRepository
     }
 
     /**
+     * @return string
+     */
+    abstract protected function getModelClass();
+
+    /**
      * @param EntityInterface|null $entity
      *
      * @return QueryBuilder
@@ -220,7 +196,7 @@ abstract class AbstractRepository
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
         return (new QueryBuilder($this, $entity))
-            ->from($this->getModelClassConstant(BaseEntityClassWriter::CLASS_CONSTANT_TABLE_NAME))
+            ->from($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
     }
 
@@ -229,12 +205,14 @@ abstract class AbstractRepository
      */
     protected function getConnection()
     {
-        return ConnectionPool::getConnectionStatic(
-            $this->getModelClassConstant(BaseEntityClassWriter::CLASS_CONSTANT_DATABASE_NAME)
+        if (null === $this->connectionPool) {
+            $this->connectionPool = new ConnectionPool();
+        }
+
+        return $this->connectionPool->getConnection(
+            $this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_DATABASE_NAME)
         );
     }
-
-    abstract protected function getModelClass();
 
     /**
      * @param string $constant
@@ -247,12 +225,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param EntityInterface $entity
      *
      * @return $this
      */
-    protected function addEntityInsertQuery(QueryBuilder $queryBuilder, EntityInterface $entity)
+    protected function addEntityInsertQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity)
     {
         $entityColumns = $entity->columns();
         $entityData = &$entity->data();
@@ -267,12 +245,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param EntityInterface $entity
      *
      * @return bool
      */
-    protected function addEntityUpdateQuery(QueryBuilder $queryBuilder, EntityInterface $entity)
+    protected function addEntityUpdateQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity)
     {
         $performUpdate = false;
         $entityData = &$entity->data();
@@ -312,12 +290,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param EntityInterface $entity
      *
      * @return bool
      */
-    protected function addEntityDeleteQuery(QueryBuilder $queryBuilder, EntityInterface $entity)
+    protected function addEntityDeleteQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity)
     {
         $performDelete = false;
         $entityData = &$entity->data();
