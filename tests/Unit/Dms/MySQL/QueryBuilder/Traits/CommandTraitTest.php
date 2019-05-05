@@ -17,7 +17,7 @@ class CommandTraitTest extends AbstractTraitTestCase
      */
     public function testSetCommand($command, $expected)
     {
-        $object = $this->setCommand($command);
+        $object = $this->command($command);
         $this->assertObjectUsesTrait(CommandTrait::class, $object);
         $this->assertEquals($expected, $this->command);
     }

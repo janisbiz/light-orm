@@ -15,7 +15,7 @@ class TraitsTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(Traits\BindTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\ColumnTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\CommandTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\FromTrait::class, $this);
+        $this->assertObjectUsesTrait(Traits\TableTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\GroupByTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\HavingTrait::class, $this);
         $this->assertObjectUsesTrait(Traits\JoinTrait::class, $this);

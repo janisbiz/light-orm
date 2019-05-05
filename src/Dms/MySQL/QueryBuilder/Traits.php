@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ColumnTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\CommandTrait;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\FromTrait;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\TableTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupByTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\JoinTrait;
@@ -32,7 +32,7 @@ trait Traits
     use SetTrait;
     use ValueTrait;
     use ColumnTrait;
-    use FromTrait;
+    use TableTrait;
     use HavingTrait;
     use OnDuplicateKeyUpdateTrait;
     use UnionTrait;

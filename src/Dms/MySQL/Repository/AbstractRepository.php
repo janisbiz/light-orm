@@ -220,7 +220,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
         return (new QueryBuilder($this, $entity))
-            ->from($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
+            ->table($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
     }
 

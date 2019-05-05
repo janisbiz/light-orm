@@ -22,17 +22,28 @@ trait OnDuplicateKeyUpdateTrait
             throw new \Exception('You must pass $column to onDuplicateKeyUpdate function!');
         }
 
-        $bindValuePlaceholder = \sprintf('%s_OnDuplicateKeyUpdate', $column);
+        $columnNormalised = \sprintf(
+            '%s_OnDuplicateKeyUpdate',
+            \implode(
+                '_',
+                \array_map(
+                    function ($columnPart) {
+                        return \mb_convert_case($columnPart, MB_CASE_TITLE);
+                    },
+                    \explode('.', $column)
+                )
+            )
+        );
 
         $this->onDuplicateKeyUpdate = \array_merge(
             $this->onDuplicateKeyUpdate,
             [
-                \sprintf('%s = :%s', $column, $bindValuePlaceholder),
+                $column => \sprintf('%s = :%s', $column, $columnNormalised),
             ]
         );
 
         $this->bindValue([
-            $bindValuePlaceholder => $value,
+            $columnNormalised => $value,
         ]);
 
         return $this;

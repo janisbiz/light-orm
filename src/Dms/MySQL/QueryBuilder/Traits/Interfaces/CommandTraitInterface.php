@@ -9,5 +9,5 @@ interface CommandTraitInterface
      *
      * @return $this
      */
-    public function setCommand($command);
+    public function command($command);
 }

@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\BindTraitInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\ColumnTraitInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\CommandTraitInterface;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\FromTraitInterface;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\TableTraitInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\GroupByTraitInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\HavingTraitInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces\JoinTraitInterface;
@@ -21,7 +21,7 @@ interface TraitsInterface extends
     BindTraitInterface,
     ColumnTraitInterface,
     CommandTraitInterface,
-    FromTraitInterface,
+    TableTraitInterface,
     GroupByTraitInterface,
     HavingTraitInterface,
     JoinTraitInterface,
