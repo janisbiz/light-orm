@@ -2,14 +2,12 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 
+use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
-use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
-use Janisbiz\LightOrm\Repository\AbstractRepository;
 
-class QueryBuilder implements QueryBuilderInterface
+class QueryBuilder implements QueryBuilderInterface, TraitsInterface
 {
     use Traits;
 
@@ -53,7 +51,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return mixed
+     * @return string|EntityInterface
      */
     public function insert($toString = false)
     {
@@ -65,7 +63,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return mixed
+     * @return string|EntityInterface
      */
     public function insertIgnore($toString = false)
     {
@@ -77,7 +75,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return mixed
+     * @return string|EntityInterface
      */
     public function replace($toString = false)
     {
@@ -89,7 +87,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return string|array
+     * @return string|EntityInterface[]
      */
     public function find($toString = false)
     {
@@ -101,7 +99,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return mixed
+     * @return null|string|EntityInterface
      */
     public function findOne($toString = false)
     {
@@ -113,7 +111,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return mixed
+     * @return null|string|bool|EntityInterface
      */
     public function update($toString = false)
     {
@@ -125,7 +123,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return mixed
+     * @return null|string|bool|EntityInterface
      */
     public function updateIgnore($toString = false)
     {
@@ -137,7 +135,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @param bool $toString
      *
-     * @return mixed
+     * @return string|bool
      */
     public function delete($toString = false)
     {
@@ -146,6 +144,10 @@ class QueryBuilder implements QueryBuilderInterface
         return $this->repository->delete($this, $toString);
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     public function buildQuery()
     {
         $this->resetQuery();

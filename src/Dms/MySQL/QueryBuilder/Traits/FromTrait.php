@@ -13,8 +13,8 @@ trait FromTrait
      * @param array|string $from
      * @param boolean $clearAll
      *
-     * @throws \Exception
      * @return $this
+     * @throws \Exception
      */
     public function from($from, $clearAll = false)
     {

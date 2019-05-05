@@ -13,8 +13,8 @@ trait ColumnTrait
      * @param array|string $column
      * @param boolean $clearAll
      *
-     * @throws \Exception
      * @return $this
+     * @throws \Exception
      */
     public function column($column, $clearAll = false)
     {

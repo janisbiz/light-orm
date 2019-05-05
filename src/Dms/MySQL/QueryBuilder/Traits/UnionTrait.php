@@ -2,8 +2,7 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
-use Janisbiz\LightOrm\Entity\BaseEntity;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 
 trait UnionTrait
 {
@@ -13,11 +12,11 @@ trait UnionTrait
     protected $unionAll = [];
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      *
      * @return $this
      */
-    public function unionAll(QueryBuilder $queryBuilder)
+    public function unionAll(QueryBuilderInterface $queryBuilder)
     {
         $this->unionAll[] = \sprintf('(%s)', $queryBuilder->find(true));
 
