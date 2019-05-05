@@ -7,8 +7,21 @@ use PHPUnit\Framework\TestCase;
 
 class AbstractWriterConfigTest extends TestCase
 {
-    const DIRECTORY_VALUE = '/path/to/directory' . DIRECTORY_SEPARATOR;
-    const DIRECTORY_VALUE_EXPECTED = '/path/to/directory';
+    const DIRECTORY_VALUE = DIRECTORY_SEPARATOR
+        . 'path'
+        . DIRECTORY_SEPARATOR
+        . 'to'
+        . DIRECTORY_SEPARATOR
+        . 'directory'
+        . DIRECTORY_SEPARATOR
+    ;
+    const DIRECTORY_VALUE_EXPECTED = DIRECTORY_SEPARATOR
+        . 'path'
+        . DIRECTORY_SEPARATOR
+        . 'to'
+        . DIRECTORY_SEPARATOR
+        . 'directory'
+    ;
 
     const NAMESPACE_VALUE = 'This\Is\A\Namespace\\';
     const NAMESPACE_VALUE_EXPECTED = 'This\Is\A\Namespace';

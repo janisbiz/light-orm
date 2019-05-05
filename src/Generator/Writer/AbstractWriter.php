@@ -38,9 +38,14 @@ abstract class AbstractWriter implements WriterInterface
      */
     public function generateClassName(DmsTableInterface $dmsTable)
     {
-        return $this->getWriterConfig()->getClassPrefix()
-            . $dmsTable->getPhpName()
-            . $this->getWriterConfig()->getClassSuffix();
+        return \implode(
+            '',
+            [
+                $this->getWriterConfig()->getClassPrefix(),
+                $dmsTable->getPhpName(),
+                $this->getWriterConfig()->getClassSuffix()
+            ]
+        );
     }
 
     /**
