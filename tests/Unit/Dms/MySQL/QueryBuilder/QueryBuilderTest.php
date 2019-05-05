@@ -94,8 +94,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                     },
                     $this->extractAbstractRepositoryPublicMethods()
                 ),
-            ]
-            ,
+            ],
             'array_merge',
             []
         );
