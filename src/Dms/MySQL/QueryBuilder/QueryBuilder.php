@@ -268,12 +268,12 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
                     $this->queryParts['table'] = $this->table[0];
                 }
 
-                if (!$this->queryParts['where'] || \mb_strlen(\trim($this->queryParts['where'])) == 0) {
-                    throw new \PDOException('Cannot perform UPDATE action without WHERE condition!');
-                }
-
                 if (!$this->queryParts['set'] || \mb_strlen(\trim($this->queryParts['set'])) == 0) {
                     throw new \PDOException('Cannot perform UPDATE action without SET condition!');
+                }
+
+                if (!$this->queryParts['where'] || \mb_strlen(\trim($this->queryParts['where'])) == 0) {
+                    throw new \PDOException('Cannot perform UPDATE action without WHERE condition!');
                 }
 
                 $userQueries = [
@@ -302,6 +302,8 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
                     $this->queryParts['from'],
                     $this->queryParts['join'],
                     $this->queryParts['where'],
+                    $this->queryParts['limit'],
+                    $this->queryParts['offset'],
                 ];
 
                 return \trim(\implode(' ', \array_filter($userQueries)));

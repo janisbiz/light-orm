@@ -64,6 +64,9 @@ class QueryBuilderTest extends AbstractTraitTestCase
         $this->queryBuilder->$method($toString);
     }
 
+    /**
+     * @return array
+     */
     public function crudData()
     {
         return \array_reduce(
@@ -134,6 +137,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                 case 'having':
                 case 'value':
                 case 'onDuplicateKeyUpdate':
+                case 'set':
                     $this->queryBuilder->$method($value[0], $value[1]);
                     break;
             }
@@ -331,6 +335,290 @@ class QueryBuilderTest extends AbstractTraitTestCase
                     'LIMIT 1 OFFSET 2',
                 ],
             ],
+            [
+                CommandEnum::UPDATE,
+                [
+                    'table' => 'table1',
+                    'set' => [
+                        'table1.column1',
+                        'table1Column1Value',
+                    ],
+                    'innerJoin' => [
+                        'table2',
+                        'table2.id = table1.table2_id AND table2.column1 = :bindValue2',
+                        [
+                            'bindValue2' => 2,
+                        ],
+                    ],
+                    'leftJoin' => [
+                        'table3',
+                        'table3.id = table1.table3_id AND table3.column1 = :bindValue3',
+                        [
+                            'bindValue3' => 3,
+                        ],
+                    ],
+                    'rightJoin' => [
+                        'table4',
+                        'table4.id = table1.table4_id AND table4.column1 = :bindValue4',
+                        [
+                            'bindValue4' => 4,
+                        ],
+                    ],
+                    'crossJoin' => [
+                        'table5',
+                        'table5.id = table1.table5_id AND table5.column1 = :bindValue5',
+                        [
+                            'bindValue5' => 5,
+                        ],
+                    ],
+                    'fullOuterJoin' => [
+                        'table6',
+                        'table6.id = table1.table6_id AND table6.column1 = :bindValue6',
+                        [
+                            'bindValue6' => 6,
+                        ],
+                    ],
+                    'innerJoinAs' => [
+                        'table7',
+                        'table7_alias',
+                        'table7.id = table1.table7_id AND table7.column1 = :bindValue7',
+                        [
+                            'bindValue7' => 7,
+                        ],
+                    ],
+                    'leftJoinAs' => [
+                        'table8',
+                        'table8_alias',
+                        'table8.id = table1.table8_id AND table8.column1 = :bindValue8',
+                        [
+                            'bindValue8' => 8,
+                        ],
+                    ],
+                    'rightJoinAs' => [
+                        'table9',
+                        'table9_alias',
+                        'table9.id = table1.table9_id AND table9.column1 = :bindValue9',
+                        [
+                            'bindValue9' => 9,
+                        ],
+                    ],
+                    'crossJoinAs' => [
+                        'table10',
+                        'table10_alias',
+                        'table10.id = table1.table10_id AND table10.column1 = :bindValue10',
+                        [
+                            'bindValue10' => 10,
+                        ],
+                    ],
+                    'fullOuterJoinAs' => [
+                        'table11',
+                        'table11_alias',
+                        'table11.id = table1.table11_id AND table11.column1 = :bindValue11',
+                        [
+                            'bindValue11' => 11,
+                        ],
+                    ],
+                    'where' => [
+                        'table1.column1 = :table1Column1BindValue',
+                        [
+                            'table1Column1BindValue' => 'table1Column1BindValue'
+                        ]
+                    ],
+                    'whereIn' => [
+                        'table1.column2',
+                        [
+                            'table1Column2BindValue1',
+                            'table1Column2BindValue2',
+                        ]
+                    ],
+                    'whereNotIn' => [
+                        'table1.column3',
+                        [
+                            'table1Column3BindValue1',
+                            'table1Column3BindValue2',
+                        ]
+                    ],
+                    'limit' => 1,
+                    'offset' => 2,
+                ],
+                [
+                    'UPDATE',
+                    'table1',
+                    'INNER JOIN table2 ON (table2.id = table1.table2_id AND table2.column1 = :bindValue2)',
+                    'LEFT JOIN table3 ON (table3.id = table1.table3_id AND table3.column1 = :bindValue3)',
+                    'RIGHT JOIN table4 ON (table4.id = table1.table4_id AND table4.column1 = :bindValue4)',
+                    'CROSS JOIN table5 ON (table5.id = table1.table5_id AND table5.column1 = :bindValue5)',
+                    'FULL OUTER JOIN table6 ON (table6.id = table1.table6_id AND table6.column1 = :bindValue6)',
+                    'INNER JOIN table7 AS table7_alias ON (table7.id = table1.table7_id AND table7.column1 = :bindValue7)',
+                    'LEFT JOIN table8 AS table8_alias ON (table8.id = table1.table8_id AND table8.column1 = :bindValue8)',
+                    'RIGHT JOIN table9 AS table9_alias ON (table9.id = table1.table9_id AND table9.column1 = :bindValue9)',
+                    'CROSS JOIN table10 AS table10_alias ON (table10.id = table1.table10_id AND table10.column1 = :bindValue10)',
+                    'FULL OUTER JOIN table11 AS table11_alias ON (table11.id = table1.table11_id AND table11.column1 = :bindValue11)',
+                    'SET table1.column1 = :Table1_Column1_Update',
+                    'WHERE table1.column1 = :table1Column1BindValue',
+                    'AND table1.column2 IN (:0_table1column2_In, :1_table1column2_In)',
+                    'AND table1.column3 NOT IN (:0_table1column3_NotIn, :1_table1column3_NotIn)',
+                    'LIMIT 1 OFFSET 2'
+                ],
+                [
+                    'UPDATE',
+                    'table1',
+                    'INNER JOIN table2 ON (table2.id = table1.table2_id AND table2.column1 = 2)',
+                    'LEFT JOIN table3 ON (table3.id = table1.table3_id AND table3.column1 = 3)',
+                    'RIGHT JOIN table4 ON (table4.id = table1.table4_id AND table4.column1 = 4)',
+                    'CROSS JOIN table5 ON (table5.id = table1.table5_id AND table5.column1 = 5)',
+                    'FULL OUTER JOIN table6 ON (table6.id = table1.table6_id AND table6.column1 = 6)',
+                    'INNER JOIN table7 AS table7_alias ON (table7.id = table1.table7_id AND table7.column1 = 7)',
+                    'LEFT JOIN table8 AS table8_alias ON (table8.id = table1.table8_id AND table8.column1 = 8)',
+                    'RIGHT JOIN table9 AS table9_alias ON (table9.id = table1.table9_id AND table9.column1 = 9)',
+                    'CROSS JOIN table10 AS table10_alias ON (table10.id = table1.table10_id AND table10.column1 = 10)',
+                    'FULL OUTER JOIN table11 AS table11_alias ON (table11.id = table1.table11_id AND table11.column1 = 11)',
+                    'SET table1.column1 = \'table1Column1Value\'',
+                    'WHERE table1.column1 = \'table1Column1BindValue\'',
+                    'AND table1.column2 IN (\'table1Column2BindValue1\', \'table1Column2BindValue2\')',
+                    'AND table1.column3 NOT IN (\'table1Column3BindValue1\', \'table1Column3BindValue2\')',
+                    'LIMIT 1 OFFSET 2',
+                ],
+            ],
+            [
+                CommandEnum::DELETE,
+                [
+                    'table' => 'table1',
+                    'innerJoin' => [
+                        'table2',
+                        'table2.id = table1.table2_id AND table2.column1 = :bindValue2',
+                        [
+                            'bindValue2' => 2,
+                        ],
+                    ],
+                    'leftJoin' => [
+                        'table3',
+                        'table3.id = table1.table3_id AND table3.column1 = :bindValue3',
+                        [
+                            'bindValue3' => 3,
+                        ],
+                    ],
+                    'rightJoin' => [
+                        'table4',
+                        'table4.id = table1.table4_id AND table4.column1 = :bindValue4',
+                        [
+                            'bindValue4' => 4,
+                        ],
+                    ],
+                    'crossJoin' => [
+                        'table5',
+                        'table5.id = table1.table5_id AND table5.column1 = :bindValue5',
+                        [
+                            'bindValue5' => 5,
+                        ],
+                    ],
+                    'fullOuterJoin' => [
+                        'table6',
+                        'table6.id = table1.table6_id AND table6.column1 = :bindValue6',
+                        [
+                            'bindValue6' => 6,
+                        ],
+                    ],
+                    'innerJoinAs' => [
+                        'table7',
+                        'table7_alias',
+                        'table7.id = table1.table7_id AND table7.column1 = :bindValue7',
+                        [
+                            'bindValue7' => 7,
+                        ],
+                    ],
+                    'leftJoinAs' => [
+                        'table8',
+                        'table8_alias',
+                        'table8.id = table1.table8_id AND table8.column1 = :bindValue8',
+                        [
+                            'bindValue8' => 8,
+                        ],
+                    ],
+                    'rightJoinAs' => [
+                        'table9',
+                        'table9_alias',
+                        'table9.id = table1.table9_id AND table9.column1 = :bindValue9',
+                        [
+                            'bindValue9' => 9,
+                        ],
+                    ],
+                    'crossJoinAs' => [
+                        'table10',
+                        'table10_alias',
+                        'table10.id = table1.table10_id AND table10.column1 = :bindValue10',
+                        [
+                            'bindValue10' => 10,
+                        ],
+                    ],
+                    'fullOuterJoinAs' => [
+                        'table11',
+                        'table11_alias',
+                        'table11.id = table1.table11_id AND table11.column1 = :bindValue11',
+                        [
+                            'bindValue11' => 11,
+                        ],
+                    ],
+                    'where' => [
+                        'table1.column1 = :table1Column1BindValue',
+                        [
+                            'table1Column1BindValue' => 'table1Column1BindValue'
+                        ]
+                    ],
+                    'whereIn' => [
+                        'table1.column2',
+                        [
+                            'table1Column2BindValue1',
+                            'table1Column2BindValue2',
+                        ]
+                    ],
+                    'whereNotIn' => [
+                        'table1.column3',
+                        [
+                            'table1Column3BindValue1',
+                            'table1Column3BindValue2',
+                        ]
+                    ],
+                    'limit' => 1,
+                    'offset' => 2,
+                ],
+                [
+                    'DELETE',
+                    'table1 FROM table1',
+                    'INNER JOIN table2 ON (table2.id = table1.table2_id AND table2.column1 = :bindValue2)',
+                    'LEFT JOIN table3 ON (table3.id = table1.table3_id AND table3.column1 = :bindValue3)',
+                    'RIGHT JOIN table4 ON (table4.id = table1.table4_id AND table4.column1 = :bindValue4)',
+                    'CROSS JOIN table5 ON (table5.id = table1.table5_id AND table5.column1 = :bindValue5)',
+                    'FULL OUTER JOIN table6 ON (table6.id = table1.table6_id AND table6.column1 = :bindValue6)',
+                    'INNER JOIN table7 AS table7_alias ON (table7.id = table1.table7_id AND table7.column1 = :bindValue7)',
+                    'LEFT JOIN table8 AS table8_alias ON (table8.id = table1.table8_id AND table8.column1 = :bindValue8)',
+                    'RIGHT JOIN table9 AS table9_alias ON (table9.id = table1.table9_id AND table9.column1 = :bindValue9)',
+                    'CROSS JOIN table10 AS table10_alias ON (table10.id = table1.table10_id AND table10.column1 = :bindValue10)',
+                    'FULL OUTER JOIN table11 AS table11_alias ON (table11.id = table1.table11_id AND table11.column1 = :bindValue11)',
+                    'WHERE table1.column1 = :table1Column1BindValue',
+                    'AND table1.column2 IN (:0_table1column2_In, :1_table1column2_In)',
+                    'AND table1.column3 NOT IN (:0_table1column3_NotIn, :1_table1column3_NotIn)',
+                    'LIMIT 1 OFFSET 2',
+                ],
+                [
+                    'DELETE',
+                    'table1 FROM table1',
+                    'INNER JOIN table2 ON (table2.id = table1.table2_id AND table2.column1 = 2)',
+                    'LEFT JOIN table3 ON (table3.id = table1.table3_id AND table3.column1 = 3)',
+                    'RIGHT JOIN table4 ON (table4.id = table1.table4_id AND table4.column1 = 4)',
+                    'CROSS JOIN table5 ON (table5.id = table1.table5_id AND table5.column1 = 5)',
+                    'FULL OUTER JOIN table6 ON (table6.id = table1.table6_id AND table6.column1 = 6)',
+                    'INNER JOIN table7 AS table7_alias ON (table7.id = table1.table7_id AND table7.column1 = 7)',
+                    'LEFT JOIN table8 AS table8_alias ON (table8.id = table1.table8_id AND table8.column1 = 8)',
+                    'RIGHT JOIN table9 AS table9_alias ON (table9.id = table1.table9_id AND table9.column1 = 9)',
+                    'CROSS JOIN table10 AS table10_alias ON (table10.id = table1.table10_id AND table10.column1 = 10)',
+                    'FULL OUTER JOIN table11 AS table11_alias ON (table11.id = table1.table11_id AND table11.column1 = 11)',
+                    'WHERE table1.column1 = \'table1Column1BindValue\'',
+                    'AND table1.column2 IN (\'table1Column2BindValue1\', \'table1Column2BindValue2\')',
+                    'AND table1.column3 NOT IN (\'table1Column3BindValue1\', \'table1Column3BindValue2\')',
+                    'LIMIT 1 OFFSET 2',
+                ],
+            ],
         ];
         /** phpcs:enable */
     }
@@ -345,15 +633,13 @@ class QueryBuilderTest extends AbstractTraitTestCase
         $this->assertTrue($queryBuilder->getEntity() instanceof EntityInterface);
     }
 
-    public function testToString()
-    {
-    }
-
     /**
+     * @return array
      */
     private function extractAbstractRepositoryPublicMethods()
     {
         $abstractRepositoryReflection = new \ReflectionClass(AbstractRepository::class);
+
         return \array_filter(\array_map(
             function (\ReflectionMethod $abstractRepositoryPublicMethod) {
                 if (2 === \count($abstractRepositoryPublicMethod->getParameters())) {
