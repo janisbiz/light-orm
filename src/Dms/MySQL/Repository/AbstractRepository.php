@@ -4,12 +4,12 @@ namespace Janisbiz\LightOrm\Dms\MySQL\Repository;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
 use Janisbiz\LightOrm\Entity\EntityInterface;
+use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository as BaseAbstractRepository;
 
 abstract class AbstractRepository extends BaseAbstractRepository
 {
-
     /**
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
@@ -215,12 +215,12 @@ abstract class AbstractRepository extends BaseAbstractRepository
     /**
      * @param EntityInterface|null $entity
      *
-     * @return QueryBuilderInterface
+     * @return QueryBuilder
      */
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
-        return (new QueryBuilder())
-            ->from()
+        return (new QueryBuilder($this, $entity))
+            ->from($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
     }
 
