@@ -141,9 +141,6 @@ class QueryBuilderTest extends AbstractTraitTestCase
 
         $this->queryBuilder->command($command);
 
-        dump($this->queryBuilder->buildQuery());
-        dump($this->queryBuilder->toString());
-
         $this->assertEquals(\implode(' ', $expected), $this->queryBuilder->buildQuery());
         $this->assertEquals(\implode(' ', $expectedToString), $this->queryBuilder->toString());
     }
