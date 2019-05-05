@@ -10,5 +10,6 @@ class UnionTraitTest extends AbstractTraitTestCase
 
     public function testUnionAll()
     {
+        $this->markTestIncomplete('Need to implement...');
     }
 }
