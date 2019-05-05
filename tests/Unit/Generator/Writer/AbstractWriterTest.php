@@ -107,11 +107,4 @@ class AbstractWriterTest extends TestCase
             $this->abstractWriter->generateFQDN($this->dmsDatabaseInterface, $this->dmsTableInterface)
         );
     }
-
-    public function testRead()
-    {
-        $this->markTestSkipped(
-            'This should be tested together with writer. As abstract does\'n have one, can\'t test it.'
-        );
-    }
 }

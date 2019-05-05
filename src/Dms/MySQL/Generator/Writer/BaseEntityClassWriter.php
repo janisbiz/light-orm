@@ -125,6 +125,7 @@ class BaseEntityClassWriter extends AbstractWriter
             )
         );
 
+        /** phpcs:disable */
         return /** @lang PHP */
             <<<PHP
 <?php
@@ -165,5 +166,6 @@ class {$this->generateClassName($dmsTable)} extends BaseEntity
 }
 
 PHP;
+        /** phpcs:enable */
     }
 }
