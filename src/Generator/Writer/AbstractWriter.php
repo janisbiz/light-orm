@@ -67,8 +67,14 @@ abstract class AbstractWriter implements WriterInterface
     public function read(DmsDatabaseInterface $dmsDatabase)
     {
         $fileDirectory = $this->generateFileDirectory($dmsDatabase);
-        $handle = \opendir($fileDirectory);
+        $handle = @\opendir($fileDirectory);
+
         $files = [];
+
+        if (false === $handle) {
+            return $files;
+        }
+
         while (false !== ($file = \readdir($handle))) {
             $fileName = \implode(
                 '',

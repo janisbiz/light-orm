@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.25, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: light_orm
+-- Host: 127.0.0.1    Database: light_orm_mysql
 -- ------------------------------------------------------
 -- Server version	5.7.25-28
 
@@ -16,12 +16,12 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `light_orm`
+-- Current Database: `light_orm_mysql`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `light_orm` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `light_orm_mysql` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
-USE `light_orm`;
+USE `light_orm_mysql`;
 
 --
 -- Table structure for table `test_table_one`

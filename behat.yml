@@ -12,9 +12,9 @@ default:
   gherkin:
     cache: '%paths.base%/var/behat/cache'
 
-#  suites:
-#    feature:
-#      paths:
-#        - '%paths.base%/tests/Behat/Features/'
-#      contexts:
-#        - Janisbiz\LightOrm\Tests\Behat\Features\
+  suites:
+    connection:
+      paths:
+        - '%paths.base%/tests/Behat/Features/Connection'
+      contexts:
+        - Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext

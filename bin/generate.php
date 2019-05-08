@@ -11,7 +11,7 @@ use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\WriterConfig;
 
 include_once __DIR__ . '/../vendor/autoload.php';
 
-$databaseName = 'light_orm';
+$databaseName = 'light_orm_mysql';
 $connectionPool = (new ConnectionPool())
     ->addConnectionConfig(
         new ConnectionConfig(
@@ -53,8 +53,8 @@ $directoryNonPersistent = \implode(
     ]
 );
 
-$namespacePersistent = '\JanisBiz\LightOrm\Tests\Behat\Generated\\';
-$namespaceNonPersistent = '\JanisBiz\LightOrm\Variable\Generated\\';
+$namespacePersistent = 'JanisBiz\LightOrm\Tests\Behat\Generated';
+$namespaceNonPersistent = 'JanisBiz\LightOrm\Variable\Generated';
 
 $baseEntityClassWriter = new BaseEntityClassWriter(new WriterConfig(
     $directoryNonPersistent,
