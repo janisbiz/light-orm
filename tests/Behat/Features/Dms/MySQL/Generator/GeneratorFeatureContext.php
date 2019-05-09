@@ -121,25 +121,6 @@ class GeneratorFeatureContext extends ConnectionFeatureContext
     {
         $directoryOverride = \preg_replace('/\/\\\/', DIRECTORY_SEPARATOR, $directoryOverride);
 
-        if (\is_dir($directoryOverride)) {
-            $recursiveDirectoryIterator = new \RecursiveDirectoryIterator(
-                $directoryOverride,
-                \RecursiveDirectoryIterator::SKIP_DOTS
-            );
-            $files = new \RecursiveIteratorIterator(
-                $recursiveDirectoryIterator,
-                \RecursiveIteratorIterator::CHILD_FIRST
-            );
-            foreach ($files as $file) {
-                if ($file->isDir()) {
-                    \rmdir($file->getRealPath());
-                } else {
-                    \unlink($file->getRealPath());
-                }
-            }
-            \rmdir($directoryOverride);
-        }
-
         $this->iAddWritersToGenerator($directoryOverride);
     }
 
@@ -172,6 +153,33 @@ class GeneratorFeatureContext extends ConnectionFeatureContext
             if (!\file_exists($absoluteFilePath)) {
                 throw new \Exception(\sprintf('File "%s" does not exist!', $relativeFilePath));
             }
+        }
+    }
+
+    /**
+     * @Given /^I remove directory "(.*)"$/
+     *
+     * @param string $directory
+     */
+    public function iRemoveDirectory($directory)
+    {
+        if (\is_dir($directory)) {
+            $recursiveDirectoryIterator = new \RecursiveDirectoryIterator(
+                $directory,
+                \RecursiveDirectoryIterator::SKIP_DOTS
+            );
+            $files = new \RecursiveIteratorIterator(
+                $recursiveDirectoryIterator,
+                \RecursiveIteratorIterator::CHILD_FIRST
+            );
+            foreach ($files as $file) {
+                if ($file->isDir()) {
+                    \rmdir($file->getRealPath());
+                } else {
+                    \unlink($file->getRealPath());
+                }
+            }
+            \rmdir($directory);
         }
     }
 }

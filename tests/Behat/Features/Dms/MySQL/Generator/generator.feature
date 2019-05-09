@@ -23,6 +23,7 @@ Feature: Generator
     And I add connection config to connection pool
     And I create generator for connection "light_orm_mysql"
     And I add writers to generator with directory override "var/behat/generated"
+    And I remove directory "var/behat/generated"
     When I run generator
     Then Then I have following files generated:
       | var/behat/generated/LightOrmMysql/Base/BaseTestTableOne.php                |
@@ -35,3 +36,4 @@ Feature: Generator
       | var/behat/generated/LightOrmMysql/Repository/TestTableOneTwoRepository.php |
       | var/behat/generated/LightOrmMysql/Repository/TestTableTwoRepository.php    |
       | var/behat/generated/LightOrmMysql/Repository/TestTableTwoRepository.php    |
+    And I remove directory "var/behat/generated"
