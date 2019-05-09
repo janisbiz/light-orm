@@ -1,8 +1,8 @@
 <?php
 
-use Janisbiz\LightOrm\Connection\ConnectionConfig;
 use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Generator;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig as MySQLConnectionConfig;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter;
@@ -14,12 +14,11 @@ include_once __DIR__ . '/../vendor/autoload.php';
 $databaseName = 'light_orm_mysql';
 $connectionPool = (new ConnectionPool())
     ->addConnectionConfig(
-        new ConnectionConfig(
+        new MySQLConnectionConfig(
             'mysql',
             'root',
             'password',
-            $databaseName,
-            'mysql'
+            $databaseName
         )
     )
 ;

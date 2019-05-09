@@ -2,9 +2,8 @@
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Connection;
 
-use Janisbiz\LightOrm\Connection\ConnectionConfig;
 use Janisbiz\LightOrm\Connection\ConnectionConfigInterface;
-use Janisbiz\LightOrm\ConnectionPool;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig as MySQLConnectionConfig;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
 
 class ConnectionFeatureContext extends FeatureContext
@@ -30,13 +29,17 @@ class ConnectionFeatureContext extends FeatureContext
     {
         $connectionConfigArray = $this->getConnectionConfig($connectionName);
 
-        $this->connectionConfig = new ConnectionConfig(
-            $connectionConfigArray['host'],
-            $connectionConfigArray['username'],
-            $connectionConfigArray['password'],
-            $connectionConfigArray['dbname'],
-            $connectionConfigArray['adapter']
-        );
+        switch ($connectionConfigArray['adapter']) {
+            case MySQLConnectionConfig::ADAPTER:
+                $this->connectionConfig = new MySQLConnectionConfig(
+                    $connectionConfigArray['host'],
+                    $connectionConfigArray['username'],
+                    $connectionConfigArray['password'],
+                    $connectionConfigArray['dbname']
+                );
+
+                break;
+        }
     }
 
     /**

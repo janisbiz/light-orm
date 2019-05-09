@@ -2,9 +2,9 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit;
 
-use Janisbiz\LightOrm\Connection\ConnectionConfig;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\ConnectionPool;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig;
 
 class ConnectionPoolTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class ConnectionPoolTest extends \PHPUnit_Framework_TestCase
     const CONNECTION_CONFIG_DBNAME_ONE = 'dbname_one';
     const CONNECTION_CONFIG_DBNAME_TWO = 'dbname_two';
     const CONNECTION_CONFIG_DBNAME_NON_EXISTENT = 'dbname_non_existent';
-    const CONNECTION_CONFIG_ADAPTER = ConnectionConfig::ADAPTER_MYSQL;
+    const CONNECTION_CONFIG_ADAPTER = ConnectionConfig::ADAPTER;
 
     /**
      * @var ConnectionPool
@@ -32,16 +32,14 @@ class ConnectionPoolTest extends \PHPUnit_Framework_TestCase
             self::CONNECTION_CONFIG_HOST,
             self::CONNECTION_CONFIG_USERNAME,
             self::CONNECTION_CONFIG_PASSWORD,
-            self::CONNECTION_CONFIG_DBNAME_ONE,
-            self::CONNECTION_CONFIG_ADAPTER
+            self::CONNECTION_CONFIG_DBNAME_ONE
         );
 
         $connectionConfigTwo = new ConnectionConfig(
             self::CONNECTION_CONFIG_HOST,
             self::CONNECTION_CONFIG_USERNAME,
             self::CONNECTION_CONFIG_PASSWORD,
-            self::CONNECTION_CONFIG_DBNAME_TWO,
-            self::CONNECTION_CONFIG_ADAPTER
+            self::CONNECTION_CONFIG_DBNAME_TWO
         );
 
         $this->connectionPool = (new ConnectionPool())

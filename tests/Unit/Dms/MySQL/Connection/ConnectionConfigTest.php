@@ -1,9 +1,9 @@
 <?php
 
-namespace Janisbiz\LightOrm\Tests\Unit\Connection;
+namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Connection;
 
-use Janisbiz\LightOrm\Connection\ConnectionConfig;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionConfigTest extends TestCase
@@ -12,7 +12,7 @@ class ConnectionConfigTest extends TestCase
     const CONFIG_USERNAME = 'username';
     const CONFIG_PASSWORD = 'password';
     const CONFIG_DBNAME = 'dbname';
-    const CONFIG_ADAPTER = ConnectionConfig::ADAPTER_MYSQL;
+    const CONFIG_ADAPTER = ConnectionConfig::ADAPTER;
     const CONFIG_ADAPTER_INVALID = 'adapter_invalid';
 
     /**
@@ -26,8 +26,7 @@ class ConnectionConfigTest extends TestCase
             self::CONFIG_HOST,
             self::CONFIG_USERNAME,
             self::CONFIG_PASSWORD,
-            self::CONFIG_DBNAME,
-            self::CONFIG_ADAPTER
+            self::CONFIG_DBNAME
         );
     }
 
@@ -41,21 +40,6 @@ class ConnectionConfigTest extends TestCase
                 self::CONFIG_DBNAME
             ),
             $this->connectionConfig->generateDsn()
-        );
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid adapter "adapter_invalid"! Supported adapters: "mysql"
-     */
-    public function testCreateConnectionConfigWhenInvalidAdapterProvided()
-    {
-        new ConnectionConfig(
-            self::CONFIG_HOST,
-            self::CONFIG_USERNAME,
-            self::CONFIG_PASSWORD,
-            self::CONFIG_DBNAME,
-            self::CONFIG_ADAPTER_INVALID
         );
     }
 
