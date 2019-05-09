@@ -1,8 +1,8 @@
 <?php
 
-namespace JanisBiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity;
+namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity;
 
-use JanisBiz\LightOrm\Variable\Generated\LightOrmMysql\Base\BaseTestTableOneTwo;
+use Janisbiz\LightOrm\Variable\Generated\LightOrmMysql\Base\BaseTestTableOneTwo;
 
 class TestTableOneTwoEntity extends BaseTestTableOneTwo
 {

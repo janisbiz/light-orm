@@ -1,12 +1,52 @@
 <?php
 
-namespace JanisBiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
+namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
 
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
-use JanisBiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneEntity;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneEntity;
 
 class TestTableOneRepository extends AbstractRepository
 {
+    /**
+     * @param int $id
+     * @param int $intColNotNull
+     * @param string $varcharColNotNull
+     * @param float $floatColNotNull
+     * @param null|int $intColNull
+     * @param null|string $varcharColNull
+     * @param null|float $floatColNull
+     * @param null|string $createdAt
+     * @param null|string $updatedAt
+     */
+    public function create(
+        $id,
+        $intColNotNull,
+        $varcharColNotNull,
+        $floatColNotNull,
+        $intColNull = null,
+        $varcharColNull = null,
+        $floatColNull = null,
+        $createdAt = null,
+        $updatedAt = null
+    ) {
+        $this
+            ->createQueryBuilder(
+                (new TestTableOneEntity())
+                    ->setId($id)
+                    ->setIntColNotNull($intColNotNull)
+                    ->setVarcharColNotNull($varcharColNotNull)
+                    ->setFloatColNotNull($floatColNotNull)
+                    ->setIntColNull($intColNull)
+                    ->setVarcharColNull($varcharColNull)
+                    ->setFloatColNull($floatColNull)
+                    ->setCreatedAt($createdAt)
+                    ->setUpdatedAt($updatedAt)
+            )
+            ->onDuplicateKeyUpdate(TestTableOneEntity::COLUMN_ID, $id)
+            ->insert()
+        ;
+    }
+
     /**
     * @return string
     */

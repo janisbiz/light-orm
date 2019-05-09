@@ -135,12 +135,12 @@ class GeneratorFeatureContext extends ConnectionFeatureContext
     /**
      * @Then /^Then I have following files generated:$/
      *
-     * @param TableNode $tableNode
+     * @param TableNode $files
      */
-    public function iShouldGetTheseRowsInDatabaseFilteredByScopeId(TableNode $tableNode)
+    public function iShouldGetTheseRowsInDatabaseFilteredByScopeId(TableNode $files)
     {
-        foreach ($tableNode->getTable() as $row) {
-            $relativeFilePath = $row[0];
+        foreach ($files as $file) {
+            $relativeFilePath = $file['path'];
             $absoluteFilePath = \implode(
                 '',
                 [

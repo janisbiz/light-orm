@@ -1,9 +1,9 @@
 <?php
 
-namespace JanisBiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
+namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
 
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
-use JanisBiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneTwoEntity;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneTwoEntity;
 
 class TestTableOneTwoRepository extends AbstractRepository
 {

@@ -52,8 +52,8 @@ $directoryNonPersistent = \implode(
     ]
 );
 
-$namespacePersistent = 'JanisBiz\LightOrm\Tests\Behat\Generated';
-$namespaceNonPersistent = 'JanisBiz\LightOrm\Variable\Generated';
+$namespacePersistent = 'Janisbiz\LightOrm\Tests\Behat\Generated';
+$namespaceNonPersistent = 'Janisbiz\LightOrm\Variable\Generated';
 
 $baseEntityClassWriter = new BaseEntityClassWriter(new WriterConfig(
     $directoryNonPersistent,
