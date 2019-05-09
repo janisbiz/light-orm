@@ -20,9 +20,26 @@ class FeatureContext implements Context
      */
     protected $connectionPool;
 
+    /**
+     * @var string
+     */
+    protected $rootDir;
+
     public function __construct()
     {
         $this->connectionPool = new ConnectionPool();
+        $this->rootDir = \implode(
+            '',
+            [
+                __DIR__,
+                DIRECTORY_SEPARATOR,
+                '..',
+                DIRECTORY_SEPARATOR,
+                '..',
+                DIRECTORY_SEPARATOR,
+                '..',
+            ]
+        );
     }
 
     /**

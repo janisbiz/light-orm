@@ -62,6 +62,7 @@ class EntityClassWriter extends AbstractWriter
     {
         return /** @lang PHP */<<<PHP
 <?php
+
 namespace {$this->generateNamespace($dmsDatabase)};
 
 use {$this->baseEntityClassWriter->generateFQDN($dmsDatabase, $dmsTable)};

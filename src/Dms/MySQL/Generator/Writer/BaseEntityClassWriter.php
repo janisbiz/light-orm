@@ -129,6 +129,7 @@ class BaseEntityClassWriter extends AbstractWriter
         return /** @lang PHP */
             <<<PHP
 <?php
+
 namespace {$this->generateNamespace($dmsDatabase)};
 
 use Janisbiz\LightOrm\Entity\BaseEntity;

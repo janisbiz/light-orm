@@ -14,12 +14,7 @@ class ConnectionFeatureContext extends FeatureContext
     private $connectionConfig;
 
     /**
-     * @var \Exception
-     */
-    private $exception;
-
-    /**
-     * @Given /^I have existing connection config "(\w+)"/
+     * @Given /^I have existing connection config "(\w+)"$/
      *
      * @param string $connectionName
      *
@@ -43,22 +38,6 @@ class ConnectionFeatureContext extends FeatureContext
     }
 
     /**
-     * @Given /^I have non-existing connection config "(\w+)"/
-     *
-     * @param string $connectionName
-     */
-    public function iHaveNonExistingConnectionConfig($connectionName)
-    {
-        try {
-            $this->getConnectionConfig($connectionName);
-
-            throw new \Exception(\sprintf('Connection config with name "%s" exists!', $connectionName));
-        } catch (\Exception $e) {
-            $this->exception = $e;
-        }
-    }
-
-    /**
      * @When I add connection config to connection pool
      */
     public function iAddConnectionConfigToConnectionPool()
@@ -67,7 +46,7 @@ class ConnectionFeatureContext extends FeatureContext
     }
 
     /**
-     * @Then /^I should have connection "(\w+)"/
+     * @Then /^I should have connection "(\w+)"$/
      *
      * @param string $connectionName
      */

@@ -11,15 +11,15 @@ light-orm:
   generator:
     light_orm_mysql:
       writers:
-        \Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter:
+        Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter:
           directory: var/light-orm/Generated
           namespace: JanisBiz\LightOrm\Variable\Generated
           classPrefix: Base
-        \Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter:
+        Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter:
           directory: tests/Behat/Bootstrap/Generated
           namespace: JanisBiz\LightOrm\Tests\Behat\Bootstrap\Generated
           classSuffix: Entity
-        \Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\RepositoryClassWriter:
+        Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\RepositoryClassWriter:
           directory: tests/Behat/Bootstrap/Generated
           namespace: JanisBiz\LightOrm\Tests\Behat\Bootstrap\Generated
           classSuffix: Repository

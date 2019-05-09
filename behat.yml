@@ -18,3 +18,9 @@ default:
         - '%paths.base%/tests/Behat/Features/Connection'
       contexts:
         - Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext
+
+    dms-mysql-generator:
+      paths:
+        - '%paths.base%/tests/Behat/Features/Dms/MySQL/Generator'
+      contexts:
+        - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Generator\GeneratorFeatureContext

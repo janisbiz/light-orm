@@ -66,6 +66,7 @@ class RepositoryClassWriter extends AbstractWriter
         return /** @lang PHP */
             <<<PHP
 <?php
+
 namespace {$this->generateNamespace($dmsDatabase)};
 
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
