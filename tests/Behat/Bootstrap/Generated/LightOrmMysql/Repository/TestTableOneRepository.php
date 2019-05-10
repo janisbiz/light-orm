@@ -42,7 +42,6 @@ class TestTableOneRepository extends AbstractRepository
                     ->setCreatedAt($createdAt)
                     ->setUpdatedAt($updatedAt)
             )
-            ->onDuplicateKeyUpdate(TestTableOneEntity::COLUMN_ID, $id)
             ->insert()
         ;
     }

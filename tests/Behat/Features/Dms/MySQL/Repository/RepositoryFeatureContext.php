@@ -3,10 +3,13 @@
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
 use Behat\Gherkin\Node\TableNode;
+use Janisbiz\LightOrm\Connection\ConnectionInterface;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection as MySQLConnection;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
 use Janisbiz\LightOrm\Repository\RepositoryInterface;
-use Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
 
-class RepositoryFeatureContext extends ConnectionFeatureContext
+class RepositoryFeatureContext extends FeatureContext
 {
     private $repository;
 
@@ -44,14 +47,14 @@ class RepositoryFeatureContext extends ConnectionFeatureContext
     }
 
     /**
-     * @Then /^I call method "(.*)" which will return of following rows:$/
+     * @Then /^I call method "(.*)" which will return following rows:$/
      *
      * @param string $method
      * @param TableNode $rows
      *
      * @throws \Exception
      */
-    public function iCallMethodWhichWillReturnOfFollowingRows($method, TableNode $rows)
+    public function iCallMethodWhichWillReturnFollowingRows($method, TableNode $rows)
     {
         $returnedRows = $this->repository->$method();
 
@@ -76,5 +79,90 @@ class RepositoryFeatureContext extends ConnectionFeatureContext
                 }
             }
         }
+    }
+
+    /**
+     * @Given /^I flush all tables for connection "(.*)"$/
+     *
+     * @param string $connectionName
+     *
+     * @throws \Exception
+     */
+    public function iFlushAllTablesForConnection($connectionName)
+    {
+        $connection = $this->connectionPool->getConnection($connectionName);
+
+        $tables = [];
+        switch (\get_class($connection)) {
+            case MySQLConnection::class:
+                $dmsDatabase = (new DmsFactory())->createDmsDatabase($connectionName, $connection);
+                foreach ($dmsDatabase->getDmsTables() as $dmsTable) {
+                    $tables[] = $dmsTable->getName();
+                }
+
+                break;
+
+            default:
+                throw new \Exception(\sprintf('Flush all tables for connection "%s" is no defined!', $connectionName));
+        }
+
+        $this->flushTables($connection, $tables);
+    }
+
+    /**
+     * @Given /^I flush following tables for connection "(.*)":$/
+     *
+     * @param string $connectionName
+     * @param TableNode $tables
+     */
+    public function iFlushFollowingTablesForConnection($connectionName, TableNode $tables)
+    {
+        $tablesArray = [];
+        foreach ($tables->getTable() as $table) {
+            $tablesArray[] = $table[0];
+        }
+
+        $this->flushTables($this->connectionPool->getConnection($connectionName), $tablesArray);
+    }
+
+    /**
+     * @Given /^I reset database for connection "(.*)"$/
+     *
+     * @param string $connectionName
+     */
+    public function iResetDatabaseForConnection($connectionName)
+    {
+        $connection = $this->connectionPool->getConnection($connectionName);
+        switch (\get_class($connection)) {
+            case MySQLConnection::class:
+                $connection->exec(\file_get_contents(\implode(
+                    '',
+                    [
+                        JANISBIZ_LIGHT_ORM_ROOT_DIR,
+                        '.docker',
+                        DIRECTORY_SEPARATOR,
+                        'config',
+                        DIRECTORY_SEPARATOR,
+                        'mysql',
+                        DIRECTORY_SEPARATOR,
+                        'light_orm_mysql.sql',
+                    ]
+                )));
+
+                break;
+        }
+    }
+
+    /**
+     * @param ConnectionInterface $connection
+     * @param array $tables
+     */
+    private function flushTables(ConnectionInterface $connection, array $tables)
+    {
+        $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 0');
+        foreach ($tables as $table) {
+            $connection->query(\sprintf('TRUNCATE TABLE %s', $table));
+        }
+        $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 1');
     }
 }

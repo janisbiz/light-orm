@@ -18,7 +18,6 @@ class DmsFactory extends AbstractDmsFactory
      */
     public function createDmsDatabase($databaseName, ConnectionInterface $connection)
     {
-
         $tablesInDatabase = $connection->query('SHOW TABLES', \PDO::FETCH_CLASS, \stdClass::class);
 
         $tables = [];

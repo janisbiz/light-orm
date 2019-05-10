@@ -35,7 +35,10 @@
       "Janisbiz\\LightOrm\\": "src/",
       "Janisbiz\\LightOrm\\Tests\\": "tests/",
       "Janisbiz\\LightOrm\\Variable\\": "var/light-orm/"
-    }
+    },
+    "files": [
+      "config/config.php"
+    ]
   },
   "scripts": {
     "post-install-cmd": "\"./vendor/bin/phpcs\" --config-set installed_paths vendor/wimg/php-compatibility",

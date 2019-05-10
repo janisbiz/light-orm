@@ -83,7 +83,13 @@ class FeatureContext implements Context
     {
         if (null === $this->config) {
             $this->config = (new Parser())
-                ->parseFile(\sprintf('%s/config/%s', __DIR__, self::CONFIG_FILE_NAME))['light-orm']
+                ->parseFile(\implode(
+                    '',
+                    [
+                        JANISBIZ_LIGHT_ORM_BEHAT_CONFIG_DIR,
+                        self::CONFIG_FILE_NAME,
+                    ]
+                ))['light-orm']
             ;
 
             foreach ($this->config['generator'] as &$connectionConfigs) {

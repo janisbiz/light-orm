@@ -23,10 +23,12 @@ default:
       paths:
         - '%paths.base%/tests/Behat/Features/Dms/MySQL/Generator'
       contexts:
+        - Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext
         - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Generator\GeneratorFeatureContext
 
     dms-mysql-repository:
       paths:
         - '%paths.base%/tests/Behat/Features/Dms/MySQL/Repository'
       contexts:
+        - Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext
         - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryFeatureContext

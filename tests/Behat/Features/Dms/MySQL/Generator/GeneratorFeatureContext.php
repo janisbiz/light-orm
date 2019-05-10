@@ -11,9 +11,10 @@ use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\RepositoryClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\WriterConfig as MySQLWriterConfig;
 use Janisbiz\LightOrm\Generator;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
 use Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext;
 
-class GeneratorFeatureContext extends ConnectionFeatureContext
+class GeneratorFeatureContext extends FeatureContext
 {
     /**
      * @var string
@@ -54,62 +55,11 @@ class GeneratorFeatureContext extends ConnectionFeatureContext
     /**
      * @Given I add writers to generator
      *
-     * @param null|string $directoryOverride
-     *
      * @throws \Exception
      */
-    public function iAddWritersToGenerator($directoryOverride = null)
+    public function iAddWritersToGenerator()
     {
-        switch ($this->getConnectionConfig($this->connectionName)['adapter']) {
-            case MySQLConnectionConfig::ADAPTER:
-                foreach ($this->getWritersConfig($this->connectionName) as $writerClass => $writerConfig) {
-                    switch ($writerClass) {
-                        case BaseEntityClassWriter::class:
-                            $this->writers[BaseEntityClassWriter::class] = new BaseEntityClassWriter(
-                                new MySQLWriterConfig(
-                                    $directoryOverride ? : $writerConfig['directory'],
-                                    $writerConfig['namespace'],
-                                    !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
-                                    !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
-                                )
-                            );
-
-                            break;
-
-                        case EntityClassWriter::class:
-                            $this->writers[EntityClassWriter::class] = new EntityClassWriter(
-                                new MySQLWriterConfig(
-                                    $directoryOverride ? : $writerConfig['directory'],
-                                    $writerConfig['namespace'],
-                                    !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
-                                    !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
-                                ),
-                                $this->writers[BaseEntityClassWriter::class]
-                            );
-
-                            break;
-
-                        case RepositoryClassWriter::class:
-                            $this->writers[RepositoryClassWriter::class] = new RepositoryClassWriter(
-                                new MySQLWriterConfig(
-                                    $directoryOverride ? : $writerConfig['directory'],
-                                    $writerConfig['namespace'],
-                                    !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
-                                    !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
-                                ),
-                                $this->writers[EntityClassWriter::class]
-                            );
-
-                            break;
-                    }
-
-                    $this->generator->addWriter($this->writers[$writerClass]);
-                }
-
-                return;
-        }
-
-        throw new \Exception(\sprintf('Could not add writers for connection "%s"!', $this->connectionName));
+        $this->addWritersToGenerator();
     }
 
     /**
@@ -121,7 +71,7 @@ class GeneratorFeatureContext extends ConnectionFeatureContext
     {
         $directoryOverride = \preg_replace('/\/\\\/', DIRECTORY_SEPARATOR, $directoryOverride);
 
-        $this->iAddWritersToGenerator($directoryOverride);
+        $this->addWritersToGenerator($directoryOverride);
     }
 
     /**
@@ -136,6 +86,8 @@ class GeneratorFeatureContext extends ConnectionFeatureContext
      * @Then /^Then I have following files generated:$/
      *
      * @param TableNode $files
+     *
+     * @throws \Exception
      */
     public function iShouldGetTheseRowsInDatabaseFilteredByScopeId(TableNode $files)
     {
@@ -180,6 +132,73 @@ class GeneratorFeatureContext extends ConnectionFeatureContext
                 }
             }
             \rmdir($directory);
+        }
+    }
+
+    /**
+     * @param null|string $directoryOverride
+     */
+    private function addWritersToGenerator($directoryOverride = null)
+    {
+        switch ($this->getConnectionConfig($this->connectionName)['adapter']) {
+            case MySQLConnectionConfig::ADAPTER:
+                $this->addMySQLWriters($directoryOverride);
+
+                return;
+        }
+
+        throw new \Exception(\sprintf('Could not add writers for connection "%s"!', $this->connectionName));
+    }
+
+    /**
+     * @param null|string $directoryOverride
+     *
+     * @throws \Exception
+     */
+    private function addMySQLWriters($directoryOverride)
+    {
+        foreach ($this->getWritersConfig($this->connectionName) as $writerClass => $writerConfig) {
+            switch ($writerClass) {
+                case BaseEntityClassWriter::class:
+                    $this->writers[BaseEntityClassWriter::class] = new BaseEntityClassWriter(
+                        new MySQLWriterConfig(
+                            $directoryOverride ? : $writerConfig['directory'],
+                            $writerConfig['namespace'],
+                            !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
+                            !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
+                        )
+                    );
+
+                    break;
+
+                case EntityClassWriter::class:
+                    $this->writers[EntityClassWriter::class] = new EntityClassWriter(
+                        new MySQLWriterConfig(
+                            $directoryOverride ? : $writerConfig['directory'],
+                            $writerConfig['namespace'],
+                            !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
+                            !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
+                        ),
+                        $this->writers[BaseEntityClassWriter::class]
+                    );
+
+                    break;
+
+                case RepositoryClassWriter::class:
+                    $this->writers[RepositoryClassWriter::class] = new RepositoryClassWriter(
+                        new MySQLWriterConfig(
+                            $directoryOverride ? : $writerConfig['directory'],
+                            $writerConfig['namespace'],
+                            !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
+                            !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
+                        ),
+                        $this->writers[EntityClassWriter::class]
+                    );
+
+                    break;
+            }
+
+            $this->generator->addWriter($this->writers[$writerClass]);
         }
     }
 }

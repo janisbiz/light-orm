@@ -19,8 +19,6 @@ class TestTableOneTwoRepository extends AbstractRepository
                     ->setTestTableOneId($testTableOneId)
                     ->setTestTableTwoId($testTableTwoId)
             )
-            ->onDuplicateKeyUpdate(TestTableOneTwoEntity::COLUMN_TEST_TABLE_ONE_ID, $testTableOneId)
-            ->onDuplicateKeyUpdate(TestTableOneTwoEntity::COLUMN_TEST_TABLE_TWO_ID, $testTableTwoId)
             ->insert()
         ;
     }

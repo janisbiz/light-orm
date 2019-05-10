@@ -14,7 +14,6 @@ class TestTableTwoRepository extends AbstractRepository
     {
         $this
             ->createQueryBuilder((new TestTableTwoEntity())->setId($id))
-            ->onDuplicateKeyUpdate(TestTableTwoEntity::COLUMN_ID, $id)
             ->insert()
         ;
     }

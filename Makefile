@@ -2,6 +2,8 @@ SHELL=/bin/bash
 DOCKER_COMPOSE ?= docker-compose
 DOCKER_COMPOSE_EXEC_PHP = $(DOCKER_COMPOSE) exec php-cli
 
+include .env
+
 .DEFAULT_GOAL := help
 
 .PHONY: help
@@ -35,3 +37,7 @@ restart_dev: ## Restart DEV in Docker
 .PHONY: down_dev
 down_dev: ## Remove DEV containers from Docker
 	$(DOCKER_COMPOSE) down
+
+.PHONY: export-mysql-database
+export-mysql-database: # Export mysql initial database from current DB
+	mysqldump -u root -p${DOCKER_MYSQL_PASSWORD} -P ${DOCKER_MYSQL_LOCAL_PORT} -h 127.0.0.1 --no-data --databases light_orm_mysql > .docker/config/mysql/light_orm_mysql.sql
