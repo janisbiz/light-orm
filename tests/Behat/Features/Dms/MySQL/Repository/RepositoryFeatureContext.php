@@ -11,7 +11,15 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
 
 class RepositoryFeatureContext extends FeatureContext
 {
+    /**
+     * @var RepositoryInterface
+     */
     private $repository;
+
+    /**
+     * @var \Exception
+     */
+    private $exception;
 
     /**
      * @Given /^I create repository "(.*)"$/
@@ -41,8 +49,12 @@ class RepositoryFeatureContext extends FeatureContext
      */
     public function iCallMethodOnRepositoryWithParameters($method, TableNode $parameters)
     {
-        foreach ($parameters as $methodParameters) {
-            \call_user_func_array([$this->repository, $method], $methodParameters);
+        try {
+            foreach ($parameters as $methodParameters) {
+                \call_user_func_array([$this->repository, $method], $methodParameters);
+            }
+        } catch (\Exception $e) {
+            $this->exception = $e;
         }
     }
 
@@ -150,6 +162,28 @@ class RepositoryFeatureContext extends FeatureContext
                 )));
 
                 break;
+        }
+    }
+
+    /**
+     * @Then /^I have exception with message "(.*)"$/
+     *
+     * @param string $message
+     *
+     * @throws \Exception
+     */
+    public function asd($message)
+    {
+        if (null === $this->exception) {
+            throw new \Exception('There is no expected exception!');
+        }
+
+        if ($message !== $this->exception->getMessage()) {
+            throw new \Exception(\sprintf(
+                'Expected exception doesn\'t containt message "%s", it contains message "%s"!',
+                $message,
+                $this->exception->getMessage()
+            ));
         }
     }
 
