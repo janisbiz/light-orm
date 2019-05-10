@@ -11,7 +11,8 @@ class TestTableOneTwoRepository extends AbstractRepository
      * @param int $testTableOneId
      * @param int $testTableTwoId
      */
-    public function create($testTableOneId, $testTableTwoId) {
+    public function create($testTableOneId, $testTableTwoId)
+    {
         $this
             ->createQueryBuilder(
                 (new TestTableOneTwoEntity())
@@ -19,9 +20,17 @@ class TestTableOneTwoRepository extends AbstractRepository
                     ->setTestTableTwoId($testTableTwoId)
             )
             ->onDuplicateKeyUpdate(TestTableOneTwoEntity::COLUMN_TEST_TABLE_ONE_ID, $testTableOneId)
-            ->onDuplicateKeyUpdate(TestTableOneTwoEntity::COLUMN_TEST_TABLE_ONE_ID, $testTableTwoId)
+            ->onDuplicateKeyUpdate(TestTableOneTwoEntity::COLUMN_TEST_TABLE_TWO_ID, $testTableTwoId)
             ->insert()
         ;
+    }
+
+    /**
+     * @return TestTableOneTwoEntity[]
+     */
+    public function read()
+    {
+        return $this->createQueryBuilder()->find();
     }
 
     /**

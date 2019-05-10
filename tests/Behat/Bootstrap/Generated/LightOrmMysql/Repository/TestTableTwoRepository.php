@@ -10,12 +10,21 @@ class TestTableTwoRepository extends AbstractRepository
     /**
      * @param int $id
      */
-    public function create($id) {
+    public function create($id)
+    {
         $this
             ->createQueryBuilder((new TestTableTwoEntity())->setId($id))
             ->onDuplicateKeyUpdate(TestTableTwoEntity::COLUMN_ID, $id)
             ->insert()
         ;
+    }
+
+    /**
+     * @return TestTableTwoEntity[]
+     */
+    public function read()
+    {
+        return $this->createQueryBuilder()->find();
     }
 
     /**

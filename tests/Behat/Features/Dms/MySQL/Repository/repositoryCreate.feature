@@ -4,7 +4,11 @@ Feature: Repository Create
     When I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
     And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
-    Then I call method "create" with parameters:
+    When I call method "create" with parameters:
+      | id | intColNotNull | varcharColNotNull | floatColNotNull | intColNull | varcharColNull | floatColNull | createdAt           | updatedAt |
+      | 1  | 1             | varcharNotNull    | 1.1             | 2          | varcharNull    | 2.2          | 2019-01-01 00:00:00 |           |
+      | 2  | 3             | varcharNotNull2   | 3.3             | 4          | varcharNull2   | 4.4          | 2019-01-02 00:00:00 |           |
+    Then I call method "read" which will return of following rows:
       | id | intColNotNull | varcharColNotNull | floatColNotNull | intColNull | varcharColNull | floatColNull | createdAt           | updatedAt |
       | 1  | 1             | varcharNotNull    | 1.1             | 2          | varcharNull    | 2.2          | 2019-01-01 00:00:00 |           |
       | 2  | 3             | varcharNotNull2   | 3.3             | 4          | varcharNull2   | 4.4          | 2019-01-02 00:00:00 |           |
@@ -13,7 +17,11 @@ Feature: Repository Create
     When I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
     And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository"
-    Then I call method "create" with parameters:
+    When I call method "create" with parameters:
+      | id |
+      | 1  |
+      | 2  |
+    Then I call method "read" which will return of following rows:
       | id |
       | 1  |
       | 2  |
@@ -22,7 +30,11 @@ Feature: Repository Create
     When I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
     And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository"
-    Then I call method "create" with parameters:
+    When I call method "create" with parameters:
+      | testTableOneId | testTableTwoId |
+      | 1              | 2              |
+      | 2              | 1              |
+    Then I call method "read" which will return of following rows:
       | testTableOneId | testTableTwoId |
       | 1              | 2              |
       | 2              | 1              |

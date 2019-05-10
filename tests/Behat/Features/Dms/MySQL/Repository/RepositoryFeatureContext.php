@@ -31,7 +31,7 @@ class RepositoryFeatureContext extends ConnectionFeatureContext
     }
 
     /**
-     * @Then /^I call method "(.*)" with parameters:$/
+     * @When /^I call method "(.*)" with parameters:$/
      *
      * @param string $method
      * @param TableNode $parameters
@@ -40,6 +40,41 @@ class RepositoryFeatureContext extends ConnectionFeatureContext
     {
         foreach ($parameters as $methodParameters) {
             \call_user_func_array([$this->repository, $method], $methodParameters);
+        }
+    }
+
+    /**
+     * @Then /^I call method "(.*)" which will return of following rows:$/
+     *
+     * @param string $method
+     * @param TableNode $rows
+     *
+     * @throws \Exception
+     */
+    public function iCallMethodWhichWillReturnOfFollowingRows($method, TableNode $rows)
+    {
+        $returnedRows = $this->repository->$method();
+
+        if (\count($returnedRows) !== \count($rows->getRows()) - 1) {
+            throw new \Exception('Count of expected rows doesn\'t match count of returned rows!');
+        }
+
+        foreach ($rows as $i => $row) {
+            $returnedRow = $returnedRows[$i];
+
+            foreach ($row as $column => $value) {
+                $getterMethod = \sprintf('get%s', \ucfirst($column));
+                if ($value != $returnedRow->$getterMethod()) {
+                    throw new \Exception(\sprintf(
+                        'Data mismatch, when reading stored row data! %s::%s => %s != %s => %s',
+                        \get_class($returnedRow),
+                        $getterMethod,
+                        $returnedRow->$getterMethod(),
+                        $column,
+                        $value
+                    ));
+                }
+            }
         }
     }
 }

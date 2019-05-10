@@ -48,6 +48,14 @@ class TestTableOneRepository extends AbstractRepository
     }
 
     /**
+     * @return TestTableOneEntity[]
+     */
+    public function read()
+    {
+        return $this->createQueryBuilder()->find();
+    }
+
+    /**
     * @return string
     */
     protected function getModelClass()
