@@ -113,18 +113,40 @@ class BaseEntity implements EntityInterface
     }
 
     /**
-     * @return array
+     * @param null|string $key
+     *
+     * @return null|array|string|int|double
+     * @throws \Exception
      */
-    public function &data()
+    public function &data($key = null)
     {
+        if (null !== $key && \is_string($key)) {
+            if (!\array_key_exists($key, $this->data)) {
+                throw new \Exception(\sprintf('There is no key "%s" present in data!', $key));
+            }
+
+            return $this->data[$key];
+        }
+
         return $this->data;
     }
 
     /**
-     * @return array
+     * @param null|string $key
+     *
+     * @return null|array|string|int|double
+     * @throws \Exception
      */
-    public function &dataOriginal()
+    public function &dataOriginal($key = null)
     {
+        if (null !== $key && \is_string($key)) {
+            if (!\array_key_exists($key, $this->data)) {
+                throw new \Exception(\sprintf('There is no key "%s" present in data original!', $key));
+            }
+
+            return $this->data[$key];
+        }
+
         return $this->dataOriginal;
     }
 

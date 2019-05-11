@@ -81,6 +81,16 @@ class BaseEntityTest extends TestCase
         $this->assertCount(5, $data);
         $this->assertEquals(self::COL_FIVE_VALUE, $this->baseEntity->getColFive());
         $this->assertEquals(self::COL_FIVE_VALUE, $this->baseEntity->col_five);
+        $this->assertEquals(self::COL_FIVE_VALUE, $this->baseEntity->data('col_five'));
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage There is no key "ivalid_key" present in data!
+     */
+    public function testDataWithInvalidKey()
+    {
+        $this->baseEntity->data('ivalid_key');
     }
 
     public function testDataOriginal()
@@ -97,10 +107,20 @@ class BaseEntityTest extends TestCase
         $this->assertCount(3, $dataOriginal);
 
         $this->assertEquals(self::COL_FIVE_VALUE, $this->baseEntity->getColFive());
+        $this->assertEquals(self::COL_FIVE_VALUE, $this->baseEntity->dataOriginal('col_five'));
         $this->assertEquals(self::COL_FIVE_VALUE, $this->baseEntity->col_five);
 
         $this->baseEntity->col_five = self::COL_FIVE_VALUE;
         $this->assertCount(4, $dataOriginal);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage There is no key "ivalid_key" present in data original!
+     */
+    public function testDataOriginalWithInvalidKey()
+    {
+        $this->baseEntity->dataOriginal('ivalid_key');
     }
 
     public function testIsNew()

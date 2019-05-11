@@ -7,14 +7,18 @@ interface EntityInterface
     const TABLE_NAME = null;
 
     /**
+     * @param null|string $key
+     *
      * @return array
      */
-    public function data();
+    public function data($key = null);
 
     /**
+     * @param null|string $key
+     *
      * @return array
      */
-    public function dataOriginal();
+    public function dataOriginal($key = null);
 
     /**
      * @return bool
