@@ -177,7 +177,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
         if (true === ($commit = !$connection->inTransaction())) {
             $connection->beginTransaction();
         }
-        
+
         try {
 
             $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
