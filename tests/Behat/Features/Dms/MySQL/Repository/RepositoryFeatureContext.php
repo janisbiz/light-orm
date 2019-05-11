@@ -5,114 +5,10 @@ namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 use Behat\Gherkin\Node\TableNode;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection as MySQLConnection;
-use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
 use Janisbiz\LightOrm\Repository\RepositoryInterface;
-use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
 
-class RepositoryFeatureContext extends FeatureContext
+class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
 {
-    /**
-     * @var RepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Exception
-     */
-    private $exception;
-
-    /**
-     * @Given /^I create repository "(.*)"$/
-     *
-     * @param $repositoryClass
-     *
-     * @throws \Exception
-     */
-    public function iCreateRepository($repositoryClass)
-    {
-        $this->repository = new $repositoryClass;
-
-        if (!$this->repository instanceof RepositoryInterface) {
-            throw new \Exception(\sprintf(
-                'Class "%s" must implement "%s"',
-                \get_class($this->repository),
-                RepositoryInterface::class
-            ));
-        }
-    }
-
-    /**
-     * @When /^I call method "(.*)" on repository with parameters:$/
-     *
-     * @param string $method
-     * @param TableNode $parameters
-     */
-    public function iCallMethodOnRepositoryWithParameters($method, TableNode $parameters)
-    {
-        try {
-            foreach ($parameters as $methodParameters) {
-                \call_user_func_array([$this->repository, $method], $methodParameters);
-            }
-        } catch (\Exception $e) {
-            $this->exception = $e;
-        }
-    }
-
-    /**
-     * @Then /^I call method "(.*)" on repository which will return following rows:$/
-     *
-     * @param string $method
-     * @param TableNode $rows
-     *
-     * @throws \Exception
-     */
-    public function iCallMethodOnRepositoryWhichWillReturnFollowingRows($method, TableNode $rows)
-    {
-        $returnedRows = $this->repository->$method();
-
-        if (\count($returnedRows) !== \count($rows->getRows()) - 1) {
-            throw new \Exception('Count of expected rows doesn\'t match count of returned rows!');
-        }
-
-        foreach ($rows as $i => $row) {
-            $returnedRow = $returnedRows[$i];
-
-            foreach ($row as $column => $value) {
-                $getterMethod = \sprintf('get%s', \ucfirst($column));
-                if ($value != $returnedRow->$getterMethod()) {
-                    throw new \Exception(\sprintf(
-                        'Data mismatch, when reading stored row data! %s::%s => %s != %s => %s',
-                        \get_class($returnedRow),
-                        $getterMethod,
-                        $returnedRow->$getterMethod(),
-                        $column,
-                        $value
-                    ));
-                }
-            }
-        }
-    }
-
-    /**
-     * @Given /^I begin transaction on connection "(.*)"$/
-     *
-     * @param string $connectionName
-     */
-    public function iBeginTransactionOnRepository($connectionName)
-    {
-        $this->connectionPool->getConnection($connectionName)->beginTransaction();
-    }
-
-    /**
-     * @Given /^I commit transaction on connection "(.*)"$/
-     *
-     * @param string $connectionName
-     */
-    public function iCommitTransactionOnRepository($connectionName)
-    {
-        $this->connectionPool->getConnection($connectionName)->commit();
-    }
-
     /**
      * @Given /^I flush all tables for connection "(.*)"$/
      *
@@ -138,7 +34,7 @@ class RepositoryFeatureContext extends FeatureContext
                 throw new \Exception(\sprintf('Flush all tables for connection "%s" is no defined!', $connectionName));
         }
 
-        $this->flushTables($connection, $tables);
+        $this->flushTables($connection, $connectionName, $tables);
     }
 
     /**
@@ -154,7 +50,7 @@ class RepositoryFeatureContext extends FeatureContext
             $tablesArray[] = $table[0];
         }
 
-        $this->flushTables($this->connectionPool->getConnection($connectionName), $tablesArray);
+        $this->flushTables($this->connectionPool->getConnection($connectionName), $connectionName, $tablesArray);
     }
 
     /**
@@ -184,6 +80,26 @@ class RepositoryFeatureContext extends FeatureContext
                 break;
         }
     }
+    
+    /**
+     * @Given /^I create repository "(.*)"$/
+     *
+     * @param $repositoryClass
+     *
+     * @throws \Exception
+     */
+    public function iCreateRepository($repositoryClass)
+    {
+        static::$repository = new $repositoryClass;
+
+        if (!static::$repository instanceof RepositoryInterface) {
+            throw new \Exception(\sprintf(
+                'Class "%s" must implement "%s"',
+                \get_class(static::$repository),
+                RepositoryInterface::class
+            ));
+        }
+    }
 
     /**
      * @Then /^I have exception with message "(.*)"$/
@@ -192,31 +108,62 @@ class RepositoryFeatureContext extends FeatureContext
      *
      * @throws \Exception
      */
-    public function asd($message)
+    public function iHaveExceptionWithMessage($message)
     {
-        if (null === $this->exception) {
+        if (null === static::$exception) {
             throw new \Exception('There is no expected exception!');
         }
 
-        if ($message !== $this->exception->getMessage()) {
+        if ($message !== static::$exception->getMessage()) {
             throw new \Exception(\sprintf(
                 'Expected exception doesn\'t containt message "%s", it contains message "%s"!',
                 $message,
-                $this->exception->getMessage()
+                static::$exception->getMessage()
             ));
         }
     }
 
     /**
-     * @param ConnectionInterface $connection
-     * @param array $tables
+     * @Given /^I begin transaction on connection "(.*)"$/
+     *
+     * @param string $connectionName
      */
-    private function flushTables(ConnectionInterface $connection, array $tables)
+    public function iBeginTransactionOnConnection($connectionName)
     {
-        $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 0');
-        foreach ($tables as $table) {
-            $connection->query(\sprintf('TRUNCATE TABLE %s', $table));
+        $this->connectionPool->getConnection($connectionName)->beginTransaction();
+    }
+
+    /**
+     * @Given /^I commit transaction on connection "(.*)"$/
+     *
+     * @param string $connectionName
+     */
+    public function iCommitTransactionOnConnection($connectionName)
+    {
+        $this->connectionPool->getConnection($connectionName)->commit();
+    }
+
+    /**
+     * @param ConnectionInterface $connection
+     * @param string $connectionName
+     * @param array $tables
+     *
+     * @throws \Exception
+     */
+    private function flushTables(ConnectionInterface $connection, $connectionName, array $tables)
+    {
+        switch (\get_class($connection)) {
+            case MySQLConnection::class:
+                $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 0');
+                foreach ($tables as $table) {
+                    $connection->query(\sprintf('TRUNCATE TABLE %s', $table));
+                }
+                $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 1');
+
+                break;
+
+            default:
+                throw new \Exception(\sprintf('Flush all tables for connection "%s" is no defined!', $connectionName));
         }
-        $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 1');
     }
 }

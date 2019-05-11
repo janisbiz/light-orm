@@ -32,3 +32,5 @@ default:
       contexts:
         - Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext
         - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryFeatureContext
+        - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryReadFeatureContext
+        - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryCreateFeatureContext
