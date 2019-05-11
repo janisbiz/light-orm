@@ -179,7 +179,6 @@ abstract class AbstractRepository extends BaseAbstractRepository
         }
 
         try {
-
             $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
 
             $statement = $connection->prepare($queryBuilder->buildQuery());
