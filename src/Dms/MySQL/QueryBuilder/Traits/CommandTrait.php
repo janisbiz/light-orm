@@ -20,4 +20,12 @@ trait CommandTrait
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function commandData()
+    {
+        return $this->command;
+    }
 }

@@ -60,4 +60,11 @@ interface QueryBuilderInterface extends BaseQueryBuilderInterface
      * @return string|bool
      */
     public function delete($toString = false);
+
+    /**
+     * @param bool $toString
+     *
+     * @return int
+     */
+    public function count($toString = false);
 }

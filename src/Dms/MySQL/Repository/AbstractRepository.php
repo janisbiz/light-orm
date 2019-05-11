@@ -97,9 +97,10 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
+        $connection = $this->getConnection();
 
         try {
-            $statement = $this->getConnection()->prepare($queryBuilder->buildQuery());
+            $statement = $connection->prepare($queryBuilder->buildQuery());
             $statement->execute($queryBuilder->bindData());
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
@@ -109,8 +110,6 @@ abstract class AbstractRepository extends BaseAbstractRepository
                 ]
             );
         } catch (\Exception $e) {
-            $connection = $this->getConnection();
-
             if ($connection->inTransaction()) {
                 $connection->rollBack();
             }
@@ -133,8 +132,10 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
+        $connection = $this->getConnection();
+
         try {
-            $statement = $this->getConnection()->prepare($queryBuilder->buildQuery());
+            $statement = $connection->prepare($queryBuilder->buildQuery());
             $statement->execute($queryBuilder->bindData());
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
@@ -144,8 +145,6 @@ abstract class AbstractRepository extends BaseAbstractRepository
                 ]
             );
         } catch (\Exception $e) {
-            $connection = $this->getConnection();
-
             if ($connection->inTransaction()) {
                 $connection->rollBack();
             }
@@ -249,6 +248,41 @@ abstract class AbstractRepository extends BaseAbstractRepository
         }
 
         return true;
+    }
+
+    /**
+     * @param QueryBuilderInterface $queryBuilder
+     * @param bool $toString
+     *
+     * @return int
+     */
+    public function count(QueryBuilderInterface $queryBuilder, $toString = false)
+    {
+        $queryBuilderCount = (new QueryBuilder($this))
+            ->command($queryBuilder->commandData())
+            ->column('COUNT(*)')
+            ->table(\sprintf('(%s) AS total_count', $queryBuilder->buildQuery()))
+            ->bind($queryBuilder->bindData())
+        ;
+
+        if ($toString === true) {
+            return $queryBuilderCount->toString();
+        }
+
+        $connection = $this->getConnection();
+
+        try {
+            $statement = $connection->prepare($queryBuilderCount->buildQuery());
+            $statement->execute($queryBuilderCount->bindData());
+        } catch (\Exception $e) {
+            if ($connection->inTransaction()) {
+                $connection->rollBack();
+            }
+
+            throw $e;
+        }
+
+        return $statement->fetchColumn(0);
     }
 
     /**

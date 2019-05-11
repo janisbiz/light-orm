@@ -23,11 +23,23 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @dataProvider setCommandData
+     *
+     * @param string $command
+     * @param string $expected
+     */
+    public function testSetCommandData($command, $expected)
+    {
+        $object = $this->command($command);
+        $this->assertObjectUsesTrait(CommandTrait::class, $object);
+        $this->assertEquals($expected, $this->commandData());
+    }
+
+    /**
      * @return array
      */
     public function setCommandData()
     {
-
         return \array_map(
             function ($val) {
                 return [

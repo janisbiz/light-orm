@@ -10,4 +10,9 @@ interface CommandTraitInterface
      * @return $this
      */
     public function command($command);
+
+    /**
+     * @return string
+     */
+    public function commandData();
 }

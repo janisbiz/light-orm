@@ -2,7 +2,6 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Repository;
 
-use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use PHPUnit\Framework\TestCase;
 
 class AbstractRepositoryTest extends TestCase

@@ -130,6 +130,18 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
     }
 
     /**
+     * @param bool $toString
+     *
+     * @return int
+     */
+    public function count($toString = false)
+    {
+        $this->command(CommandEnum::SELECT);
+
+        return $this->repository->count($this, $toString);
+    }
+
+    /**
      * @return string
      * @throws \Exception
      */
@@ -139,180 +151,43 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
             throw new \Exception('Could not build query, as there is no command provided!');
         }
 
-        $this->resetQuery();
-
-        $this->queryParts['command'] = $this->command;
-
-        if (!empty($this->column)) {
-            $this->queryParts['column'] = \implode(', ', $this->column);
-        } else {
-            $this->queryParts['column'] = '*';
-        }
-
-        if (!empty($this->where)) {
-            $this->queryParts['where'] = \sprintf(
-                '%s %s',
-                ConditionEnum::WHERE,
-                \implode(' AND ', \array_unique($this->where))
-            );
-        }
-
-        if (!empty($this->join)) {
-            $this->queryParts['join'] = \implode(' ', $this->join);
-        }
-
-        if (!empty($this->groupBy)) {
-            $this->queryParts['groupBy'] = \sprintf('%s %s', ConditionEnum::GROUP_BY, \implode(', ', $this->groupBy));
-        }
-
-        if (!empty($this->orderBy)) {
-            $this->queryParts['orderBy'] = \sprintf('%s %s', ConditionEnum::ORDER_BY, \implode(', ', $this->orderBy));
-        }
-
-        if (!empty($this->limit) && !empty($this->offset)) {
-            $this->queryParts['limit'] = \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit);
-            $this->queryParts['offset'] = \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset);
-        } elseif (!empty($this->limit)) {
-            $this->queryParts['limit'] = \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit);
-        }
-
-        if (!empty($this->set)) {
-            $this->queryParts['set'] = \sprintf(
-                '%s %s',
-                ConditionEnum::SET,
-                \implode(', ', \array_unique($this->set))
-            );
-        }
-
-        if (!empty($this->value)) {
-            $this->queryParts['value'] = \sprintf(
-                '(%s) %s (%s)',
-                \implode(', ', \array_keys($this->value)),
-                ConditionEnum::VALUES,
-                \implode(', ', $this->value)
-            );
-        }
-
-        if (!empty($this->onDuplicateKeyUpdate)) {
-            $this->queryParts['onDuplicateKeyUpdate'] = \sprintf(
-                'ON DUPLICATE KEY UPDATE %s',
-                \implode(', ', $this->onDuplicateKeyUpdate)
-            );
-        }
-
-        if (!empty($this->having)) {
-            $this->queryParts['having'] = \sprintf(
-                '%s %s',
-                ConditionEnum::HAVING,
-                \implode(' AND ', \array_unique($this->having))
-            );
-        }
-
-        if (!empty($this->unionAll)) {
-            $this->queryParts['unionAll'] = \implode(' UNION ALL ', $this->unionAll);
-        }
+        $this
+            ->resetQuery()
+            ->buildGeneralQueryParts()
+        ;
 
         switch ($this->queryParts['command']) {
             case CommandEnum::INSERT_IGNORE_INTO:
             case CommandEnum::INSERT_INTO:
             case CommandEnum::REPLACE_INTO:
-                if (!empty($this->table)) {
-                    $this->queryParts['table'] = $this->table[0];
-                }
+                $userQueries = $this->buildInsertInsertIgnoreReplaceQueryParts();
 
-                $userQueries = [
-                    $this->queryParts['command'],
-                    $this->queryParts['table'],
-                    $this->queryParts['value'],
-                    $this->queryParts['onDuplicateKeyUpdate'],
-                ];
-
-                return \trim(\implode(' ', \array_filter($userQueries)));
+                break;
 
             case CommandEnum::SELECT:
-                if (isset($this->queryParts['unionAll']) && \mb_strlen($this->queryParts['unionAll']) > 0) {
-                    $userQueries = [
-                        $this->queryParts['unionAll'],
-                        $this->queryParts['orderBy'],
-                        $this->queryParts['limit'],
-                        $this->queryParts['offset'],
-                    ];
-                } else {
-                    if (!empty($this->table)) {
-                        $this->queryParts['from'] = \sprintf(
-                            '%s %s',
-                            ConditionEnum::FROM,
-                            \implode(', ', $this->table)
-                        );
-                    }
+                $userQueries = $this->buildSelectQueryParts();
 
-                    $userQueries = [
-                        $this->queryParts['command'],
-                        $this->queryParts['column'],
-                        $this->queryParts['from'],
-                        $this->queryParts['join'],
-                        $this->queryParts['where'],
-                        $this->queryParts['groupBy'],
-                        $this->queryParts['having'],
-                        $this->queryParts['orderBy'],
-                        $this->queryParts['limit'],
-                        $this->queryParts['offset'],
-                    ];
-                }
-
-                return \trim(\implode(' ', \array_filter($userQueries)));
+                break;
 
             case CommandEnum::UPDATE:
             case CommandEnum::UPDATE_IGNORE:
-                if (!empty($this->table)) {
-                    $this->queryParts['table'] = $this->table[0];
-                }
+                $userQueries = $this->buildUpdateUpdateIgnoreQueryParts();
 
-                if (!$this->queryParts['set'] || \mb_strlen(\trim($this->queryParts['set'])) == 0) {
-                    throw new \PDOException('Cannot perform UPDATE action without SET condition!');
-                }
-
-                if (!$this->queryParts['where'] || \mb_strlen(\trim($this->queryParts['where'])) == 0) {
-                    throw new \PDOException('Cannot perform UPDATE action without WHERE condition!');
-                }
-
-                $userQueries = [
-                    $this->queryParts['command'],
-                    $this->queryParts['table'],
-                    $this->queryParts['join'],
-                    $this->queryParts['set'],
-                    $this->queryParts['where'],
-                    $this->queryParts['limit'],
-                    $this->queryParts['offset'],
-                ];
-
-                return \trim(\implode(' ', \array_filter($userQueries)));
+                break;
 
             case CommandEnum::DELETE:
-                if (!empty($this->table)) {
-                    $this->queryParts['from'] = \sprintf('%s FROM %s', $this->table[0], $this->table[0]);
-                }
+                $userQueries = $this->buildDeleteQueryParts();
 
-                if (!$this->queryParts['where'] || \mb_strlen(\trim($this->queryParts['where'])) == 0) {
-                    throw new \PDOException('Cannot perform DELETE action without WHERE condition!');
-                }
+                break;
 
-                $userQueries = [
-                    $this->queryParts['command'],
-                    $this->queryParts['from'],
-                    $this->queryParts['join'],
-                    $this->queryParts['where'],
-                    $this->queryParts['limit'],
-                    $this->queryParts['offset'],
-                ];
-
-                return \trim(\implode(' ', \array_filter($userQueries)));
+            default:
+                throw new \Exception(\sprintf(
+                    'Could not build query, as there is no valid(%s) command provided!',
+                    $this->command
+                ));
         }
 
-        throw new \Exception(\sprintf(
-            'Could not build query, as there is no valid(%s) command provided!',
-            $this->command
-        ));
+        return \trim(\implode(' ', \array_filter($userQueries)));
     }
 
     /**
@@ -355,6 +230,189 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
         ];
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function buildGeneralQueryParts()
+    {
+        $this->queryParts['command'] = $this->command;
+
+        if (!empty($this->column)) {
+            $this->queryParts['column'] = \implode(', ', $this->column);
+        } else {
+            $this->queryParts['column'] = '*';
+        }
+
+        if (!empty($this->where)) {
+            $this->queryParts['where'] = \sprintf(
+                '%s %s',
+                ConditionEnum::WHERE,
+                \implode(' AND ', \array_unique($this->where))
+            );
+        }
+
+        if (!empty($this->join)) {
+            $this->queryParts['join'] = \implode(' ', $this->join);
+        }
+
+        if (!empty($this->groupBy)) {
+            $this->queryParts['groupBy'] = \sprintf('%s %s', ConditionEnum::GROUP_BY, \implode(', ', $this->groupBy));
+        }
+
+        if (!empty($this->orderBy)) {
+            $this->queryParts['orderBy'] = \sprintf('%s %s', ConditionEnum::ORDER_BY, \implode(', ', $this->orderBy));
+        }
+
+        if (!empty($this->limit)) {
+            $this->queryParts['limit'] = \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit);
+            if (!empty($this->offset)) {
+                $this->queryParts['offset'] = \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset);
+            }
+        }
+
+        if (!empty($this->set)) {
+            $this->queryParts['set'] = \sprintf(
+                '%s %s',
+                ConditionEnum::SET,
+                \implode(', ', \array_unique($this->set))
+            );
+        }
+
+        if (!empty($this->value)) {
+            $this->queryParts['value'] = \sprintf(
+                '(%s) %s (%s)',
+                \implode(', ', \array_keys($this->value)),
+                ConditionEnum::VALUES,
+                \implode(', ', $this->value)
+            );
+        }
+
+        if (!empty($this->onDuplicateKeyUpdate)) {
+            $this->queryParts['onDuplicateKeyUpdate'] = \sprintf(
+                'ON DUPLICATE KEY UPDATE %s',
+                \implode(', ', $this->onDuplicateKeyUpdate)
+            );
+        }
+
+        if (!empty($this->having)) {
+            $this->queryParts['having'] = \sprintf(
+                '%s %s',
+                ConditionEnum::HAVING,
+                \implode(' AND ', \array_unique($this->having))
+            );
+        }
+
+        if (!empty($this->unionAll)) {
+            $this->queryParts['unionAll'] = \implode(' UNION ALL ', $this->unionAll);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    protected function buildInsertInsertIgnoreReplaceQueryParts()
+    {
+        if (!empty($this->table)) {
+            $this->queryParts['table'] = $this->table[0];
+        }
+
+        return [
+            $this->queryParts['command'],
+            $this->queryParts['table'],
+            $this->queryParts['value'],
+            $this->queryParts['onDuplicateKeyUpdate'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function buildSelectQueryParts()
+    {
+        if (isset($this->queryParts['unionAll']) && \mb_strlen($this->queryParts['unionAll']) > 0) {
+            return [
+                $this->queryParts['unionAll'],
+                $this->queryParts['orderBy'],
+                $this->queryParts['limit'],
+                $this->queryParts['offset'],
+            ];
+        }
+
+        if (!empty($this->table)) {
+            $this->queryParts['from'] = \sprintf(
+                '%s %s',
+                ConditionEnum::FROM,
+                \implode(', ', $this->table)
+            );
+        }
+
+        return [
+            $this->queryParts['command'],
+            $this->queryParts['column'],
+            $this->queryParts['from'],
+            $this->queryParts['join'],
+            $this->queryParts['where'],
+            $this->queryParts['groupBy'],
+            $this->queryParts['having'],
+            $this->queryParts['orderBy'],
+            $this->queryParts['limit'],
+            $this->queryParts['offset'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function buildUpdateUpdateIgnoreQueryParts()
+    {
+        if (!empty($this->table)) {
+            $this->queryParts['table'] = $this->table[0];
+        }
+
+        if (!$this->queryParts['set'] || \mb_strlen(\trim($this->queryParts['set'])) == 0) {
+            throw new \PDOException('Cannot perform UPDATE action without SET condition!');
+        }
+
+        if (!$this->queryParts['where'] || \mb_strlen(\trim($this->queryParts['where'])) == 0) {
+            throw new \PDOException('Cannot perform UPDATE action without WHERE condition!');
+        }
+
+        return [
+            $this->queryParts['command'],
+            $this->queryParts['table'],
+            $this->queryParts['join'],
+            $this->queryParts['set'],
+            $this->queryParts['where'],
+            $this->queryParts['limit'],
+            $this->queryParts['offset'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function buildDeleteQueryParts()
+    {
+        if (!empty($this->table)) {
+            $this->queryParts['from'] = \sprintf('%s FROM %s', $this->table[0], $this->table[0]);
+        }
+
+        if (!$this->queryParts['where'] || \mb_strlen(\trim($this->queryParts['where'])) == 0) {
+            throw new \PDOException('Cannot perform DELETE action without WHERE condition!');
+        }
+
+        return [
+            $this->queryParts['command'],
+            $this->queryParts['from'],
+            $this->queryParts['join'],
+            $this->queryParts['where'],
+            $this->queryParts['limit'],
+            $this->queryParts['offset'],
+        ];
     }
 
     /**
