@@ -17,6 +17,8 @@ class TestTableOneRepository extends AbstractRepository
      * @param null|float $floatColNull
      * @param null|string $createdAt
      * @param null|string $updatedAt
+     *
+     * @return TestTableOneEntity
      */
     public function create(
         $id,
@@ -29,21 +31,24 @@ class TestTableOneRepository extends AbstractRepository
         $createdAt = null,
         $updatedAt = null
     ) {
+        $testTableOneEntity = (new TestTableOneEntity())
+            ->setId($id)
+            ->setIntColNotNull($intColNotNull)
+            ->setVarcharColNotNull($varcharColNotNull)
+            ->setFloatColNotNull($floatColNotNull)
+            ->setIntColNull($intColNull)
+            ->setVarcharColNull($varcharColNull)
+            ->setFloatColNull($floatColNull)
+            ->setCreatedAt($createdAt)
+            ->setUpdatedAt($updatedAt)
+        ;
+
         $this
-            ->createQueryBuilder(
-                (new TestTableOneEntity())
-                    ->setId($id)
-                    ->setIntColNotNull($intColNotNull)
-                    ->setVarcharColNotNull($varcharColNotNull)
-                    ->setFloatColNotNull($floatColNotNull)
-                    ->setIntColNull($intColNull)
-                    ->setVarcharColNull($varcharColNull)
-                    ->setFloatColNull($floatColNull)
-                    ->setCreatedAt($createdAt)
-                    ->setUpdatedAt($updatedAt)
-            )
+            ->createQueryBuilder($testTableOneEntity)
             ->insert()
         ;
+
+        return $testTableOneEntity;
     }
 
     /**
@@ -56,6 +61,8 @@ class TestTableOneRepository extends AbstractRepository
      * @param null|float $floatColNull
      * @param null|string $createdAt
      * @param null|string $updatedAt
+     *
+     * @return TestTableOneEntity
      */
     public function createOnDuplicateKeyUpdate(
         $id,
@@ -68,22 +75,25 @@ class TestTableOneRepository extends AbstractRepository
         $createdAt = null,
         $updatedAt = null
     ) {
+        $testTableOneEntity = (new TestTableOneEntity())
+            ->setId($id)
+            ->setIntColNotNull($intColNotNull)
+            ->setVarcharColNotNull($varcharColNotNull)
+            ->setFloatColNotNull($floatColNotNull)
+            ->setIntColNull($intColNull)
+            ->setVarcharColNull($varcharColNull)
+            ->setFloatColNull($floatColNull)
+            ->setCreatedAt($createdAt)
+            ->setUpdatedAt($updatedAt)
+        ;
+
         $this
-            ->createQueryBuilder(
-                (new TestTableOneEntity())
-                    ->setId($id)
-                    ->setIntColNotNull($intColNotNull)
-                    ->setVarcharColNotNull($varcharColNotNull)
-                    ->setFloatColNotNull($floatColNotNull)
-                    ->setIntColNull($intColNull)
-                    ->setVarcharColNull($varcharColNull)
-                    ->setFloatColNull($floatColNull)
-                    ->setCreatedAt($createdAt)
-                    ->setUpdatedAt($updatedAt)
-            )
+            ->createQueryBuilder($testTableOneEntity)
             ->onDuplicateKeyUpdate(TestTableOneEntity::COLUMN_UPDATED_AT, $updatedAt)
             ->insert()
         ;
+
+        return $testTableOneEntity;
     }
 
     /**
@@ -96,6 +106,8 @@ class TestTableOneRepository extends AbstractRepository
      * @param null|float $floatColNull
      * @param null|string $createdAt
      * @param null|string $updatedAt
+     *
+     * @return TestTableOneEntity
      */
     public function createIgnore(
         $id,
@@ -108,21 +120,24 @@ class TestTableOneRepository extends AbstractRepository
         $createdAt = null,
         $updatedAt = null
     ) {
+        $testTableOneEntity = (new TestTableOneEntity())
+            ->setId($id)
+            ->setIntColNotNull($intColNotNull)
+            ->setVarcharColNotNull($varcharColNotNull)
+            ->setFloatColNotNull($floatColNotNull)
+            ->setIntColNull($intColNull)
+            ->setVarcharColNull($varcharColNull)
+            ->setFloatColNull($floatColNull)
+            ->setCreatedAt($createdAt)
+            ->setUpdatedAt($updatedAt)
+        ;
+
         $this
-            ->createQueryBuilder(
-                (new TestTableOneEntity())
-                    ->setId($id)
-                    ->setIntColNotNull($intColNotNull)
-                    ->setVarcharColNotNull($varcharColNotNull)
-                    ->setFloatColNotNull($floatColNotNull)
-                    ->setIntColNull($intColNull)
-                    ->setVarcharColNull($varcharColNull)
-                    ->setFloatColNull($floatColNull)
-                    ->setCreatedAt($createdAt)
-                    ->setUpdatedAt($updatedAt)
-            )
+            ->createQueryBuilder($testTableOneEntity)
             ->insertIgnore()
         ;
+
+        return $testTableOneEntity;
     }
 
     /**
@@ -135,6 +150,8 @@ class TestTableOneRepository extends AbstractRepository
      * @param null|float $floatColNull
      * @param null|string $createdAt
      * @param null|string $updatedAt
+     *
+     * @return TestTableOneEntity
      */
     public function createReplace(
         $id,
@@ -147,21 +164,24 @@ class TestTableOneRepository extends AbstractRepository
         $createdAt = null,
         $updatedAt = null
     ) {
+        $testTableOneEntity = (new TestTableOneEntity())
+            ->setId($id)
+            ->setIntColNotNull($intColNotNull)
+            ->setVarcharColNotNull($varcharColNotNull)
+            ->setFloatColNotNull($floatColNotNull)
+            ->setIntColNull($intColNull)
+            ->setVarcharColNull($varcharColNull)
+            ->setFloatColNull($floatColNull)
+            ->setCreatedAt($createdAt)
+            ->setUpdatedAt($updatedAt)
+        ;
+
         $this
-            ->createQueryBuilder(
-                (new TestTableOneEntity())
-                    ->setId($id)
-                    ->setIntColNotNull($intColNotNull)
-                    ->setVarcharColNotNull($varcharColNotNull)
-                    ->setFloatColNotNull($floatColNotNull)
-                    ->setIntColNull($intColNull)
-                    ->setVarcharColNull($varcharColNull)
-                    ->setFloatColNull($floatColNull)
-                    ->setCreatedAt($createdAt)
-                    ->setUpdatedAt($updatedAt)
-            )
+            ->createQueryBuilder($testTableOneEntity)
             ->replace()
         ;
+
+        return $testTableOneEntity;
     }
 
     /**

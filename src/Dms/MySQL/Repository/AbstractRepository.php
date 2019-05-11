@@ -50,7 +50,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             $entityData = &$entity->data();
 
             foreach ($primaryKeysAutoIncrement as $primaryKeyAutoIncrement) {
-                $entityData[$primaryKeyAutoIncrement] = (int) $connection->lastInsertId();
+                $entityData[$primaryKeyAutoIncrement] = (int) $connection->lastInsertId($entity::TABLE_NAME);
             }
         }
 

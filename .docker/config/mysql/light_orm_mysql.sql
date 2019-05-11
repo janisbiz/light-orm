@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS `test_table_one`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `test_table_one` (
-  `id` int(11) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `int_col_not_null` int(11) NOT NULL,
   `varchar_col_not_null` varchar(255) NOT NULL,
   `float_col_not_null` float NOT NULL,

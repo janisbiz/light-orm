@@ -9,13 +9,19 @@ class TestTableTwoRepository extends AbstractRepository
 {
     /**
      * @param int $id
+     *
+     * @return TestTableTwoEntity
      */
     public function create($id)
     {
+        $testTableTwoEntity = (new TestTableTwoEntity())->setId($id);
+
         $this
-            ->createQueryBuilder((new TestTableTwoEntity())->setId($id))
+            ->createQueryBuilder($testTableTwoEntity)
             ->insert()
         ;
+
+        return $testTableTwoEntity;
     }
 
     /**
