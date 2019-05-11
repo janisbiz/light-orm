@@ -42,7 +42,7 @@ class RepositoryFeatureContext extends FeatureContext
     }
 
     /**
-     * @When /^I call method "(.*)" with parameters:$/
+     * @When /^I call method "(.*)" on repository with parameters:$/
      *
      * @param string $method
      * @param TableNode $parameters
@@ -59,14 +59,14 @@ class RepositoryFeatureContext extends FeatureContext
     }
 
     /**
-     * @Then /^I call method "(.*)" which will return following rows:$/
+     * @Then /^I call method "(.*)" on repository which will return following rows:$/
      *
      * @param string $method
      * @param TableNode $rows
      *
      * @throws \Exception
      */
-    public function iCallMethodWhichWillReturnFollowingRows($method, TableNode $rows)
+    public function iCallMethodOnRepositoryWhichWillReturnFollowingRows($method, TableNode $rows)
     {
         $returnedRows = $this->repository->$method();
 
@@ -91,6 +91,26 @@ class RepositoryFeatureContext extends FeatureContext
                 }
             }
         }
+    }
+
+    /**
+     * @Given /^I begin transaction on connection "(.*)"$/
+     *
+     * @param string $connectionName
+     */
+    public function iBeginTransactionOnRepository($connectionName)
+    {
+        $this->connectionPool->getConnection($connectionName)->beginTransaction();
+    }
+
+    /**
+     * @Given /^I commit transaction on connection "(.*)"$/
+     *
+     * @param string $connectionName
+     */
+    public function iCommitTransactionOnRepository($connectionName)
+    {
+        $this->connectionPool->getConnection($connectionName)->commit();
     }
 
     /**
