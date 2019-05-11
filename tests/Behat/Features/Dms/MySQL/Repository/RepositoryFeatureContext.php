@@ -5,6 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 use Behat\Gherkin\Node\TableNode;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection as MySQLConnection;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
 use Janisbiz\LightOrm\Repository\RepositoryInterface;
 
 class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
@@ -141,6 +142,16 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     public function iCommitTransactionOnConnection($connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->commit();
+    }
+
+    /**
+     * @Given /^I rollback transaction on connection "(.*)"$/
+     *
+     * @param string $connectionName
+     */
+    public function iRollbackTransactionOnConnection($connectionName)
+    {
+        $this->connectionPool->getConnection($connectionName)->rollBack();
     }
 
     /**

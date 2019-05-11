@@ -172,16 +172,6 @@ class TestTableOneRepository extends AbstractRepository
         return $this->createQueryBuilder()->find();
     }
 
-    public function beginTransaction()
-    {
-        $this->getConnection()->beginTransaction();
-    }
-
-    public function commitTransaction()
-    {
-        $this->getConnection()->commit();
-    }
-
     /**
     * @return string
     */

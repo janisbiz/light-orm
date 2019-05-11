@@ -23,8 +23,12 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
     {
         $returnedRows = static::$repository->$method();
 
-        if (\count($returnedRows) !== \count($rows->getRows()) - 1) {
-            throw new \Exception('Count of expected rows doesn\'t match count of returned rows!');
+        if (($returnedRowsCount = \count($returnedRows)) !== ($expectedRowsCount = \count($rows->getRows()) - 1)) {
+            throw new \Exception(\sprintf(
+                'Count of expected rows(%d) does not match to count of returned rows(%d)!',
+                $expectedRowsCount,
+                $returnedRowsCount
+            ));
         }
 
         foreach ($rows as $i => $row) {

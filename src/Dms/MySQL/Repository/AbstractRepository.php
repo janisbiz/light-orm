@@ -33,12 +33,18 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
         $connection = $this->getConnection();
 
-        if ($commit = !$connection->inTransaction()) {
+        if (true === ($commit = !$connection->inTransaction())) {
             $connection->beginTransaction();
         }
 
-        $statement = $connection->prepare($queryBuilder->buildQuery());
-        $statement->execute($queryBuilder->bindValueData());
+        try {
+            $statement = $connection->prepare($queryBuilder->buildQuery());
+            $statement->execute($queryBuilder->bindValueData());
+        } catch (\Exception $e) {
+            $connection->rollBack();
+
+            throw $e;
+        }
 
         if (!empty($primaryKeysAutoIncrement = $entity->primaryKeysAutoIncrement())) {
             $entityData = &$entity->data();
@@ -91,15 +97,26 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
-        $statement = $this->getConnection()->prepare($queryBuilder->buildQuery());
-        $statement->execute($queryBuilder->bindData());
-        $statement->setFetchMode(
-            \PDO::FETCH_CLASS,
-            ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
-            [
-                false,
-            ]
-        );
+
+        try {
+            $statement = $this->getConnection()->prepare($queryBuilder->buildQuery());
+            $statement->execute($queryBuilder->bindData());
+            $statement->setFetchMode(
+                \PDO::FETCH_CLASS,
+                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
+                [
+                    false,
+                ]
+            );
+        } catch (\Exception $e) {
+            $connection = $this->getConnection();
+
+            if ($connection->inTransaction()) {
+                $connection->rollBack();
+            }
+
+            throw $e;
+        }
 
         return $statement->fetch();
     }
@@ -116,15 +133,25 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
-        $statement = $this->getConnection()->prepare($queryBuilder->buildQuery());
-        $statement->execute($queryBuilder->bindData());
-        $statement->setFetchMode(
-            \PDO::FETCH_CLASS,
-            ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
-            [
-                false,
-            ]
-        );
+        try {
+            $statement = $this->getConnection()->prepare($queryBuilder->buildQuery());
+            $statement->execute($queryBuilder->bindData());
+            $statement->setFetchMode(
+                \PDO::FETCH_CLASS,
+                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
+                [
+                    false,
+                ]
+            );
+        } catch (\Exception $e) {
+            $connection = $this->getConnection();
+
+            if ($connection->inTransaction()) {
+                $connection->rollBack();
+            }
+
+            throw $e;
+        }
 
         return $statement->fetchAll() ?: [];
     }
@@ -147,16 +174,23 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
         $connection = $this->getConnection();
 
-        if ($commit = !$connection->inTransaction()) {
+        if (true === ($commit = !$connection->inTransaction())) {
             $connection->beginTransaction();
         }
+        
+        try {
 
-        $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
+            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
 
-        $statement = $connection->prepare($queryBuilder->buildQuery());
-        $statement->execute($queryBuilder->bindData());
+            $statement = $connection->prepare($queryBuilder->buildQuery());
+            $statement->execute($queryBuilder->bindData());
 
-        $connection->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
+            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
+        } catch (\Exception $e) {
+            $connection->rollBack();
+
+            throw $e;
+        }
 
         if (true === $commit) {
             $connection->commit();
@@ -194,16 +228,22 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
         $connection = $this->getConnection();
 
-        if ($commit = !$connection->inTransaction()) {
+        if (true === ($commit = !$connection->inTransaction())) {
             $connection->beginTransaction();
         }
 
-        $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
+        try {
+            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
 
-        $statement = $connection->prepare($queryBuilder->buildQuery());
-        $statement->execute($queryBuilder->bindData());
+            $statement = $connection->prepare($queryBuilder->buildQuery());
+            $statement->execute($queryBuilder->bindData());
 
-        $connection->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
+            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
+        } catch (\Exception $e) {
+            $connection->rollBack();
+
+            throw $e;
+        }
 
         if (true === $commit) {
             $connection->commit();
