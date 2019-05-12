@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\TableTrait;
 
 class TableTraitTest extends AbstractTraitTestCase
@@ -56,5 +57,36 @@ class TableTraitTest extends AbstractTraitTestCase
     public function testTableWhenEmpty()
     {
         $this->table(self::TABLE_EMPTY);
+    }
+
+    public function testBuildTableQueryPart()
+    {
+        $this->table(self::TABLE);
+
+        $this->assertEquals(\reset($this->table), $this->buildTableQueryPart());
+    }
+
+    public function testBuildTableQueryPartWhenEmpty()
+    {
+        $this->table = [];
+
+        $this->assertEquals(null, $this->buildTableQueryPart());
+    }
+
+    public function testBuildFromQueryPart()
+    {
+        $this->table(self::TABLE);
+
+        $this->assertEquals(
+            \sprintf('%s %s', ConditionEnum::FROM, \implode(', ', $this->table)),
+            $this->buildFromQueryPart()
+        );
+    }
+
+    public function testBuildFromQueryPartWhenEmpty()
+    {
+        $this->table = [];
+
+        $this->assertEquals(null, $this->buildFromQueryPart());
     }
 }

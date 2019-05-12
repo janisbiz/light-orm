@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+
 trait WhereTrait
 {
     /**
@@ -83,5 +85,16 @@ trait WhereTrait
         }
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildWhereQueryPart()
+    {
+        return empty($this->where)
+            ? null
+            : \sprintf('%s %s', ConditionEnum::WHERE, \implode(' AND ', \array_unique($this->where)))
+        ;
     }
 }

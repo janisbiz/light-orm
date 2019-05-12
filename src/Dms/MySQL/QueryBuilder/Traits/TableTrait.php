@@ -2,15 +2,17 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+
 trait TableTrait
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $table = [];
 
     /**
-     * @param array|string $table
+     * @param string[]|string $table
      * @param boolean $clearAll
      *
      * @return $this
@@ -33,5 +35,24 @@ trait TableTrait
         }
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    protected function buildTableQueryPart()
+    {
+        return \reset($this->table);
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildFromQueryPart()
+    {
+        return empty($this->table)
+            ? null
+            : \sprintf('%s %s', ConditionEnum::FROM, \implode(', ', $this->table))
+        ;
     }
 }

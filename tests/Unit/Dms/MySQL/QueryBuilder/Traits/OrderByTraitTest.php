@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderByTrait;
 
@@ -48,6 +49,29 @@ class OrderByTraitTest extends AbstractTraitTestCase
             ),
             $this->orderBy
         );
+    }
+
+    /**
+     * @dataProvider orderByData
+     *
+     * @param array|string $columns
+     * @param string $keyword
+     */
+    public function testBuildOrderByQueryPart($columns, $keyword)
+    {
+        $this->orderBy($columns, $keyword);
+
+        $this->assertEquals(
+            \sprintf('%s %s', ConditionEnum::ORDER_BY, \implode(', ', $this->orderBy)),
+            $this->buildOrderByQueryPart()
+        );
+    }
+
+    public function testBuildOrderByQueryPartWhenEmpty()
+    {
+        $this->orderBy = [];
+
+        $this->assertEquals(null, $this->buildOrderByQueryPart());
     }
 
     public function orderByData()

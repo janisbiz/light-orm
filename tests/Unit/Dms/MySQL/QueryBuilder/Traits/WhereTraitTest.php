@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\WhereTrait;
 
@@ -137,5 +138,26 @@ class WhereTraitTest extends AbstractTraitTestCase
             ),
             $this->bind
         );
+    }
+
+    public function testBuildWhereQueryPart()
+    {
+        $this
+            ->where(self::WHERE_CONDITION, self::WHERE_CONDITION_BIND)
+            ->whereIn(self::WHERE_IN_OR_NOT_IN_COLUMN, self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+            ->whereNotIn(self::WHERE_IN_OR_NOT_IN_COLUMN, self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+        ;
+
+        $this->assertEquals(
+            \sprintf('%s %s', ConditionEnum::WHERE, \implode(' AND ', \array_unique($this->where))),
+            $this->buildWhereQueryPart()
+        );
+    }
+
+    public function testBuildWhereQueryPartWhenEmpty()
+    {
+        $this->where = [];
+
+        $this->assertEquals(null, $this->buildWhereQueryPart());
     }
 }

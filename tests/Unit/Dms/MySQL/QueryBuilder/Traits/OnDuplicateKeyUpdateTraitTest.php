@@ -109,6 +109,29 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
         );
     }
 
+    /**
+     * @dataProvider onDuplicateKeyUpdateData
+     *
+     * @param string $column
+     * @param null|int|string|double $value
+     */
+    public function testBuildOnDuplicateKeyUpdateQueryPart($column, $value)
+    {
+        $this->onDuplicateKeyUpdate($column, $value);
+
+        $this->assertEquals(
+            \sprintf('ON DUPLICATE KEY UPDATE %s', \implode(', ', $this->onDuplicateKeyUpdate)),
+            $this->buildOnDuplicateKeyUpdateQueryPart()
+        );
+    }
+
+    public function testBuildOnDuplicateKeyUpdateQueryPartWhenEmpty()
+    {
+        $this->onDuplicateKeyUpdate = [];
+
+        $this->assertEquals(null, $this->buildOnDuplicateKeyUpdateQueryPart());
+    }
+
     public function onDuplicateKeyUpdateData()
     {
         return [

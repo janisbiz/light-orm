@@ -28,4 +28,12 @@ trait CommandTrait
     {
         return $this->command;
     }
+
+    /**
+     * @return string
+     */
+    protected function buildCommandQueryPart()
+    {
+        return $this->command;
+    }
 }

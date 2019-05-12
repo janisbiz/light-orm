@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+
 trait HavingTrait
 {
     /**
@@ -29,5 +31,16 @@ trait HavingTrait
         }
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildHavingQueryPart()
+    {
+        return empty($this->having)
+            ? null
+            : \sprintf('%s %s', ConditionEnum::HAVING, \implode(' AND ', \array_unique($this->having)))
+        ;
     }
 }

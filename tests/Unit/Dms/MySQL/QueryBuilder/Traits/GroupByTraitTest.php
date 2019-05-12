@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupByTrait;
 
 class GroupByTraitTest extends AbstractTraitTestCase
@@ -50,5 +51,25 @@ class GroupByTraitTest extends AbstractTraitTestCase
     public function testGroupByWhenEmpty()
     {
         $this->groupBy(self::GROUP_BY_EMPTY);
+    }
+
+    public function testBuildGroupByQueryPart()
+    {
+        $this
+            ->groupBy(self::GROUP_BY_ARRAY)
+            ->groupBy(self::GROUP_BY)
+        ;
+
+        $this->assertEquals(
+            \sprintf('%s %s', ConditionEnum::GROUP_BY, \implode(', ', $this->groupBy)),
+            $this->buildGroupByQueryPart()
+        );
+    }
+
+    public function testBuildGroupByQueryPartWhenEmpty()
+    {
+        $this->groupBy = [];
+
+        $this->assertEquals(null, $this->buildGroupByQueryPart());
     }
 }

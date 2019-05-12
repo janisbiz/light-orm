@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+
 trait LimitOffsetTrait
 {
     /**
@@ -61,5 +63,21 @@ trait LimitOffsetTrait
         $this->limit = (int) $limit;
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildLimitQueryPart()
+    {
+        return empty($this->limit) ? null : \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit);
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildOffsetQueryPart()
+    {
+        return empty($this->offset) ? null : \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset);
     }
 }

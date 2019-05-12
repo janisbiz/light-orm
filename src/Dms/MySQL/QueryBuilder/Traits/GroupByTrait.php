@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+
 trait GroupByTrait
 {
     /**
@@ -28,5 +30,16 @@ trait GroupByTrait
         $this->groupBy = \array_merge($this->groupBy, $groupBy);
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildGroupByQueryPart()
+    {
+        return empty($this->groupBy)
+            ? null
+            : \sprintf('%s %s', ConditionEnum::GROUP_BY, \implode(', ', $this->groupBy))
+        ;
     }
 }

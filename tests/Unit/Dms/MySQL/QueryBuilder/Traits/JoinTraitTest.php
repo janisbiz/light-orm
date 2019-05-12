@@ -73,6 +73,28 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @dataProvider joinData
+     *
+     * @param string $join
+     * @param string $tableName
+     * @param string $onCondition
+     * @param array $bind
+     */
+    public function testBuildJoinQueryPart($join, $tableName, $onCondition, array $bind)
+    {
+        $this->join($join, $tableName, $onCondition, $bind);
+
+        $this->assertEquals(\implode(' ', $this->join), $this->buildJoinQueryPart());
+    }
+
+    public function testBuildJoinQueryPartWhenEmpty()
+    {
+        $this->join = [];
+
+        $this->assertEquals(null, $this->buildJoinQueryPart());
+    }
+
+    /**
      * @return array
      */
     public function joinData()

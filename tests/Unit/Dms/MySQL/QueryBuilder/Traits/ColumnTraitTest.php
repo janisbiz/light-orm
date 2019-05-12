@@ -57,4 +57,18 @@ class ColumnTraitTest extends AbstractTraitTestCase
     {
         $this->column(self::COLUMN_EMPTY);
     }
+
+    public function testBuildColumnQueryPart()
+    {
+        $this->column(self::COLUMN);
+
+        $this->assertEquals(\implode(', ', $this->column), $this->buildColumnQueryPart());
+    }
+
+    public function testBuildColumnQueryPartWhenEmpty()
+    {
+        $this->column = null;
+
+        $this->assertEquals('*', $this->buildColumnQueryPart());
+    }
 }

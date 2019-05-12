@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ValueTrait;
 
 class ValueTraitTest extends AbstractTraitTestCase
@@ -103,6 +104,34 @@ class ValueTraitTest extends AbstractTraitTestCase
             ),
             $this->bindValue
         );
+    }
+
+    /**
+     * @dataProvider valueData
+     *
+     * @param string $column
+     * @param null|int|string|double $value
+     */
+    public function testBuildValueQueryPart($column, $value)
+    {
+        $this->value($column, $value);
+
+        $this->assertEquals(
+            \sprintf(
+                '(%s) %s (%s)',
+                \implode(', ', \array_keys($this->value)),
+                ConditionEnum::VALUES,
+                \implode(', ', $this->value)
+            ),
+            $this->buildValueQueryPart()
+        );
+    }
+
+    public function testBuildValueQueryPartWhenEmpty()
+    {
+        $this->value = [];
+
+        $this->assertEquals(null, $this->buildValueQueryPart());
     }
 
     public function valueData()

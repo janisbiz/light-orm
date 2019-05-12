@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\SetTrait;
 
@@ -100,6 +101,29 @@ class SetTraitTest extends AbstractTraitTestCase
             ),
             $this->bind
         );
+    }
+
+    /**
+     * @dataProvider setData
+     *
+     * @param string $column
+     * @param string|int|double|null $value
+     */
+    public function testBuildSetQueryPart($column, $value)
+    {
+        $this->set($column, $value);
+
+        $this->assertEquals(
+            \sprintf('%s %s', ConditionEnum::SET, \implode(', ', \array_unique($this->set))),
+            $this->buildSetQueryPart()
+        );
+    }
+
+    public function testBuildSetQueryPartWhenEmpty()
+    {
+        $this->set = [];
+
+        $this->assertEquals(null, $this->buildSetQueryPart());
     }
 
     /**

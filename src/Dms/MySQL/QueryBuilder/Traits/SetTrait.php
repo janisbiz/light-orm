@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+
 trait SetTrait
 {
     /**
@@ -36,5 +38,16 @@ trait SetTrait
         ]);
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildSetQueryPart()
+    {
+        return empty($this->set)
+            ? null
+            : \sprintf('%s %s', ConditionEnum::SET, \implode(', ', \array_unique($this->set)))
+        ;
     }
 }

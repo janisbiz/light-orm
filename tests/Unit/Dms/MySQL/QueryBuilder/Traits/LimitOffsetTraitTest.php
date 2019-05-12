@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
 
 class LimitOffsetTraitTest extends AbstractTraitTestCase
@@ -79,5 +80,35 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
     public function testLimitEmpty()
     {
         $this->limit(self::LIMIT_EMPTY);
+    }
+
+    public function testBuildLimitQueryPart()
+    {
+        $this->limit(self::LIMIT);
+
+        $this->assertEquals(
+            \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit),
+            $this->buildLimitQueryPart()
+        );
+    }
+
+    public function testBuildLimitQueryPartWhenEmpty()
+    {
+        $this->assertEquals(null, $this->buildLimitQueryPart());
+    }
+
+    public function testBuildOffsetQueryPart()
+    {
+        $this->limitWithOffset(self::LIMIT, self::OFFSET);
+
+        $this->assertEquals(
+            \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset),
+            $this->buildOffsetQueryPart()
+        );
+    }
+
+    public function testBuildOffsetQueryPartWhenEmpty()
+    {
+        $this->assertEquals(null, $this->buildOffsetQueryPart());
     }
 }

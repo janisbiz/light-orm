@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 
 trait OrderByTrait
@@ -37,5 +38,16 @@ trait OrderByTrait
         }
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildOrderByQueryPart()
+    {
+        return empty($this->orderBy)
+            ? null
+            : \sprintf('%s %s', ConditionEnum::ORDER_BY, \implode(', ', $this->orderBy))
+        ;
     }
 }

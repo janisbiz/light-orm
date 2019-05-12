@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
 
@@ -47,5 +48,22 @@ class HavingTraitTest extends AbstractTraitTestCase
     public function testHavingWithEmptyCondition()
     {
         $this->having(self::HAVING_CONDITION_EMPTY);
+    }
+
+    public function testBuildHavingQueryPart()
+    {
+        $this->having(self::HAVING_CONDITION, self::HAVING_CONDITION_BIND);
+
+        $this->assertEquals(
+            \sprintf('%s %s', ConditionEnum::HAVING, \implode(' AND ', \array_unique($this->having))),
+            $this->buildHavingQueryPart()
+        );
+    }
+
+    public function testBuildHavingQueryPartWhenEmpty()
+    {
+        $this->having = [];
+
+        $this->assertEquals(null, $this->buildHavingQueryPart());
     }
 }

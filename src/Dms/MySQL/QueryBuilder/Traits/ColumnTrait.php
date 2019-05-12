@@ -34,4 +34,12 @@ trait ColumnTrait
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    protected function buildColumnQueryPart()
+    {
+        return empty($this->column) ? '*' : \implode(', ', $this->column);
+    }
 }

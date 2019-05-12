@@ -190,4 +190,12 @@ trait JoinTrait
     {
         return $this->joinAs(JoinEnum::FULL_OUTER_JOIN, $tableName, $alias, $onCondition, $bind);
     }
+
+    /**
+     * @return null|string
+     */
+    protected function buildJoinQueryPart()
+    {
+        return empty($this->join) ? null : \implode(' ', $this->join);
+    }
 }

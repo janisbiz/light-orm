@@ -22,4 +22,12 @@ trait UnionTrait
 
         return $this;
     }
+
+    /**
+     * @return null|string
+     */
+    protected function buildUnionAllQueryPart()
+    {
+        return empty($this->unionAll) ? null : \implode(' UNION ALL ', $this->unionAll);
+    }
 }

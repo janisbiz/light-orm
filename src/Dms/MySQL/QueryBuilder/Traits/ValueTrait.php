@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+
 trait ValueTrait
 {
     /**
@@ -61,5 +63,21 @@ trait ValueTrait
     public function bindValueData()
     {
         return $this->bindValue;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildValueQueryPart()
+    {
+        return empty($this->value)
+            ? null
+            : \sprintf(
+                '(%s) %s (%s)',
+                \implode(', ', \array_keys($this->value)),
+                ConditionEnum::VALUES,
+                \implode(', ', $this->value)
+            )
+        ;
     }
 }

@@ -50,4 +50,31 @@ class CommandTraitTest extends AbstractTraitTestCase
             CommandEnum::COMMANDS
         );
     }
+
+    /**
+     * @dataProvider buildCommandQueryPartData
+     *
+     * @param string $command
+     */
+    public function testBuildCommandQueryPart($command)
+    {
+        $this->command($command);
+
+        $this->assertEquals($this->command, $this->buildCommandQueryPart());
+    }
+
+    /**
+     * @return array
+     */
+    public function buildCommandQueryPartData()
+    {
+        return \array_map(
+            function ($val) {
+                return [
+                    $val
+                ];
+            },
+            CommandEnum::COMMANDS
+        );
+    }
 }

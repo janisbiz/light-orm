@@ -12,4 +12,16 @@ class UnionTraitTest extends AbstractTraitTestCase
     {
         $this->markTestIncomplete('Need to implement...');
     }
+
+    public function testBuildUnionAllQueryPart()
+    {
+        $this->markTestIncomplete('Need to implement...');
+    }
+
+    public function testBuildUnionAllQueryPartWhenEmpty()
+    {
+        $this->unionAll = [];
+
+        $this->assertEquals(null, $this->buildUnionAllQueryPart());
+    }
 }

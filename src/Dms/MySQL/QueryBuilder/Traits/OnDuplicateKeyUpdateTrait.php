@@ -48,4 +48,15 @@ trait OnDuplicateKeyUpdateTrait
 
         return $this;
     }
+
+    /**
+     * @return null|string
+     */
+    protected function buildOnDuplicateKeyUpdateQueryPart()
+    {
+        return empty($this->onDuplicateKeyUpdate)
+            ? null
+            : \sprintf('ON DUPLICATE KEY UPDATE %s', \implode(', ', $this->onDuplicateKeyUpdate))
+        ;
+    }
 }
