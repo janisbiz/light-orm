@@ -107,7 +107,7 @@ Feature: Repository Create
       | 1              | 2              |
     Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1-2' for key 'PRIMARY'"
 
-  Scenario: Create rows in tables "test_table_one", "test_table_one_two", "test_table_one_two" when in transaction with rollback
+  Scenario: Create rows in tables "test_table_one", "test_table_two", "test_table_one_two" when in transaction with rollback
     When I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
     And I begin transaction on connection "light_orm_mysql"
@@ -143,7 +143,7 @@ Feature: Repository Create
       | 1              | 2              |
       | 2              | 1              |
 
-  Scenario: Create rows in tables "test_table_one", "test_table_one_two", "test_table_one_two" when in transaction
+  Scenario: Create rows in tables "test_table_one", "test_table_two", "test_table_one_two" when in transaction
     Given I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
     And I begin transaction on connection "light_orm_mysql"
@@ -227,7 +227,7 @@ Feature: Repository Create
       | 5  |
       | 6  |
 
-  Scenario: Create rows in tables "test_table_one", "test_table_one_two" with auto increment when in transaction with rollback
+  Scenario: Create rows in tables "test_table_one", "test_table_two" with auto increment when in transaction with rollback
     When I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
     And I begin transaction on connection "light_orm_mysql"
@@ -269,7 +269,7 @@ Feature: Repository Create
       | 5  |
       | 6  |
 
-  Scenario: Create rows in tables "test_table_one", "test_table_one_two" with auto increment when in transaction
+  Scenario: Create rows in tables "test_table_one", "test_table_two" with auto increment when in transaction
     Given I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
     And I begin transaction on connection "light_orm_mysql"
