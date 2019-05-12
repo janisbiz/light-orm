@@ -3,15 +3,9 @@
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
 use Behat\Gherkin\Node\TableNode;
-use Janisbiz\LightOrm\Entity\EntityInterface;
 
 class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
 {
-    /**
-     * @var EntityInterface[]
-     */
-    private $entities;
-
     /**
      * @When /^I call method "(.*)" on repository with parameters:$/
      *
@@ -33,7 +27,7 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
         try {
             $this->callMethodOnRepositoryWithParameters($method, $parameters);
         } catch (\Exception $e) {
-            $this->entities = [];
+            static::$entities = [];
 
             static::$exception = $e;
         }
@@ -48,7 +42,9 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
      */
     public function iHaveFollowingEntitiesWithIdentifiersSet(TableNode $identifiers)
     {
-        if (($entitiesCount = \count($this->entities)) !== ($identifiersCount = \count($identifiers->getRows()) - 1)) {
+        if (($entitiesCount = \count(static::$entities))
+            !== ($identifiersCount = \count($identifiers->getRows()) - 1)
+        ) {
             throw new \Exception(\sprintf(
                 'Count of entities(%d) does not match to count of identifiers(%d)!',
                 $entitiesCount,
@@ -57,7 +53,7 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
         }
 
         foreach ($identifiers as $i => $identifier) {
-            $entity = $this->entities[$i];
+            $entity = static::$entities[$i];
 
             foreach ($identifier as $identifierName => $identifierValue) {
                 $getterMethod = \sprintf('get%s', \ucfirst($identifierName));
@@ -81,12 +77,12 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
      */
     private function callMethodOnRepositoryWithParameters($method, TableNode $parameters)
     {
-        $this->entities = [];
+        static::$entities = [];
 
         foreach ($parameters as $methodParameters) {
-            $this->entities[] = \call_user_func_array([static::$repository, $method], $methodParameters);
+            static::$entities[] = \call_user_func_array([static::$repository, $method], $methodParameters);
         }
 
-        \array_filter($this->entities);
+        \array_filter(static::$entities);
     }
 }

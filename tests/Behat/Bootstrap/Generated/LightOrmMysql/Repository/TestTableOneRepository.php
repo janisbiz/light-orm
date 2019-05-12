@@ -193,6 +193,36 @@ class TestTableOneRepository extends AbstractRepository
     }
 
     /**
+     * @param int $id
+     * @param int $intColNotNull
+     * @param string $varcharColNotNull
+     * @param float $floatColNotNull
+     * @param null|int $intColNull
+     * @param null|string $varcharColNull
+     * @param null|float $floatColNull
+     * @param null|string $createdAt
+     * @param null|string $updatedAt
+     *
+     * @return TestTableOneEntity
+     */
+    public function updateRow(
+        $id,
+        $varcharColNotNull,
+        $varcharColNull = null,
+        $updatedAt = null
+    ) {
+        $testTableOneEntity = $this->createQueryBuilder()->where('test_table_one.id = :id', ['id' => $id])->findOne();
+
+        $testTableOneEntity
+            ->setVarcharColNotNull($varcharColNotNull)
+            ->setVarcharColNull($varcharColNull)
+            ->setUpdatedAt($updatedAt)
+        ;
+
+        return $this->createQueryBuilder($testTableOneEntity)->update();
+    }
+
+    /**
     * @return string
     */
     protected function getModelClass()

@@ -3,11 +3,6 @@
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
 use Behat\Gherkin\Node\TableNode;
-use Janisbiz\LightOrm\Connection\ConnectionInterface;
-use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection as MySQLConnection;
-use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
-use Janisbiz\LightOrm\Repository\RepositoryInterface;
-use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
 
 class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
 {
@@ -21,27 +16,27 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
      */
     public function iCallMethodOnRepositoryWhichWillReturnFollowingRows($method, TableNode $rows)
     {
-        $returnedRows = static::$repository->$method();
+        static::$entities = static::$repository->$method();
 
-        if (($returnedRowsCount = \count($returnedRows)) !== ($expectedRowsCount = \count($rows->getRows()) - 1)) {
+        if (($entitiesCount = \count(static::$entities)) !== ($expectedRowsCount = \count($rows->getRows()) - 1)) {
             throw new \Exception(\sprintf(
                 'Count of expected rows(%d) does not match to count of returned rows(%d)!',
                 $expectedRowsCount,
-                $returnedRowsCount
+                $entitiesCount
             ));
         }
 
         foreach ($rows as $i => $row) {
-            $returnedRow = $returnedRows[$i];
+            $entity = static::$entities[$i];
 
             foreach ($row as $column => $value) {
                 $getterMethod = \sprintf('get%s', \ucfirst($column));
-                if ($value != $returnedRow->$getterMethod()) {
+                if ($value != $entity->$getterMethod()) {
                     throw new \Exception(\sprintf(
                         'Data mismatch, when reading stored row data! %s::%s => %s != %s => %s',
-                        \get_class($returnedRow),
+                        \get_class($entity),
                         $getterMethod,
-                        $returnedRow->$getterMethod(),
+                        $entity->$getterMethod(),
                         $column,
                         $value
                     ));

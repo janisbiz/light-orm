@@ -28,7 +28,60 @@ class TestTableOneTwoRepository extends AbstractRepository
      */
     public function read()
     {
-        return $this->createQueryBuilder()->find();
+        return $this->createQueryBuilder()->orderBy(TestTableOneTwoEntity::COLUMN_TEST_TABLE_ONE_ID)->find();
+    }
+
+    /**
+     * @param int $testTableOneIdCurrent
+     * @param int $testTableTwoIdCurrent
+     * @param int $testTableOneId
+     * @param int $testTableTwoId
+     *
+     * @return TestTableOneTwoEntity
+     */
+    public function updateRow(
+        $testTableOneIdCurrent,
+        $testTableTwoIdCurrent,
+        $testTableOneId,
+        $testTableTwoId
+    ) {
+        $testTableOneTwoEntity = $this
+            ->createQueryBuilder()
+            ->where('test_table_one_two.test_table_one_id = :test_table_one_id')
+            ->where('test_table_one_two.test_table_two_id = :test_table_two_id')
+            ->bind([
+                'test_table_one_id' => $testTableOneIdCurrent,
+                'test_table_two_id' => $testTableTwoIdCurrent,
+            ])
+            ->findOne()
+        ;
+
+        $testTableOneTwoEntity
+            ->setTestTableOneId($testTableOneId)
+            ->setTestTableTwoId($testTableTwoId)
+        ;
+
+        return $this->createQueryBuilder($testTableOneTwoEntity)->update();
+    }
+
+    /**
+     * @param TestTableOneTwoEntity $testTableOneTwoEntity
+     * @param int $testTableOneId
+     * @param int $testTableTwoId
+     *
+     * @return TestTableOneTwoEntity
+     */
+    public function updateEntity(
+        TestTableOneTwoEntity $testTableOneTwoEntity,
+        $testTableOneId,
+        $testTableTwoId
+    ) {
+        $testTableOneTwoEntity
+            ->setTestTableOneId($testTableOneId)
+            ->setTestTableTwoId($testTableTwoId)
+        ;
+
+        return $this->createQueryBuilder($testTableOneTwoEntity)->update();
     }
 
     /**

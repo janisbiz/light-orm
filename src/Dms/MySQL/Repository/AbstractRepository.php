@@ -163,7 +163,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      */
     public function update(QueryBuilderInterface $queryBuilder, $toString = false)
     {
-        if (($entity = $queryBuilder->getEntity()) && !$this->addEntityUpdateQuery($queryBuilder, $entity)) {
+        if (($entity = $queryBuilder->getEntity()) && !$this->addEntityUpdateQuery($queryBuilder, $entity, $toString)) {
             return $entity;
         }
 
@@ -320,21 +320,23 @@ abstract class AbstractRepository extends BaseAbstractRepository
     /**
      * @param QueryBuilderInterface $queryBuilder
      * @param EntityInterface $entity
+     * @param bool $toString
      *
      * @return bool
      */
-    protected function addEntityUpdateQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity)
+    protected function addEntityUpdateQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity, $toString)
     {
         $performUpdate = false;
         $entityData = &$entity->data();
+        $entityDataOriginal = &$entity->dataOriginal();
 
-        if (!$entity->isNew() || true === $entity->isSaved()) {
+        if (false === $entity->isNew() || true === $entity->isSaved()) {
             foreach ($entity->primaryKeys() as $primaryKey) {
-                if (isset($entityData[$primaryKey]) && !\is_null($entityData[$primaryKey])) {
+                if (isset($entityDataOriginal[$primaryKey])) {
                     $queryBuilder->where(
                         \sprintf('%s.%s = :%s_WhereUpdate', $entity::TABLE_NAME, $primaryKey, $primaryKey),
                         [
-                            \sprintf('%s_WhereUpdate', $primaryKey) => $entityData[$primaryKey],
+                            \sprintf('%s_WhereUpdate', $primaryKey) => $entityDataOriginal[$primaryKey],
                         ]
                     );
                 }
@@ -343,18 +345,23 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $performUpdate;
         }
 
-        $entityDataOriginal = &$entity->dataOriginal();
-
         foreach ($entity->columns() as $column) {
-            if ($column != 'id' && \array_key_exists($column, $entityDataOriginal)) {
-                /** Updating only what is needed to update, for faster queries, skipping equal values */
-                if (isset($entityDataOriginal[$column]) && $entityDataOriginal[$column] == $entityData[$column]) {
-                    continue;
-                } elseif (false === $performUpdate) {
-                    $performUpdate = true;
-                }
+            /** Updating only what is needed to update, for faster queries, skipping equal values */
+            if (!\array_key_exists($column, $entityDataOriginal)
+                || (isset($entityDataOriginal[$column]) && $entityDataOriginal[$column] == $entityData[$column])
+            ) {
+                continue;
+            } elseif (false === $performUpdate) {
+                $performUpdate = true;
+            }
 
-                $queryBuilder->set(\sprintf('%s.%s', $entity::TABLE_NAME, $column), $entityData[$column]);
+            $queryBuilder->set(\sprintf('%s.%s', $entity::TABLE_NAME, $column), $entityData[$column]);
+
+            /**
+             * If we want to get query as astring, we don't perform actions on original data as update won't be
+             * performed!
+             */
+            if (false === $toString) {
                 $entityDataOriginal[$column] = $entityData[$column];
             }
         }
