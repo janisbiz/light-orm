@@ -13,4 +13,11 @@ interface RepositoryInterface
      * @return int
      */
     public function count(QueryBuilderInterface $queryBuilder, $toString = false);
+
+    /**
+     * @param null|double|int|string $value
+     *
+     * @return null
+     */
+    public function quote($value);
 }

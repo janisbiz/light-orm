@@ -16,6 +16,46 @@ abstract class AbstractRepository implements RepositoryInterface
     protected $connectionPool;
 
     /**
+     * @param null|double|int|string $value
+     *
+     * @return null
+     * @throws \Exception
+     */
+    public function quote($value)
+    {
+        switch ($phpParamType = \mb_strtolower(\gettype($value))) {
+            case 'null':
+                $pdoParamType = \PDO::PARAM_NULL;
+
+                break;
+
+            case 'integer':
+                $pdoParamType = \PDO::PARAM_INT;
+
+                break;
+
+            case 'double':
+            case 'string':
+                $pdoParamType = \PDO::PARAM_STR;
+
+                break;
+
+            case 'boolean':
+                $pdoParamType = \PDO::PARAM_BOOL;
+
+                break;
+
+            default:
+                throw new \Exception(\sprintf(
+                    'Parameter type "%s" could not be quoted for SQL execution!',
+                    $phpParamType
+                ));
+        }
+
+        return $this->getConnection()->quote($value, $pdoParamType);
+    }
+
+    /**
      * @return ConnectionInterface
      */
     protected function getConnection()
