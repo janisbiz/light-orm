@@ -4,9 +4,9 @@ namespace Janisbiz\LightOrm\Tests\Behat\Features\Connection;
 
 use Janisbiz\LightOrm\Connection\ConnectionConfigInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig as MySQLConnectionConfig;
-use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\AbstractFeatureContext;
 
-class ConnectionFeatureContext extends FeatureContext
+class ConnectionFeatureContext extends AbstractFeatureContext
 {
     /**
      * @var ConnectionConfigInterface

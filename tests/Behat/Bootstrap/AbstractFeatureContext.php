@@ -6,7 +6,7 @@ use Behat\Behat\Context\Context;
 use Janisbiz\LightOrm\ConnectionPool;
 use Symfony\Component\Yaml\Parser;
 
-class FeatureContext implements Context
+abstract class AbstractFeatureContext implements Context
 {
     const CONFIG_FILE_NAME = 'light-orm.yaml';
 

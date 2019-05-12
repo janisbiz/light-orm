@@ -11,10 +11,10 @@ use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\RepositoryClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\WriterConfig as MySQLWriterConfig;
 use Janisbiz\LightOrm\Generator;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
-use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\AbstractFeatureContext;
 use Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext;
 
-class GeneratorFeatureContext extends FeatureContext
+class GeneratorFeatureContext extends AbstractFeatureContext
 {
     /**
      * @var string
