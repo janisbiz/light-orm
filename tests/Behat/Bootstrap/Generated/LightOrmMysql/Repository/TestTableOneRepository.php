@@ -211,7 +211,16 @@ class TestTableOneRepository extends AbstractRepository
         $varcharColNull = null,
         $updatedAt = null
     ) {
-        $testTableOneEntity = $this->createQueryBuilder()->where('test_table_one.id = :id', ['id' => $id])->findOne();
+        $testTableOneEntity = $this
+            ->createQueryBuilder()
+            ->where(
+                'test_table_one.id = :id',
+                [
+                    'id' => $id,
+                ]
+            )
+            ->findOne()
+        ;
 
         $testTableOneEntity
             ->setVarcharColNotNull($varcharColNotNull)
@@ -220,6 +229,33 @@ class TestTableOneRepository extends AbstractRepository
         ;
 
         return $this->createQueryBuilder($testTableOneEntity)->update();
+    }
+
+    /**
+     * @param int $id
+     */
+    public function deleteRow($id)
+    {
+        $testTableOneEntity = $this
+            ->createQueryBuilder()
+            ->where(
+                'test_table_one.id = :id',
+                [
+                    'id' => $id,
+                ]
+            )
+            ->findOne()
+        ;
+
+        $this->createQueryBuilder($testTableOneEntity)->delete();
+    }
+
+    /**
+     * @param TestTableOneEntity $testTableOneEntity
+     */
+    public function deleteEntity(TestTableOneEntity $testTableOneEntity)
+    {
+        $this->createQueryBuilder($testTableOneEntity)->delete();
     }
 
     /**

@@ -9,6 +9,11 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\FeatureContext;
 abstract class AbstractRepositoryFeatureContext extends FeatureContext
 {
     /**
+     * @var RepositoryInterface[]
+     */
+    protected static $repositories = [];
+
+    /**
      * @var RepositoryInterface
      */
     protected static $repository;

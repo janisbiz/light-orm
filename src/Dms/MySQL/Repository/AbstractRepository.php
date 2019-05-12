@@ -117,7 +117,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             throw $e;
         }
 
-        return $statement->fetch();
+        return $statement->fetch() ? : null;
     }
 
     /**

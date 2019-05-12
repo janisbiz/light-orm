@@ -106,12 +106,12 @@ Feature: Repository Update
       | 2  | varcharNotNull2UpdatedTransaction | varcharNull2UpdatedTransaction | 2019-01-03 01:00:00 |
       | 3  | varcharNotNull3UpdatedTransaction | varcharNull3UpdatedTransaction | 2019-01-03 01:00:00 |
     When I rollback transaction on connection "light_orm_mysql"
-    Then I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository"
+    Then I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | testTableOneId | testTableTwoId |
       | 1              | 2              |
       | 2              | 1              |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository" as active repository
     Then I call method "read" on repository which will return following rows:
       | id | intColNotNull | varcharColNotNull      | floatColNotNull | intColNull | varcharColNull      | floatColNull | createdAt           | updatedAt           |
       | 1  | 1             | varcharNotNull1Updated | 1.1             | 2          | varcharNull1Updated | 2.2          | 2019-01-01 00:00:00 | 2019-01-03 00:00:00 |
@@ -140,12 +140,12 @@ Feature: Repository Update
       | 2  | varcharNotNull2UpdatedTransaction | varcharNull2UpdatedTransaction | 2019-01-03 01:00:00 |
       | 3  | varcharNotNull3UpdatedTransaction | varcharNull3UpdatedTransaction | 2019-01-03 01:00:00 |
     When I commit transaction on connection "light_orm_mysql"
-    Then I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository"
+    Then I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | testTableOneId | testTableTwoId |
       | 1              | 1              |
       | 2              | 2              |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository" as active repository
     Then I call method "read" on repository which will return following rows:
       | id | intColNotNull | varcharColNotNull                 | floatColNotNull | intColNull | varcharColNull                 | floatColNull | createdAt           | updatedAt           |
       | 1  | 1             | varcharNotNull1UpdatedTransaction | 1.1             | 2          | varcharNull1UpdatedTransaction | 2.2          | 2019-01-01 00:00:00 | 2019-01-03 01:00:00 |

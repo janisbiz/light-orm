@@ -85,6 +85,14 @@ class TestTableOneTwoRepository extends AbstractRepository
     }
 
     /**
+     * @param TestTableOneTwoEntity $testTableOneTwoEntity
+     */
+    public function deleteEntity(TestTableOneTwoEntity $testTableOneTwoEntity)
+    {
+        $this->createQueryBuilder($testTableOneTwoEntity)->delete();
+    }
+
+    /**
     * @return string
     */
     protected function getModelClass()

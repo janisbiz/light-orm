@@ -11,6 +11,14 @@ use Janisbiz\LightOrm\Repository\RepositoryInterface;
 class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
 {
     /**
+     * @BeforeScenario
+     */
+    public function beforeScenario()
+    {
+        static::$repositories = [];
+    }
+
+    /**
      * @Given /^I flush all tables for connection "(.*)"$/
      *
      * @param string $connectionName
@@ -91,15 +99,40 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      */
     public function iCreateRepository($repositoryClass)
     {
-        static::$repository = new $repositoryClass;
+        if (\array_key_exists($repositoryClass, static::$repositories)) {
+            return;
+        }
 
-        if (!static::$repository instanceof RepositoryInterface) {
+        $repository = new $repositoryClass;
+
+        if (!$repository instanceof RepositoryInterface) {
             throw new \Exception(\sprintf(
                 'Class "%s" must implement "%s"',
-                \get_class(static::$repository),
+                \get_class($repository),
                 RepositoryInterface::class
             ));
         }
+
+        static::$repositories[$repositoryClass] = static::$repository = $repository;
+    }
+
+    /**
+     * @Given /^I make repository "(.*)" as active repository$/
+     *
+     * @param string $repositoryClass
+     *
+     * @throws \Exception
+     */
+    public function iMakeRepositoryAsActiveRepository($repositoryClass)
+    {
+        if (!\array_key_exists($repositoryClass, static::$repositories)) {
+            throw new \Exception(\sprintf(
+                'There is no present repository "%s"! Please create repository before making it active!',
+                $repositoryClass
+            ));
+        }
+
+        static::$repository = static::$repositories[$repositoryClass];
     }
 
     /**

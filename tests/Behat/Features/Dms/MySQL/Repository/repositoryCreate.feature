@@ -127,17 +127,17 @@ Feature: Repository Create
       | 3              | 4              |
       | 4              | 3              |
     And I rollback transaction on connection "light_orm_mysql"
-    Then I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    Then I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id | intColNotNull | varcharColNotNull      | floatColNotNull | intColNull | varcharColNull      | floatColNull | createdAt           | updatedAt           |
       | 1  | 1             | varcharNotNull1Replace | 1.1             | 2          | varcharNull1Replace | 2.2          | 2019-01-01 00:00:00 | 2019-01-01 02:00:00 |
       | 2  | 3             | varcharNotNull2        | 3.3             | 4          | varcharNull2        | 4.4          | 2019-01-02 00:00:00 |                     |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id |
       | 1  |
       | 2  |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | testTableOneId | testTableTwoId |
       | 1              | 2              |
@@ -163,21 +163,21 @@ Feature: Repository Create
       | 3              | 4              |
       | 4              | 3              |
     And I commit transaction on connection "light_orm_mysql"
-    Then I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    Then I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id | intColNotNull | varcharColNotNull      | floatColNotNull | intColNull | varcharColNull      | floatColNull | createdAt           | updatedAt           |
       | 1  | 1             | varcharNotNull1Replace | 1.1             | 2          | varcharNull1Replace | 2.2          | 2019-01-01 00:00:00 | 2019-01-01 02:00:00 |
       | 2  | 3             | varcharNotNull2        | 3.3             | 4          | varcharNull2        | 4.4          | 2019-01-02 00:00:00 |                     |
       | 3  | 5             | varcharNotNull3        | 5.5             | 6          | varcharNull3        | 6.6          | 2019-01-04 00:00:00 |                     |
       | 4  | 7             | varcharNotNull4        | 7.7             | 8          | varcharNull4        | 8.8          | 2019-01-04 00:00:00 |                     |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id |
       | 1  |
       | 2  |
       | 3  |
       | 4  |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | testTableOneId | testTableTwoId |
       | 1              | 2              |
@@ -250,7 +250,7 @@ Feature: Repository Create
       | 7  |
       | 8  |
     And I rollback transaction on connection "light_orm_mysql"
-    Then I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    Then I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id | intColNotNull | varcharColNotNull      | floatColNotNull | intColNull | varcharColNull      | floatColNull | createdAt           | updatedAt           |
       | 1  | 1             | varcharNotNull1Replace | 1.1             | 2          | varcharNull1Replace | 2.2          | 2019-01-01 00:00:00 | 2019-01-01 02:00:00 |
@@ -259,7 +259,7 @@ Feature: Repository Create
       | 4  | 7             | varcharNotNull4        | 7.7             | 8          | varcharNull4        | 8.8          | 2019-01-04 00:00:00 |                     |
       | 5  | 9             | varcharNotNull9        | 9.9             | 10         | varcharNull9        | 10.10        | 2019-01-07 00:00:00 |                     |
       | 6  | 11            | varcharNotNull11       | 11.11           | 12         | varcharNull11       | 12.12        | 2019-01-08 00:00:00 |                     |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id |
       | 1  |
@@ -292,7 +292,7 @@ Feature: Repository Create
       | 9  |
       | 10 |
     And I commit transaction on connection "light_orm_mysql"
-    Then I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    Then I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id | intColNotNull | varcharColNotNull      | floatColNotNull | intColNull | varcharColNull      | floatColNull | createdAt           | updatedAt           |
       | 1  | 1             | varcharNotNull1Replace | 1.1             | 2          | varcharNull1Replace | 2.2          | 2019-01-01 00:00:00 | 2019-01-01 02:00:00 |
@@ -303,7 +303,7 @@ Feature: Repository Create
       | 6  | 11            | varcharNotNull11       | 11.11           | 12         | varcharNull11       | 12.12        | 2019-01-08 00:00:00 |                     |
       | 9  | 13            | varcharNotNull3        | 13.13           | 14         | varcharNull3        | 14.14        | 2019-01-04 00:00:00 |                     |
       | 10 | 15            | varcharNotNull4        | 15.15           | 16         | varcharNull4        | 16.16        | 2019-01-04 00:00:00 |                     |
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository"
+    And I make repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository" as active repository
     And I call method "read" on repository which will return following rows:
       | id |
       | 1  |

@@ -35,3 +35,4 @@ default:
         - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryCreateFeatureContext
         - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryReadFeatureContext
         - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryUpdateFeatureContext
+        - Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository\RepositoryDeleteFeatureContext
