@@ -37,10 +37,10 @@ class RepositoryDeleteFeatureContext extends AbstractRepositoryFeatureContext
             \call_user_func_array(
                 [
                     static::$repository,
-                    $method
+                    $method,
                 ],
                 [
-                    'entity' => $entity
+                    'entity' => $entity,
                 ]
             );
         }

@@ -47,10 +47,10 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
             static::$entities[] = \call_user_func_array(
                 [
                     static::$repository,
-                    $method
+                    $method,
                 ],
                 [
-                    'entity' => $entitiesStorage[$i]
+                    'entity' => $entitiesStorage[$i],
                 ]
                 + $methodParameters
             );
