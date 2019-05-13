@@ -25,6 +25,7 @@ test-behat: ## Run BEHAT tests
 .PHONY: start_dev
 start_dev: ## Start DEV in Docker
 	$(DOCKER_COMPOSE) up -d --build
+	@$(DOCKER_COMPOSE_EXEC_PHP) rm -rf vendor composer.lock
 	$(DOCKER_COMPOSE_EXEC_PHP) composer install
 
 .PHONY: stop_dev
