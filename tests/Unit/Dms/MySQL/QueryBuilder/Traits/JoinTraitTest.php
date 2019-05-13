@@ -95,6 +95,8 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function joinData()
@@ -188,6 +190,7 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage $join "INVALID" is not a valid join type
      */
@@ -202,6 +205,7 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $table name to join method!
      */
@@ -216,6 +220,7 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $onCondition name to join method!
      */
@@ -262,6 +267,8 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function joinAsData()
@@ -351,6 +358,7 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $alias name to join method!
      */

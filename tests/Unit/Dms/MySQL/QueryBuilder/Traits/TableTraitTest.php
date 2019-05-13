@@ -51,6 +51,7 @@ class TableTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $table to table method!
      */

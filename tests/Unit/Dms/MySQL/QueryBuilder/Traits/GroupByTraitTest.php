@@ -45,6 +45,7 @@ class GroupByTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $groupBy to groupBy method!
      */

@@ -42,6 +42,7 @@ class HavingTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $condition to having function!
      */

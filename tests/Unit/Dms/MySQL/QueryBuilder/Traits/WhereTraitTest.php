@@ -44,6 +44,7 @@ class WhereTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $condition name to where method!
      */

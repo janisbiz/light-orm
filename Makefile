@@ -1,6 +1,7 @@
 SHELL=/bin/bash
 DOCKER_COMPOSE ?= docker-compose
 DOCKER_COMPOSE_EXEC_PHP = $(DOCKER_COMPOSE) exec php-cli
+PHPUNIT_COVERATE_REPORT_FILE=file://$(shell pwd)/var/phpunit/coverage/index.html
 
 include .env
 
@@ -14,13 +15,14 @@ help:
 test: test-phpcs test-phpunit test-behat ## Run tests
 
 test-phpcs: ## Run PHPCS tests
-	$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs -p ./src -p ./tests --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs -p ./src -p ./tests --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
 
 test-phpunit: ## Run PHPUNIT tests
-	$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpunit -c phpunit.xml
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpunit -c phpunit.xml --coverage-html=var/phpunit/coverage
+	@echo -e "Test coverage can be found: \e]8;;$(PHPUNIT_COVERATE_REPORT_FILE)\ahere\e]8;;\a($(PHPUNIT_COVERATE_REPORT_FILE))"
 
 test-behat: ## Run BEHAT tests
-	$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/behat
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/behat
 
 .PHONY: start_dev
 start_dev: ## Start DEV in Docker

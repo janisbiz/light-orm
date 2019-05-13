@@ -67,6 +67,8 @@ class DmsDatabaseTest extends TestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function getPhpNameData()

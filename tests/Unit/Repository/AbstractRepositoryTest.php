@@ -59,6 +59,7 @@ class AbstractRepositoryTest extends TestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage Parameter type "array" could not be quoted for SQL execution!
      */

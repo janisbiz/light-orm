@@ -36,6 +36,8 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function setCommandData()
@@ -64,6 +66,8 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function buildCommandQueryPartData()

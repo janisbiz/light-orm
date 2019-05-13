@@ -132,6 +132,11 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
         $this->assertEquals(null, $this->buildOnDuplicateKeyUpdateQueryPart());
     }
 
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return array
+     */
     public function onDuplicateKeyUpdateData()
     {
         return [

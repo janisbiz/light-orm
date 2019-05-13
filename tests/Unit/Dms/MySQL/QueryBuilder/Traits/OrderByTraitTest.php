@@ -74,6 +74,11 @@ class OrderByTraitTest extends AbstractTraitTestCase
         $this->assertEquals(null, $this->buildOrderByQueryPart());
     }
 
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return array
+     */
     public function orderByData()
     {
         return [
@@ -97,6 +102,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $orderBy to orderBy method!
      */
@@ -106,6 +112,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage Invalid $keyword "INVALID" for orderBy!
      */

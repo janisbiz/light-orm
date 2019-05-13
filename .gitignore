@@ -14,3 +14,6 @@
 
 # Generated
 /var/light-orm
+
+# Phpunit
+/var/phpunit

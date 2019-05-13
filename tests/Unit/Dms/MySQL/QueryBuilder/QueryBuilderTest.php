@@ -26,6 +26,11 @@ class QueryBuilderTest extends AbstractTraitTestCase
      */
     private $queryBuilder;
 
+    /**
+     * @codeCoverageIgnore
+     *
+     * @throws \Exception
+     */
     public function setUp()
     {
         if (empty($this->abstractRepositoryPublicMethods = $this->extractAbstractRepositoryPublicMethods())) {
@@ -65,6 +70,8 @@ class QueryBuilderTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function crudData()
@@ -150,6 +157,8 @@ class QueryBuilderTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function buildQueryData()

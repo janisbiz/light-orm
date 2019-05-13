@@ -134,6 +134,11 @@ class ValueTraitTest extends AbstractTraitTestCase
         $this->assertEquals(null, $this->buildValueQueryPart());
     }
 
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return array
+     */
     public function valueData()
     {
         return [

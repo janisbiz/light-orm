@@ -23,6 +23,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $offset to offset method!
      */
@@ -32,6 +33,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must set LIMIT before calling offset method!
      */
@@ -49,6 +51,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $limit to limit method!
      */
@@ -58,6 +61,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $offset to offset method!
      */
@@ -74,6 +78,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage You must pass $limit to limit method!
      */

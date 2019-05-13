@@ -127,6 +127,8 @@ class SetTraitTest extends AbstractTraitTestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function setData()

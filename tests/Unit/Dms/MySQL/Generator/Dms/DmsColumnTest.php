@@ -81,6 +81,8 @@ class DmsColumnTest extends TestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function getPhpNameData()
@@ -148,6 +150,11 @@ class DmsColumnTest extends TestCase
         $this->assertEquals($phpDefaultType, $dmsColumn->getPhpDefaultType());
     }
 
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return array
+     */
     public function defaultData()
     {
         return [
@@ -190,6 +197,8 @@ class DmsColumnTest extends TestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function isNullableData()
@@ -227,6 +236,8 @@ class DmsColumnTest extends TestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function getKeyData()
@@ -270,6 +281,8 @@ class DmsColumnTest extends TestCase
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return array
      */
     public function typeData()
@@ -306,9 +319,8 @@ class DmsColumnTest extends TestCase
         ];
     }
 
-
-
     /**
+     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage Could not determine type for column "name_snake_case" with type "invalid"
      */

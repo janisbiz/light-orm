@@ -37,6 +37,7 @@ class ConnectionTest extends TestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \PDOException
      * @expectedExceptionMessage Cannot begin transaction!
      */

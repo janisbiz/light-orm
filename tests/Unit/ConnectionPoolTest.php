@@ -5,8 +5,9 @@ namespace Janisbiz\LightOrm\Tests\Unit;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig;
+use PHPUnit\Framework\TestCase;
 
-class ConnectionPoolTest extends \PHPUnit_Framework_TestCase
+class ConnectionPoolTest extends TestCase
 {
     const CONNECTION_CONFIG_HOST = 'host';
     const CONNECTION_CONFIG_USERNAME = 'username';
@@ -79,6 +80,7 @@ class ConnectionPoolTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage
      * Could not find connection by name "dbname_non_existent"! Available connections: "dbname_one", "dbname_two".
@@ -101,6 +103,7 @@ class ConnectionPoolTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @codeCoverageIgnore
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage
      * Could not find connection by name "dbname_non_existent"! Available connections: "dbname_one", "dbname_two".
