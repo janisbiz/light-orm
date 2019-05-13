@@ -14,6 +14,10 @@ RUN docker-php-ext-install \
     pdo \
     pdo_mysql
 
+RUN apk add --no-cache $PHPIZE_DEPS \
+    && pecl install xdebug-2.5.0 \
+    && docker-php-ext-enable xdebug
+
 RUN printf '[php]\ndate.timezone = "UTC"\n' > /usr/local/etc/php/conf.d/tzone.ini
 
 WORKDIR "/var/www"
