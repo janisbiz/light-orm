@@ -25,8 +25,10 @@ test-behat: ## Run BEHAT tests
 .PHONY: start_dev
 start_dev: ## Start DEV in Docker
 	$(DOCKER_COMPOSE) up -d --build
+ifeq ($(wildcard vendor),)
 	@$(DOCKER_COMPOSE_EXEC_PHP) rm -rf vendor composer.lock
 	$(DOCKER_COMPOSE_EXEC_PHP) composer install
+endif
 
 .PHONY: stop_dev
 stop_dev: ## Stop DEV in Docker
