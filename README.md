@@ -17,9 +17,8 @@ A light ORM for php
 There are two ways to run tests:
 1) By using docker containers:
     - Copy `.env.dist` to `.env` and adjust defined values for your needs
-    - Execute `docker-compose up -d --build`
-    - Execute `docker-compose exec php-cli composer install`
-    - Execute `docker-compose exec php-cli vendor/bin/phpunit -c phpunit.xml`
+    - Execute `make start_dev`
+    - Execute `make test`
 2) By using your local php and mysql database environment:
     - Ensure, that your php version is `5.6+`
     - Execute `composer install`
