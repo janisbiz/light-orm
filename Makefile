@@ -41,3 +41,18 @@ down_dev: ## Remove DEV containers from Docker
 .PHONY: export-mysql-database
 export-mysql-database: # Export mysql initial database from current DB
 	mysqldump -u root -p${DOCKER_MYSQL_PASSWORD} -P ${DOCKER_MYSQL_LOCAL_PORT} -h 127.0.0.1 --no-data --databases light_orm_mysql > .docker/config/mysql/light_orm_mysql.sql
+
+travis-before-script:
+	travis_retry composer self-update
+	travis_retry composer update $PREFER_LOWEST
+	echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
+	mysql -u root -ppassword < .docker/config/mysql/light_orm_mysql.sql
+	composer install
+
+travis-script:
+	vendor/bin/phpcs -p ./src --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
+	vendor/bin/phpunit -c phpunit.xml --coverage-clover=coverage.xml
+	vendor/bin/behat
+
+travis-after-success:
+	bash <(curl -s https://codecov.io/bash)

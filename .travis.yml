@@ -11,16 +11,10 @@ addons:
     - mysql
 
 before_script:
-  - travis_retry composer self-update
-  - travis_retry composer update $PREFER_LOWEST
-  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
-  - mysql -u root -ppassword < .docker/config/mysql/light_orm_mysql.sql
-  - composer install
+  - make travis-before-script
 
 script:
-  - vendor/bin/phpcs -p ./src --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
-  - vendor/bin/phpunit -c phpunit.xml --coverage-clover=coverage.xml
-  - vendor/bin/behat
+  - make travis-script
 
 after_success:
-  bash <(curl -s https://codecov.io/bash)
+  - make travis-after-success
