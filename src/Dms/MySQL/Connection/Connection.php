@@ -35,11 +35,19 @@ class Connection extends \PDO implements ConnectionInterface
     public function beginTransaction()
     {
         if (false === $this->inTransaction()) {
-            if (false === parent::beginTransaction()) {
+            if (false === $this->parentBeginTransaction()) {
                 throw new \PDOException('Cannot begin transaction!');
             }
         }
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function parentBeginTransaction()
+    {
+        return parent::beginTransaction();
     }
 }
