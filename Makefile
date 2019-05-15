@@ -19,7 +19,7 @@ test-phpcs: ## Run PHPCS tests
 
 test-phpunit: ## Run PHPUNIT tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpunit -c phpunit.xml --coverage-html=var/phpunit/coverage
-	@echo -e "Test coverage can be found: \e]8;;$(PHPUNIT_COVERATE_REPORT_FILE)\ahere\e]8;;\a($(PHPUNIT_COVERATE_REPORT_FILE))"
+	@echo -e "Test coverage can be found here: $(PHPUNIT_COVERATE_REPORT_FILE)"
 
 test-behat: ## Run BEHAT tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/behat
