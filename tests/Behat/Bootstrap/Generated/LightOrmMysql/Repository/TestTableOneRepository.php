@@ -2,8 +2,11 @@
 
 namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
 
+use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneEntity;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneTwoEntity;
+use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableTwoEntity;
 
 class TestTableOneRepository extends AbstractRepository
 {
@@ -190,6 +193,42 @@ class TestTableOneRepository extends AbstractRepository
     public function read()
     {
         return $this->createQueryBuilder()->find();
+    }
+
+    public function readWithAllQueryParts()
+    {
+        return $this
+            ->createQueryBuilder()
+            ->column('test_table_two.id AS test_table_two_id')
+            ->innerJoin(TestTableOneTwoEntity::TABLE_NAME, 'test_table_one_two.test_table_one_id = test_table_one.id')
+            ->innerJoin(TestTableTwoEntity::TABLE_NAME, 'test_table_two.id = test_table_one_two.test_table_two_id')
+            ->where('test_table_one.id != :id', ['id' => 1])
+            ->whereIn(
+                'test_table_one.id',
+                [
+                    2,
+                    3,
+                    4,
+                    5
+                ]
+            )
+            ->whereNotIn(
+                'test_table_one.id',
+                [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            )
+            ->groupBy('test_table_one.id')
+            ->having('test_table_one.id != :havingId', ['havingId' => 3])
+            ->orderBy('test_table_one.id', KeywordEnum::ASC)
+            ->limit(1)
+            ->offset(1)
+            ->find()
+        ;
     }
 
     /**

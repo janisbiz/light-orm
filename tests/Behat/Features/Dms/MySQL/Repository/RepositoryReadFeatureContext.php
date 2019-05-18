@@ -44,4 +44,39 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
             }
         }
     }
+
+    /**
+     * @Then /^I have following data columns on entities:$/
+     *
+     * @param TableNode $columns
+     *
+     * @throws \Exception
+     */
+    public function iHaveFollowingRowsOfDataColumnsOnEntities(TableNode $columns)
+    {
+        if (($entitiesCount = \count(static::$entities)) !== ($expectedRowsCount = \count($columns->getRows()) - 1)) {
+            throw new \Exception(\sprintf(
+                'Count of expected rows(%d) does not match to count of existing entities(%d)!',
+                $expectedRowsCount,
+                $entitiesCount
+            ));
+        }
+
+        foreach ($columns as $i => $row) {
+            $entity = static::$entities[$i];
+
+            foreach ($row as $column => $value) {
+                if ($value != $entity->data($column)) {
+                    throw new \Exception(\sprintf(
+                        'Data mismatch, when reading stored row data! %s::data(%s) => %s != %s => %s',
+                        \get_class($entity),
+                        $column,
+                        $entity->data($column),
+                        $column,
+                        $value
+                    ));
+                }
+            }
+        }
+    }
 }

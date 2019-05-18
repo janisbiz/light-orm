@@ -258,6 +258,9 @@ abstract class AbstractRepository extends BaseAbstractRepository
      */
     public function count(QueryBuilderInterface $queryBuilder, $toString = false)
     {
+        /** Flush all columns and use "true" as a value to avoid column conflicts and get actual result count */
+        $queryBuilder->column(true, true);
+
         $queryBuilderCount = (new QueryBuilder($this))
             ->command($queryBuilder->commandData())
             ->column('COUNT(*)')
@@ -293,6 +296,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
         return (new QueryBuilder($this, $entity))
+            ->column(\sprintf('%s.*', $this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME)))
             ->table($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
     }

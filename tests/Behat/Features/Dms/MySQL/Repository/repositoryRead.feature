@@ -120,3 +120,14 @@ Feature: Repository Read
       | 9              | 9              |
       | 10             | 1              |
       | 10             | 10             |
+
+  Scenario: Read rows when using all query parts
+    Given I have existing connection config "light_orm_mysql"
+    And I add connection config to connection pool
+    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    When I call method "readWithAllQueryParts" on repository which will return following rows:
+      | id | intColNotNull | varcharColNotNull | floatColNotNull | intColNull | varcharColNull | floatColNull | createdAt           | updatedAt |
+      | 4  | 7             | varcharNotNull4   | 7.7             | 8          | varcharNull4   | 8.8          | 2019-01-04 00:00:00 |           |
+    Then I have following data columns on entities:
+      | test_table_two_id |
+      | 4                 |

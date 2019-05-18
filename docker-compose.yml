@@ -10,6 +10,7 @@ services:
       - $DOCKER_MYSQL_LOCAL_PORT:3306
     volumes:
       - .docker/config/mysql/light_orm_mysql.sql:/docker-entrypoint-initdb.d/light_orm_mysql.sql:ro
+      - .docker/config/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
     networks:
       - janisbiz_light-orm
   php-cli:

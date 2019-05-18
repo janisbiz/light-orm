@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
+
 trait ColumnTrait
 {
     /**
