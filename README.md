@@ -25,8 +25,8 @@ There is still a lot work to do, so it would be great to have some contributors 
 
 ## Examples
 
-How to use generator, please see [generate.php](bin/generate.php)
-How to use repositories, please see examples of Repositories ans Entities on [Behat test suites](tests/Behat/Bootstrap/Generated/LightOrmMysql) 
+- How to use generator, please see [generate.php](bin/generate.php)
+- How to use repositories, please see examples of Repositories ans Entities on [Behat test suites](tests/Behat/Bootstrap/Generated/LightOrmMysql) 
 
 ## TODO
 
