@@ -25,8 +25,8 @@ There is still a lot work to do, so it would be great to have some contributors 
 
 ## Examples
 
-How to use generator, please see [generate.php](/janisbiz/light-orm/blob/8d7d641559e04a14be346ab26e6dd3e89206e83c/bin/generate.php)
-How to use repositories, please see examples of Repositories ans Entities on [Behat test suites](/janisbiz/light-orm/tree/8d7d641559e04a14be346ab26e6dd3e89206e83c/tests/Behat/Bootstrap/Generated/LightOrmMysql) 
+How to use generator, please see [generate.php](/blob/8d7d641559e04a14be346ab26e6dd3e89206e83c/bin/generate.php)
+How to use repositories, please see examples of Repositories ans Entities on [Behat test suites](/tree/8d7d641559e04a14be346ab26e6dd3e89206e83c/tests/Behat/Bootstrap/Generated/LightOrmMysql) 
 
 ## TODO
 
