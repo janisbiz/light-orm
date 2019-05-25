@@ -6,7 +6,7 @@ use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 
-class QueryBuilder implements QueryBuilderInterface, TraitsInterface
+class QueryBuilder implements QueryBuilderInterface
 {
     use Traits;
 

@@ -5,7 +5,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface as BaseQueryBuilderInterface;
 
-interface QueryBuilderInterface extends BaseQueryBuilderInterface
+interface QueryBuilderInterface extends BaseQueryBuilderInterface, TraitsInterface
 {
     /**
      * @param bool $toString
