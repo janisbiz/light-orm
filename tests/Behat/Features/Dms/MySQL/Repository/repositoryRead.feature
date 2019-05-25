@@ -63,8 +63,8 @@ Feature: Repository Read
   Scenario: Read rows from table "test_table_one"
     Given I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
-    When I call method "read" on repository which will return following rows:
+    When I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneRepository"
+    Then I call method "read" on repository which will return following rows:
       | id | intColNotNull | varcharColNotNull      | floatColNotNull | intColNull | varcharColNull      | floatColNull | createdAt           | updatedAt           |
       | 1  | 1             | varcharNotNull1Replace | 1.1             | 2          | varcharNull1Replace | 2.2          | 2019-01-01 00:00:00 | 2019-01-01 02:00:00 |
       | 2  | 3             | varcharNotNull2        | 3.3             | 4          | varcharNull2        | 4.4          | 2019-01-02 00:00:00 |                     |
@@ -76,12 +76,13 @@ Feature: Repository Read
       | 8  | 15            | varcharNotNull11       | 15.15           | 16         | varcharNull11       | 16.16        | 2019-01-08 00:00:00 |                     |
       | 9  | 17            | varcharNotNull3        | 17.17           | 18         | varcharNull3        | 18.18        | 2019-01-04 00:00:00 |                     |
       | 10 | 19            | varcharNotNull4        | 19.19           | 20         | varcharNull4        | 20.20        | 2019-01-04 00:00:00 |                     |
+    And I call method "readCount" on repository which will return following integer 10
 
   Scenario: Read rows from table "test_table_two"
     Given I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository"
-    When I call method "read" on repository which will return following rows:
+    When I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableTwoRepository"
+    Then I call method "read" on repository which will return following rows:
       | id |
       | 1  |
       | 2  |
@@ -93,12 +94,13 @@ Feature: Repository Read
       | 8  |
       | 9  |
       | 10 |
+    And I call method "readCount" on repository which will return following integer 10
 
   Scenario: Read rows from table "test_table_one_two"
     Given I have existing connection config "light_orm_mysql"
     And I add connection config to connection pool
-    And I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository"
-    When I call method "read" on repository which will return following rows:
+    When I create repository "Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository\TestTableOneTwoRepository"
+    Then I call method "read" on repository which will return following rows:
       | testTableOneId | testTableTwoId |
       | 1              | 1              |
       | 1              | 10             |
@@ -120,6 +122,7 @@ Feature: Repository Read
       | 9              | 9              |
       | 10             | 1              |
       | 10             | 10             |
+    And I call method "readCount" on repository which will return following integer 20
 
   Scenario: Read rows when using all query parts
     Given I have existing connection config "light_orm_mysql"
@@ -131,3 +134,4 @@ Feature: Repository Read
     Then I have following data columns on entities:
       | test_table_two_id |
       | 4                 |
+    And I call method "readCountWithAllQueryParts" on repository which will return following integer 1

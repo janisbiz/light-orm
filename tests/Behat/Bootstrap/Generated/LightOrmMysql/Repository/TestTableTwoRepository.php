@@ -33,6 +33,14 @@ class TestTableTwoRepository extends AbstractRepository
     }
 
     /**
+     * @return int
+     */
+    public function readCount()
+    {
+        return $this->createQueryBuilder()->count();
+    }
+
+    /**
      * @param TestTableTwoEntity $testTableTwoEntity
      */
     public function deleteEntity(TestTableTwoEntity $testTableTwoEntity)

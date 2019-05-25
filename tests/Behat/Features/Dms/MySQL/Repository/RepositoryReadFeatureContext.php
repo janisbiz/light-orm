@@ -79,4 +79,25 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
             }
         }
     }
+
+    /**
+     * @Then /^I call method "(.*)" on repository which will return following integer (\d+)$/
+     *
+     * @param string $method
+     * @param int $integer
+     *
+     * @throws \Exception
+     */
+    public function iCallMethodOnRepositoryWhichWillReturnFollowingInteger($method, $integer)
+    {
+        $returnedInteger = static::$repository->$method();
+
+        if ($returnedInteger !== (int) $integer) {
+            throw new \Exception(\sprintf(
+                'Expected integer(%d) does not match returned integer(%d)!',
+                $integer,
+                $returnedInteger
+            ));
+        }
+    }
 }

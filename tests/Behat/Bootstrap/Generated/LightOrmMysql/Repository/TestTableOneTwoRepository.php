@@ -32,6 +32,14 @@ class TestTableOneTwoRepository extends AbstractRepository
     }
 
     /**
+     * @return int
+     */
+    public function readCount()
+    {
+        return $this->createQueryBuilder()->count();
+    }
+
+    /**
      * @param int $testTableOneIdCurrent
      * @param int $testTableTwoIdCurrent
      * @param int $testTableOneId
