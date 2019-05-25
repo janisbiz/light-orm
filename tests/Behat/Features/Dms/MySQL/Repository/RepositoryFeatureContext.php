@@ -7,6 +7,9 @@ use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection as MySQLConnection;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
 use Janisbiz\LightOrm\Repository\RepositoryInterface;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerAwareInterface;
 
 class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
 {
@@ -112,6 +115,22 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
                 RepositoryInterface::class
             ));
         }
+
+        $logger = new Logger('light-orm-mysql');
+        $logger->pushHandler(new StreamHandler(\implode(
+            '',
+            [
+                JANISBIZ_LIGHT_ORM_ROOT_DIR,
+                'var',
+                DIRECTORY_SEPARATOR,
+                'log',
+                DIRECTORY_SEPARATOR,
+                'light-orm-mysql.log'
+            ]
+        )));
+
+        /** @var LoggerAwareInterface $repository */
+        $repository->setLogger($logger);
 
         static::$repositories[$repositoryClass] = static::$repository = $repository;
     }

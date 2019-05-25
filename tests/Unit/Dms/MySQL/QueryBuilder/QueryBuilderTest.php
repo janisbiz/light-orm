@@ -8,6 +8,8 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\AbstractTraitTestCase;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerTrait;
 
 class QueryBuilderTest extends AbstractTraitTestCase
 {
@@ -649,15 +651,35 @@ class QueryBuilderTest extends AbstractTraitTestCase
     {
         $abstractRepositoryReflection = new \ReflectionClass(AbstractRepository::class);
 
-        return \array_filter(\array_map(
-            function (\ReflectionMethod $abstractRepositoryPublicMethod) {
-                if (2 === \count($abstractRepositoryPublicMethod->getParameters())) {
-                    return $abstractRepositoryPublicMethod->getName();
-                }
+        return \array_filter(\array_diff(
+            \array_map(
+                function (\ReflectionMethod $abstractRepositoryPublicMethod) {
+                    if (2 === \count($abstractRepositoryPublicMethod->getParameters())) {
+                        return $abstractRepositoryPublicMethod->getName();
+                    }
 
-                return null;
-            },
-            $abstractRepositoryReflection->getMethods(\ReflectionMethod::IS_PUBLIC)
+                    return null;
+                },
+                $abstractRepositoryReflection->getMethods(\ReflectionMethod::IS_PUBLIC)
+            ),
+            \array_reduce(
+                \array_map(
+                    function (array $publicMethods) {
+                        return \array_map(
+                            function (\ReflectionMethod $publicMethod) {
+                                return $publicMethod->getName();
+                            },
+                            $publicMethods
+                        );
+                    },
+                    [
+                        (new \ReflectionClass(LoggerTrait::class))->getMethods(\ReflectionMethod::IS_PUBLIC),
+                        (new \ReflectionClass(LoggerAwareTrait::class))->getMethods(\ReflectionMethod::IS_PUBLIC),
+                    ]
+                ),
+                'array_merge',
+                []
+            )
         ));
     }
 }

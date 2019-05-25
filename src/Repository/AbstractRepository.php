@@ -7,13 +7,24 @@ use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerTrait;
 
-abstract class AbstractRepository implements RepositoryInterface
+abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+    use LoggerTrait;
+
     /**
      * @var ConnectionPool
      */
     protected $connectionPool;
+
+    /**
+     * @var null|bool
+     */
+    protected $commit;
 
     /**
      * @param null|double|int|string $value
@@ -53,6 +64,108 @@ abstract class AbstractRepository implements RepositoryInterface
         }
 
         return $this->getConnection()->quote($value, $pdoParamType);
+    }
+
+    /**
+     * @param string $level
+     * @param string $message
+     * @param array $context
+     *
+     * @return $this
+     */
+    public function log($level, $message, array $context = [])
+    {
+        if (null === $this->logger) {
+            return $this;
+        }
+
+        $this->logger->log($level, $message, $context);
+
+        return $this;
+    }
+
+    /**
+     * @param ConnectionInterface|null $connection
+     *
+     * @return $this
+     */
+    protected function beginTransaction(ConnectionInterface $connection = null)
+    {
+        if (null === $connection) {
+            $connection = $this->getConnection();
+        }
+
+        if (true === ($this->commit = !$connection->inTransaction())) {
+            $connection->beginTransaction();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ConnectionInterface|null $connection
+     *
+     * @return $this
+     */
+    protected function commit(ConnectionInterface $connection = null)
+    {
+        if (null === $connection) {
+            $connection = $this->getConnection();
+        }
+
+        if (true === $this->commit) {
+            $connection->commit();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ConnectionInterface|null $connection
+     *
+     * @return $this
+     */
+    protected function rollback(ConnectionInterface $connection = null)
+    {
+        if (null === $connection) {
+            $connection = $this->getConnection();
+        }
+
+        if ($connection->inTransaction()) {
+            $connection->rollBack();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param QueryBuilderInterface $queryBuilder
+     * @param array $bindData
+     * @param ConnectionInterface|null $connection
+     *
+     * @return bool|\PDOStatement
+     */
+    protected function prepareAndExecute(
+        QueryBuilderInterface $queryBuilder,
+        array $bindData,
+        ConnectionInterface $connection = null
+    ) {
+        if (null === $connection) {
+            $connection = $this->getConnection();
+        }
+
+        $statement = $connection->prepare($queryBuilder->buildQuery());
+        $statement->execute($bindData);
+
+        $this->debug(
+            'Execute query "{query}" with parameters "{parameters}".',
+            [
+                'query' => $queryBuilder->buildQuery(),
+                'parameters' => $bindData,
+            ]
+        );
+
+        return $statement;
     }
 
     /**

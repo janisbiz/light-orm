@@ -2,20 +2,26 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Repository;
 
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionInterface;
+use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
-use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
+use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface as BaseQueryBuilderInterface;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository as BaseAbstractRepository;
 
+/**
+ * @method ConnectionInterface getConnection()
+ */
 abstract class AbstractRepository extends BaseAbstractRepository
 {
     /**
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
-     * @throws RepositoryException
      * @return string|EntityInterface
+     * @throws RepositoryException|\Exception
      */
     public function insert(QueryBuilderInterface $queryBuilder, $toString = false)
     {
@@ -31,17 +37,13 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
-        $connection = $this->getConnection();
 
-        if (true === ($commit = !$connection->inTransaction())) {
-            $connection->beginTransaction();
-        }
+        $this->beginTransaction($connection = $this->getConnection());
 
         try {
-            $statement = $connection->prepare($queryBuilder->buildQuery());
-            $statement->execute($queryBuilder->bindValueData());
+            $this->prepareAndExecute($queryBuilder, $queryBuilder->bindValueData(), $connection);
         } catch (\Exception $e) {
-            $connection->rollBack();
+            $this->rollBack($connection);
 
             throw $e;
         }
@@ -54,33 +56,18 @@ abstract class AbstractRepository extends BaseAbstractRepository
             }
         }
 
-        if (true === $commit) {
-            $connection->commit();
-        }
+        $this->commit($connection);
 
         return $entity;
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
-     * @throws RepositoryException
      * @return string|EntityInterface
      */
-    public function insertIgnore(QueryBuilder $queryBuilder, $toString = false)
-    {
-        return $this->insert($queryBuilder, $toString);
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param bool $toString
-     *
-     * @throws RepositoryException
-     * @return string|EntityInterface
-     */
-    public function replace(QueryBuilder $queryBuilder, $toString = false)
+    public function insertIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         return $this->insert($queryBuilder, $toString);
     }
@@ -89,7 +76,19 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
-     * @return null|string|EntityInterface
+     * @return string|EntityInterface
+     */
+    public function replace(QueryBuilderInterface $queryBuilder, $toString = false)
+    {
+        return $this->insert($queryBuilder, $toString);
+    }
+
+    /**
+     * @param QueryBuilderInterface $queryBuilder
+     * @param bool $toString
+     *
+     * @return null|string
+     * @throws \Exception
      */
     public function findOne(QueryBuilderInterface $queryBuilder, $toString = false)
     {
@@ -97,11 +96,8 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
-        $connection = $this->getConnection();
-
         try {
-            $statement = $connection->prepare($queryBuilder->buildQuery());
-            $statement->execute($queryBuilder->bindData());
+            $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData());
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
                 ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
@@ -110,9 +106,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
                 ]
             );
         } catch (\Exception $e) {
-            if ($connection->inTransaction()) {
-                $connection->rollBack();
-            }
+            $this->rollback();
 
             throw $e;
         }
@@ -124,7 +118,8 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
-     * @return string|array
+     * @return array|string
+     * @throws \Exception
      */
     public function find(QueryBuilderInterface $queryBuilder, $toString = false)
     {
@@ -132,11 +127,8 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
-        $connection = $this->getConnection();
-
         try {
-            $statement = $connection->prepare($queryBuilder->buildQuery());
-            $statement->execute($queryBuilder->bindData());
+            $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData());
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
                 ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
@@ -145,9 +137,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
                 ]
             );
         } catch (\Exception $e) {
-            if ($connection->inTransaction()) {
-                $connection->rollBack();
-            }
+            $this->rollback();
 
             throw $e;
         }
@@ -159,7 +149,8 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
-     * @return null|string|bool|EntityInterface
+     * @return null|bool|EntityInterface|string
+     * @throws \Exception
      */
     public function update(QueryBuilderInterface $queryBuilder, $toString = false)
     {
@@ -171,39 +162,33 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
-        $connection = $this->getConnection();
-
-        if (true === ($commit = !$connection->inTransaction())) {
-            $connection->beginTransaction();
-        }
+        $this->beginTransaction($connection = $this->getConnection());
 
         try {
-            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
+            $connection->setSqlSafeUpdates();
 
-            $statement = $connection->prepare($queryBuilder->buildQuery());
-            $statement->execute($queryBuilder->bindData());
+            $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData(), $connection);
 
-            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
+            $connection->unsetSqlSafeUpdates();
         } catch (\Exception $e) {
-            $connection->rollBack();
+            $this->rollBack($connection);
+            $connection->unsetSqlSafeUpdates();
 
             throw $e;
         }
 
-        if (true === $commit) {
-            $connection->commit();
-        }
+        $this->commit($connection);
 
         return $entity ?: true;
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return null|string|bool|EntityInterface
      */
-    public function updateIgnore(QueryBuilder $queryBuilder, $toString = false)
+    public function updateIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         return $this->update($queryBuilder, $toString);
     }
@@ -212,7 +197,8 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
-     * @return string|bool
+     * @return bool|string
+     * @throws \Exception
      */
     public function delete(QueryBuilderInterface $queryBuilder, $toString = false)
     {
@@ -224,40 +210,45 @@ abstract class AbstractRepository extends BaseAbstractRepository
             return $queryBuilder->toString();
         }
 
-        $connection = $this->getConnection();
-
-        if (true === ($commit = !$connection->inTransaction())) {
-            $connection->beginTransaction();
-        }
+        $this->beginTransaction($connection = $this->getConnection());
 
         try {
-            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
+            $connection->setSqlSafeUpdates();
 
-            $statement = $connection->prepare($queryBuilder->buildQuery());
-            $statement->execute($queryBuilder->bindData());
+            $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData(), $connection);
 
-            $connection->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
+            $connection->unsetSqlSafeUpdates();
         } catch (\Exception $e) {
-            $connection->rollBack();
+            $this->rollBack($connection);
+            $connection->unsetSqlSafeUpdates();
 
             throw $e;
         }
 
-        if (true === $commit) {
-            $connection->commit();
-        }
+        $this->commit($connection);
 
         return true;
     }
 
     /**
-     * @param QueryBuilderInterface $queryBuilder
+     * @param BaseQueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return int
+     * @throws RepositoryException|\Exception
      */
-    public function count(QueryBuilderInterface $queryBuilder, $toString = false)
+    public function count(BaseQueryBuilderInterface $queryBuilder, $toString = false)
     {
+        /** @var QueryBuilderInterface $queryBuilder */
+
+        if (CommandEnum::SELECT !== $queryBuilder->commandData()) {
+            throw new RepositoryException(\sprintf(
+                'Command "%s" is not a valid command for count query! Use "%s" command to execute count query.',
+                $queryBuilder->commandData(),
+                CommandEnum::SELECT
+            ));
+        }
+
         /** Flush all columns and use "true" as a value to avoid column conflicts and get actual result count */
         $queryBuilder->column(true, true);
 
@@ -275,12 +266,9 @@ abstract class AbstractRepository extends BaseAbstractRepository
         $connection = $this->getConnection();
 
         try {
-            $statement = $connection->prepare($queryBuilderCount->buildQuery());
-            $statement->execute($queryBuilderCount->bindData());
+            $statement = $this->prepareAndExecute($queryBuilderCount, $queryBuilderCount->bindData(), $connection);
         } catch (\Exception $e) {
-            if ($connection->inTransaction()) {
-                $connection->rollBack();
-            }
+            $this->rollBack($connection);
 
             throw $e;
         }
@@ -291,7 +279,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
     /**
      * @param EntityInterface|null $entity
      *
-     * @return QueryBuilder
+     * @return QueryBuilderInterface
      */
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
@@ -328,8 +316,11 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return bool
      */
-    protected function addEntityUpdateQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity, $toString)
-    {
+    protected function addEntityUpdateQuery(
+        QueryBuilderInterface $queryBuilder,
+        EntityInterface $entity,
+        $toString
+    ) {
         $performUpdate = false;
         $entityData = &$entity->data();
         $entityDataOriginal = &$entity->dataOriginal();

@@ -30,9 +30,8 @@ There is still a lot work to do, so it would be great to have some contributors 
 
 ## TODO
 
-1) Add logger for logging queries executed against DMS
-2) Add support for other DMS than MySQL (preferably - Postgres)
-3) Add migration support
+1) Add support for other DMS than MySQL (preferably - Postgres)
+2) Add migration support
 
 ## Running tests
 

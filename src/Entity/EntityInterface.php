@@ -9,16 +9,16 @@ interface EntityInterface
     /**
      * @param null|string $key
      *
-     * @return array
+     * @return null|array|string|int|double
      */
-    public function data($key = null);
+    public function &data($key = null);
 
     /**
      * @param null|string $key
      *
-     * @return array
+     * @return null|array|string|int|double
      */
-    public function dataOriginal($key = null);
+    public function &dataOriginal($key = null);
 
     /**
      * @return bool

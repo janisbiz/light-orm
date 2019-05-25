@@ -17,3 +17,6 @@
 
 # Phpunit
 /var/phpunit
+
+# Logging
+/var/log
