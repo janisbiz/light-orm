@@ -2,8 +2,6 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Connection;
 
-use Janisbiz\LightOrm\Connection\ConnectionInterface;
-
 class Connection extends \PDO implements ConnectionInterface
 {
     /**
@@ -39,6 +37,26 @@ class Connection extends \PDO implements ConnectionInterface
                 throw new ConnectionPDOException('Cannot begin transaction!');
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setSqlSafeUpdates()
+    {
+        $this->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function unsetSqlSafeUpdates()
+    {
+        $this->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
 
         return $this;
     }

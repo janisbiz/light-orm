@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class ConnectionTest extends TestCase
 {
     /**
-     * @var Connection
+     * @var Connection|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connection;
 
@@ -18,7 +18,8 @@ class ConnectionTest extends TestCase
             Connection::class,
             [
                 'inTransaction',
-                'parentBeginTransaction'
+                'parentBeginTransaction',
+                'exec',
             ]
         );
     }
@@ -34,6 +35,32 @@ class ConnectionTest extends TestCase
     {
         $this->connection->method('inTransaction')->willReturn(true);
         $this->assertTrue($this->connection->beginTransaction() instanceof Connection);
+    }
+
+    public function testSetSqlSafeUpdates()
+    {
+        $this
+            ->connection
+            ->expects($this->once())
+            ->method('exec')
+            ->withConsecutive([
+                'SET SESSION SQL_SAFE_UPDATES = 1;',
+            ])
+        ;
+        $this->assertTrue($this->connection->setSqlSafeUpdates() instanceof Connection);
+    }
+
+    public function testUnsetSqlSafeUpdates()
+    {
+        $this
+            ->connection
+            ->expects($this->once())
+            ->method('exec')
+            ->withConsecutive([
+                'SET SESSION SQL_SAFE_UPDATES = 0;',
+            ])
+        ;
+        $this->assertTrue($this->connection->unsetSqlSafeUpdates() instanceof Connection);
     }
 
     /**
