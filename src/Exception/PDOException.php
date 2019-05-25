@@ -2,6 +2,6 @@
 
 namespace Janisbiz\LightOrm\Exception;
 
-class PDOException extends \PDOException implements PDOExceptionInterface
+class PDOException extends \PDOException
 {
 }

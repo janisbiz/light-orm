@@ -2,6 +2,6 @@
 
 namespace Janisbiz\LightOrm\Exception;
 
-class InvalidArgumentException extends \InvalidArgumentException implements InvalidArgumentExceptionInterface
+class InvalidArgumentException extends \InvalidArgumentException
 {
 }
