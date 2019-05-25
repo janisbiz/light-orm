@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+
 trait OnDuplicateKeyUpdateTrait
 {
     /**
@@ -13,13 +15,13 @@ trait OnDuplicateKeyUpdateTrait
      * @param string $column
      * @param null|int|string|double $value
      *
-     * @throws \Exception
+     * @throws QueryBuilderException
      * @return $this
      */
     public function onDuplicateKeyUpdate($column, $value)
     {
         if (empty($column)) {
-            throw new \Exception('You must pass $column to onDuplicateKeyUpdate function!');
+            throw new QueryBuilderException('You must pass $column to onDuplicateKeyUpdate function!');
         }
 
         $columnNormalised = \sprintf(

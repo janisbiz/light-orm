@@ -20,7 +20,7 @@ interface DmsColumnInterface
     public function getType();
 
     /**
-     * @throws \Exception
+     * @throws DmsException
      * @return string
      */
     public function getPhpType();

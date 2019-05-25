@@ -60,7 +60,7 @@ class AbstractRepositoryTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Repository\RepositoryException
      * @expectedExceptionMessage Parameter type "array" could not be quoted for SQL execution!
      */
     public function testQuoteWithInvalidValue()

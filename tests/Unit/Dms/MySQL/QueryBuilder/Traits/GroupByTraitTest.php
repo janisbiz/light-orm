@@ -46,7 +46,7 @@ class GroupByTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $groupBy to groupBy method!
      */
     public function testGroupByWhenEmpty()

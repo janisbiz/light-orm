@@ -140,12 +140,12 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function buildQuery()
     {
         if (empty($this->command)) {
-            throw new \Exception('Could not build query, as there is no command provided!');
+            throw new QueryBuilderException('Could not build query, as there is no command provided!');
         }
 
         switch ($this->command) {
@@ -191,11 +191,11 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
             case CommandEnum::UPDATE:
             case CommandEnum::UPDATE_IGNORE:
                 if (empty($this->set)) {
-                    throw new \PDOException('Cannot perform UPDATE action without SET condition!');
+                    throw new QueryBuilderException('Cannot perform UPDATE action without SET condition!');
                 }
 
                 if (empty($this->where)) {
-                    throw new \PDOException('Cannot perform UPDATE action without WHERE condition!');
+                    throw new QueryBuilderException('Cannot perform UPDATE action without WHERE condition!');
                 }
 
                 $queryParts = [
@@ -212,7 +212,7 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
 
             case CommandEnum::DELETE:
                 if (empty($this->where)) {
-                    throw new \PDOException('Cannot perform DELETE action without WHERE condition!');
+                    throw new QueryBuilderException('Cannot perform DELETE action without WHERE condition!');
                 }
 
                 $queryParts = [
@@ -228,7 +228,7 @@ class QueryBuilder implements QueryBuilderInterface, TraitsInterface
                 break;
 
             default:
-                throw new \Exception(\sprintf(
+                throw new QueryBuilderException(\sprintf(
                     'Could not build query, as there is no valid(%s) command provided!',
                     $this->command
                 ));

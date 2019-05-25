@@ -38,7 +38,7 @@ class ConnectionTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \PDOException
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionPDOException
      * @expectedExceptionMessage Cannot begin transaction!
      */
     public function testBeginTransactionWhenNotInTransactionAndCantBeginTransaction()

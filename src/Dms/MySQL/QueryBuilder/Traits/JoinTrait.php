@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\JoinEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait JoinTrait
 {
@@ -18,20 +19,20 @@ trait JoinTrait
      * @param array $bind
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function join($join, $tableName, $onCondition, array $bind = [])
     {
         if (!\in_array($join, JoinEnum::JOINS)) {
-            throw new \Exception(\sprintf('$join "%s" is not a valid join type', $join));
+            throw new QueryBuilderException(\sprintf('$join "%s" is not a valid join type', $join));
         }
 
         if (empty($tableName)) {
-            throw new \Exception('You must pass $table name to join method!');
+            throw new QueryBuilderException('You must pass $table name to join method!');
         }
 
         if (empty($onCondition)) {
-            throw new \Exception('You must pass $onCondition name to join method!');
+            throw new QueryBuilderException('You must pass $onCondition name to join method!');
         }
 
         $joinString = \sprintf('%s %s ON (%s)', $join, $tableName, $onCondition);
@@ -55,12 +56,12 @@ trait JoinTrait
      * @param array $bind
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function joinAs($join, $tableName, $alias, $onCondition, array $bind = [])
     {
         if (empty($alias)) {
-            throw new \Exception('You must pass $alias name to join method!');
+            throw new QueryBuilderException('You must pass $alias name to join method!');
         }
 
         return $this->join($join, \sprintf('%s AS %s', $tableName, $alias), $onCondition, $bind);

@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait GroupByTrait
 {
@@ -15,12 +16,12 @@ trait GroupByTrait
      * @param array|string $groupBy
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function groupBy($groupBy)
     {
         if (empty($groupBy)) {
-            throw new \Exception('You must pass $groupBy to groupBy method!');
+            throw new QueryBuilderException('You must pass $groupBy to groupBy method!');
         }
 
         if (!\is_array($groupBy)) {

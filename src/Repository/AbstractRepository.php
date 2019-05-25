@@ -19,7 +19,7 @@ abstract class AbstractRepository implements RepositoryInterface
      * @param null|double|int|string $value
      *
      * @return null
-     * @throws \Exception
+     * @throws RepositoryException
      */
     public function quote($value)
     {
@@ -46,7 +46,7 @@ abstract class AbstractRepository implements RepositoryInterface
                 break;
 
             default:
-                throw new \Exception(\sprintf(
+                throw new RepositoryException(\sprintf(
                     'Parameter type "%s" could not be quoted for SQL execution!',
                     $phpParamType
                 ));

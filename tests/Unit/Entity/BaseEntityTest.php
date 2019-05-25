@@ -44,7 +44,7 @@ class BaseEntityTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Entity\EntityException
      * @expectedExceptionMessage Call to undefined method Janisbiz\LightOrm\Entity\BaseEntity::getInvalidCol()
      */
     public function testGettersInvalid()
@@ -87,7 +87,7 @@ class BaseEntityTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Entity\EntityException
      * @expectedExceptionMessage There is no key "ivalid_key" present in data!
      */
     public function testDataWithInvalidKey()
@@ -118,7 +118,7 @@ class BaseEntityTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Entity\EntityException
      * @expectedExceptionMessage There is no key "ivalid_key" present in data original!
      */
     public function testDataOriginalWithInvalidKey()

@@ -108,8 +108,8 @@ class DmsColumn implements DmsColumnInterface
     }
 
     /**
-     * @throws \Exception
      * @return string
+     * @throws DmsException
      */
     public function getPhpType()
     {
@@ -135,7 +135,7 @@ class DmsColumn implements DmsColumnInterface
                 return self::PHP_TYPE_STRING;
         }
 
-        throw new \Exception(\sprintf(
+        throw new DmsException(\sprintf(
             'Could not determine type for column "%s" with type "%s"',
             $this->getName(),
             $this->getType()

@@ -2,7 +2,7 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
-use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait ColumnTrait
 {
@@ -16,12 +16,12 @@ trait ColumnTrait
      * @param boolean $clearAll
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function column($column, $clearAll = false)
     {
         if (empty($column)) {
-            throw new \Exception('You must pass $column to column method!');
+            throw new QueryBuilderException('You must pass $column to column method!');
         }
 
         if (!\is_array($column)) {

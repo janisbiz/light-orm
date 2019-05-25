@@ -191,7 +191,7 @@ class JoinTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage $join "INVALID" is not a valid join type
      */
     public function testJoinWithInvalidJoin()
@@ -206,7 +206,7 @@ class JoinTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $table name to join method!
      */
     public function testJoinWithEmptyTable()
@@ -221,7 +221,7 @@ class JoinTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $onCondition name to join method!
      */
     public function testJoinWithEmptyOnCondition()
@@ -359,7 +359,7 @@ class JoinTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $alias name to join method!
      */
     public function testJoinAsWithEmptyAlias()

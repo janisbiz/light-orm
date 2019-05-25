@@ -51,7 +51,7 @@ class ColumnTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $column to column method!
      */
     public function testColumnWhenEmpty()

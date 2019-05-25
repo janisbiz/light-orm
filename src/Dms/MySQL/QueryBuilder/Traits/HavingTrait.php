@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait HavingTrait
 {
@@ -16,12 +17,12 @@ trait HavingTrait
      * @param array $bind
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function having($condition, array $bind = [])
     {
         if (!$condition) {
-            throw new \Exception('You must pass $condition to having function!');
+            throw new QueryBuilderException('You must pass $condition to having function!');
         }
 
         $this->having[] = $condition;

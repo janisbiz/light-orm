@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait TableTrait
 {
@@ -16,12 +17,12 @@ trait TableTrait
      * @param boolean $clearAll
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function table($table, $clearAll = false)
     {
         if (empty($table)) {
-            throw new \Exception('You must pass $table to table method!');
+            throw new QueryBuilderException('You must pass $table to table method!');
         }
 
         if (!\is_array($table)) {

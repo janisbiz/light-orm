@@ -75,7 +75,7 @@ class BaseEntity implements EntityInterface
      * @param string $name
      * @param array|null $arguments
      *
-     * @throws \Exception
+     * @throws EntityException
      * @return bool|null|string|$this
      */
     public function __call($name, $arguments)
@@ -109,20 +109,20 @@ class BaseEntity implements EntityInterface
                 return $this;
         }
 
-        throw new \Exception(\sprintf('Call to undefined method %s::%s()', __CLASS__, $name));
+        throw new EntityException(\sprintf('Call to undefined method %s::%s()', __CLASS__, $name));
     }
 
     /**
      * @param null|string $key
      *
      * @return null|array|string|int|double
-     * @throws \Exception
+     * @throws EntityException
      */
     public function &data($key = null)
     {
         if (null !== $key && \is_string($key)) {
             if (!\array_key_exists($key, $this->data)) {
-                throw new \Exception(\sprintf('There is no key "%s" present in data!', $key));
+                throw new EntityException(\sprintf('There is no key "%s" present in data!', $key));
             }
 
             return $this->data[$key];
@@ -135,13 +135,13 @@ class BaseEntity implements EntityInterface
      * @param null|string $key
      *
      * @return null|array|string|int|double
-     * @throws \Exception
+     * @throws EntityException
      */
     public function &dataOriginal($key = null)
     {
         if (null !== $key && \is_string($key)) {
             if (!\array_key_exists($key, $this->data)) {
-                throw new \Exception(\sprintf('There is no key "%s" present in data original!', $key));
+                throw new EntityException(\sprintf('There is no key "%s" present in data original!', $key));
             }
 
             return $this->data[$key];

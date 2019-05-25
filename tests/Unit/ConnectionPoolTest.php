@@ -81,7 +81,7 @@ class ConnectionPoolTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Janisbiz\LightOrm\Exception\InvalidArgumentException
      * @expectedExceptionMessage
      * Could not find connection by name "dbname_non_existent"! Available connections: "dbname_one", "dbname_two".
      */
@@ -104,7 +104,7 @@ class ConnectionPoolTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Janisbiz\LightOrm\Exception\InvalidArgumentException
      * @expectedExceptionMessage
      * Could not find connection by name "dbname_non_existent"! Available connections: "dbname_one", "dbname_two".
      */

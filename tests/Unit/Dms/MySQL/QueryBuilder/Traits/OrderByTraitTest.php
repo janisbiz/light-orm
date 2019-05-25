@@ -103,7 +103,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $orderBy to orderBy method!
      */
     public function testOrderByWithEmptyOrderBy()
@@ -113,7 +113,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage Invalid $keyword "INVALID" for orderBy!
      */
     public function testOrderByWithInvalidKeyword()

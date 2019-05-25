@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait WhereTrait
 {
@@ -16,12 +17,12 @@ trait WhereTrait
      * @param array $bind
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function where($condition, array $bind = [])
     {
         if (empty($condition)) {
-            throw new \Exception('You must pass $condition name to where method!');
+            throw new QueryBuilderException('You must pass $condition name to where method!');
         }
 
         $this->where[] = $condition;

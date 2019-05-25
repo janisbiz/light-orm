@@ -14,13 +14,13 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
-     * @throws \Exception
+     * @throws RepositoryException
      * @return string|EntityInterface
      */
     public function insert(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (!($entity = $queryBuilder->getEntity())) {
-            throw new \Exception(
+            throw new RepositoryException(
                 'Cannot perform insert on query without entity! Please create query builder with entity.'
             );
         }
@@ -65,7 +65,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @param QueryBuilder $queryBuilder
      * @param bool $toString
      *
-     * @throws \Exception
+     * @throws RepositoryException
      * @return string|EntityInterface
      */
     public function insertIgnore(QueryBuilder $queryBuilder, $toString = false)
@@ -77,7 +77,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @param QueryBuilder $queryBuilder
      * @param bool $toString
      *
-     * @throws \Exception
+     * @throws RepositoryException
      * @return string|EntityInterface
      */
     public function replace(QueryBuilder $queryBuilder, $toString = false)

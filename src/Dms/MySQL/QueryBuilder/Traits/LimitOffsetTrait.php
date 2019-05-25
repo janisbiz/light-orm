@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait LimitOffsetTrait
 {
@@ -31,16 +32,16 @@ trait LimitOffsetTrait
      * @param int $offset
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function offset($offset)
     {
         if (empty($offset)) {
-            throw new \Exception('You must pass $offset to offset method!');
+            throw new QueryBuilderException('You must pass $offset to offset method!');
         }
 
         if (empty($this->limit)) {
-            throw new \Exception('You must set LIMIT before calling offset method!');
+            throw new QueryBuilderException('You must set LIMIT before calling offset method!');
         }
 
         $this->offset = (int) $offset;
@@ -52,12 +53,12 @@ trait LimitOffsetTrait
      * @param int $limit
      *
      * @return $this
-     * @throws \Exception
+     * @throws QueryBuilderException
      */
     public function limit($limit)
     {
         if (empty($limit)) {
-            throw new \Exception('You must pass $limit to limit method!');
+            throw new QueryBuilderException('You must pass $limit to limit method!');
         }
 
         $this->limit = (int) $limit;

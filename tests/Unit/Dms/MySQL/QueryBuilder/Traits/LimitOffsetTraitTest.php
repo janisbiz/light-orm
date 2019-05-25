@@ -24,7 +24,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $offset to offset method!
      */
     public function testOffsetEmpty()
@@ -34,7 +34,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must set LIMIT before calling offset method!
      */
     public function testOffsetWithEmptyLimit()
@@ -52,7 +52,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $limit to limit method!
      */
     public function testLimitWithOffsetWithEmptyLimit()
@@ -62,7 +62,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $offset to offset method!
      */
     public function testLimitWithOffsetWithEmptyOffset()
@@ -79,7 +79,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
      * @expectedExceptionMessage You must pass $limit to limit method!
      */
     public function testLimitEmpty()

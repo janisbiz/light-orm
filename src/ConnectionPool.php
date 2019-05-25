@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm;
 
 use Janisbiz\LightOrm\Connection\ConnectionConfigInterface;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
+use Janisbiz\LightOrm\Connection\ConnectionInvalidArgumentException;
 
 class ConnectionPool
 {
@@ -37,7 +38,7 @@ class ConnectionPool
     public function getConnection($dbName)
     {
         if (empty(static::$connectionConfig[$dbName])) {
-            throw new \InvalidArgumentException(
+            throw new ConnectionInvalidArgumentException(
                 empty(static::$connectionConfig)
                     ? \sprintf('Could not find connection by name "%s"!', $dbName)
                     : \sprintf(

@@ -321,7 +321,7 @@ class DmsColumnTest extends TestCase
 
     /**
      * @codeCoverageIgnore
-     * @expectedException \Exception
+     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsException
      * @expectedExceptionMessage Could not determine type for column "name_snake_case" with type "invalid"
      */
     public function testGetPhpTypeInvalid()
