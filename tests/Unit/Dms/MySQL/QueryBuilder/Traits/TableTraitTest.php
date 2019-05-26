@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\TableTrait;
 
 class TableTraitTest extends AbstractTraitTestCase
@@ -22,47 +23,45 @@ class TableTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->table = self::TABLE_DEFAULT;
+        $this->table = static::TABLE_DEFAULT;
     }
 
     public function testTable()
     {
-        $this->assertEquals(self::TABLE_DEFAULT, $this->table);
+        $this->assertEquals(static::TABLE_DEFAULT, $this->table);
 
-        $object = $this->table(self::TABLE_ARRAY);
+        $object = $this->table(static::TABLE_ARRAY);
         $this->assertObjectUsesTrait(TableTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::TABLE_DEFAULT, self::TABLE_ARRAY),
+            \array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY),
             $this->table
         );
 
-        $object = $this->table(self::TABLE);
+        $object = $this->table(static::TABLE);
         $this->assertObjectUsesTrait(TableTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::TABLE_DEFAULT, self::TABLE_ARRAY, [self::TABLE]),
+            \array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY, [static::TABLE]),
             $this->table
         );
     }
 
     public function testTableClearAll()
     {
-        $this->table(self::TABLE, true);
-        $this->assertEquals([self::TABLE], $this->table);
+        $this->table(static::TABLE, true);
+        $this->assertEquals([static::TABLE], $this->table);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $table to table method!
-     */
     public function testTableWhenEmpty()
     {
-        $this->table(self::TABLE_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $table to table method!');
+
+        $this->table(static::TABLE_EMPTY);
     }
 
     public function testBuildTableQueryPart()
     {
-        $this->table(self::TABLE);
+        $this->table(static::TABLE);
 
         $this->assertEquals(\reset($this->table), $this->buildTableQueryPart());
     }
@@ -76,7 +75,7 @@ class TableTraitTest extends AbstractTraitTestCase
 
     public function testBuildFromQueryPart()
     {
-        $this->table(self::TABLE);
+        $this->table(static::TABLE);
 
         $this->assertEquals(
             \sprintf('%s %s', ConditionEnum::FROM, \implode(', ', $this->table)),

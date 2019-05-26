@@ -93,7 +93,7 @@ class BaseEntityClassWriter extends AbstractWriter
                         return null;
                     }
 
-                    return \sprintf('self::COLUMN_%s,', \mb_strtoupper($column->getName()));
+                    return \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName()));
                 },
                 $primaryKeys
             ))
@@ -108,7 +108,7 @@ class BaseEntityClassWriter extends AbstractWriter
                         return null;
                     }
 
-                    return \sprintf('self::COLUMN_%s,', \mb_strtoupper($column->getName()));
+                    return \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName()));
                 },
                 $primaryKeysAutoIncrement
             ))
@@ -119,7 +119,7 @@ class BaseEntityClassWriter extends AbstractWriter
             "\n            ",
             \array_map(
                 function (DmsColumn $column) {
-                    return \sprintf('self::COLUMN_%s,', \mb_strtoupper($column->getName()));
+                    return \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName()));
                 },
                 $columns
             )

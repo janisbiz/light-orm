@@ -87,7 +87,7 @@ abstract class AbstractFeatureContext implements Context
                     '',
                     [
                         JANISBIZ_LIGHT_ORM_BEHAT_CONFIG_DIR,
-                        self::CONFIG_FILE_NAME,
+                        static::CONFIG_FILE_NAME,
                     ]
                 ))['light-orm']
             ;

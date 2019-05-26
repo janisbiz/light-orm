@@ -22,21 +22,21 @@ class BindTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->bind = self::BIND_DEFAULT;
+        $this->bind = static::BIND_DEFAULT;
     }
 
     public function testBind()
     {
-        $this->assertEquals(self::BIND_DEFAULT, $this->bind);
+        $this->assertEquals(static::BIND_DEFAULT, $this->bind);
 
-        $object = $this->bind(self::BIND);
+        $object = $this->bind(static::BIND);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
-        $this->assertEquals(\array_merge(self::BIND_DEFAULT, self::BIND), $this->bind);
+        $this->assertEquals(\array_merge(static::BIND_DEFAULT, static::BIND), $this->bind);
 
-        $object = $this->bind(self::BIND_OVERRIDE);
+        $object = $this->bind(static::BIND_OVERRIDE);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::BIND_DEFAULT, self::BIND, self::BIND_OVERRIDE),
+            \array_merge(static::BIND_DEFAULT, static::BIND, static::BIND_OVERRIDE),
             $this->bind
         );
     }
@@ -44,7 +44,7 @@ class BindTraitTest extends AbstractTraitTestCase
     public function testBindData()
     {
         $this->assertEquals(
-            self::BIND_DEFAULT,
+            static::BIND_DEFAULT,
             $this->bindData()
         );
     }

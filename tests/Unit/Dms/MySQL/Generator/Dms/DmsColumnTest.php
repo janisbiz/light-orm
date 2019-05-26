@@ -3,13 +3,14 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
+use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsException;
 use PHPUnit\Framework\TestCase;
 
 class DmsColumnTest extends TestCase
 {
     const COLUMN_NAME = 'name_snake_case';
     const COLUMN_NAME_PHP = 'NameSnakeCase';
-    const COLUMN_TYPE = 'string';
+    const COLUMN_TYPE = 'varchar';
     const COLUMN_TYPE_INVALID = 'invalid';
     const COLUMN_TYPE_PHP = 'string';
     const COLUMN_NULLABLE = true;
@@ -21,43 +22,43 @@ class DmsColumnTest extends TestCase
     public function testGetName()
     {
         $dmsColumn = new DmsColumn(
-            self::COLUMN_NAME,
-            self::COLUMN_TYPE,
-            self::COLUMN_NULLABLE,
-            self::COLUMN_KEY,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_NAME,
+            static::COLUMN_TYPE,
+            static::COLUMN_NULLABLE,
+            static::COLUMN_KEY,
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_NAME, $dmsColumn->getName());
+        $this->assertEquals(static::COLUMN_NAME, $dmsColumn->getName());
     }
 
     public function testGetType()
     {
         $dmsColumn = new DmsColumn(
-            self::COLUMN_NAME,
-            self::COLUMN_TYPE,
-            self::COLUMN_NULLABLE,
-            self::COLUMN_KEY,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_NAME,
+            static::COLUMN_TYPE,
+            static::COLUMN_NULLABLE,
+            static::COLUMN_KEY,
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_TYPE, $dmsColumn->getType());
+        $this->assertEquals(static::COLUMN_TYPE, $dmsColumn->getType());
     }
 
     public function testGetExtra()
     {
         $dmsColumn = new DmsColumn(
-            self::COLUMN_NAME,
-            self::COLUMN_TYPE,
-            self::COLUMN_NULLABLE,
-            self::COLUMN_KEY,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_NAME,
+            static::COLUMN_TYPE,
+            static::COLUMN_NULLABLE,
+            static::COLUMN_KEY,
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_EXTRA, $dmsColumn->getExtra());
+        $this->assertEquals(static::COLUMN_EXTRA, $dmsColumn->getExtra());
     }
 
     /**
@@ -70,18 +71,17 @@ class DmsColumnTest extends TestCase
     {
         $dmsColumn = new DmsColumn(
             $name,
-            self::COLUMN_TYPE,
-            self::COLUMN_NULLABLE,
-            self::COLUMN_KEY,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_TYPE,
+            static::COLUMN_NULLABLE,
+            static::COLUMN_KEY,
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         );
 
         $this->assertEquals($phpName, $dmsColumn->getPhpName());
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -118,15 +118,15 @@ class DmsColumnTest extends TestCase
     public function testGetDefault()
     {
         $dmsColumn = new DmsColumn(
-            self::COLUMN_NAME,
-            self::COLUMN_TYPE,
-            self::COLUMN_NULLABLE,
-            self::COLUMN_KEY,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_NAME,
+            static::COLUMN_TYPE,
+            static::COLUMN_NULLABLE,
+            static::COLUMN_KEY,
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         );
 
-        $this->assertEquals(self::COLUMN_DEFAULT, $dmsColumn->getDefault());
+        $this->assertEquals(static::COLUMN_DEFAULT, $dmsColumn->getDefault());
     }
 
     /**
@@ -139,19 +139,18 @@ class DmsColumnTest extends TestCase
     public function testGetPhpDefaultType($default, $dmsType, $phpDefaultType)
     {
         $dmsColumn = new DmsColumn(
-            self::COLUMN_NAME,
+            static::COLUMN_NAME,
             $dmsType,
-            self::COLUMN_NULLABLE,
-            self::COLUMN_KEY,
+            static::COLUMN_NULLABLE,
+            static::COLUMN_KEY,
             $default,
-            self::COLUMN_EXTRA
+            static::COLUMN_EXTRA
         );
 
         $this->assertEquals($phpDefaultType, $dmsColumn->getPhpDefaultType());
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -185,19 +184,18 @@ class DmsColumnTest extends TestCase
     public function testIsNullable($isNullable, $expectedIsNullable)
     {
         $dmsColumn = new DmsColumn(
-            self::COLUMN_NAME,
-            self::COLUMN_TYPE,
+            static::COLUMN_NAME,
+            static::COLUMN_TYPE,
             $isNullable,
-            self::COLUMN_KEY,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_KEY,
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         );
 
         $this->assertEquals($expectedIsNullable, $dmsColumn->isNullable());
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -224,19 +222,18 @@ class DmsColumnTest extends TestCase
     public function testGetKey($key, $expectedKey)
     {
         $dmsColumn = new DmsColumn(
-            self::COLUMN_NAME,
-            self::COLUMN_TYPE,
-            self::COLUMN_NULLABLE,
+            static::COLUMN_NAME,
+            static::COLUMN_TYPE,
+            static::COLUMN_NULLABLE,
             $key,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         );
 
         $this->assertEquals($expectedKey, $dmsColumn->getKey());
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -268,12 +265,12 @@ class DmsColumnTest extends TestCase
     {
         foreach ($dmsTypes as $dmsType) {
             $dmsColumn = new DmsColumn(
-                self::COLUMN_NAME,
+                static::COLUMN_NAME,
                 $dmsType,
-                self::COLUMN_NULLABLE,
-                self::COLUMN_KEY,
-                self::COLUMN_DEFAULT,
-                self::COLUMN_EXTRA
+                static::COLUMN_NULLABLE,
+                static::COLUMN_KEY,
+                static::COLUMN_DEFAULT,
+                static::COLUMN_EXTRA
             );
 
             $this->assertEquals($phpType, $dmsColumn->getPhpType());
@@ -281,7 +278,6 @@ class DmsColumnTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -319,20 +315,18 @@ class DmsColumnTest extends TestCase
         ];
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsException
-     * @expectedExceptionMessage Could not determine type for column "name_snake_case" with type "invalid"
-     */
     public function testGetPhpTypeInvalid()
     {
+        $this->expectException(DmsException::class);
+        $this->expectExceptionMessage('Could not determine type for column "name_snake_case" with type "invalid"');
+
         (new DmsColumn(
-            self::COLUMN_NAME,
-            self::COLUMN_TYPE_INVALID,
-            self::COLUMN_NULLABLE,
-            self::COLUMN_KEY,
-            self::COLUMN_DEFAULT,
-            self::COLUMN_EXTRA
+            static::COLUMN_NAME,
+            static::COLUMN_TYPE_INVALID,
+            static::COLUMN_NULLABLE,
+            static::COLUMN_KEY,
+            static::COLUMN_DEFAULT,
+            static::COLUMN_EXTRA
         ))
             ->getPhpType()
         ;

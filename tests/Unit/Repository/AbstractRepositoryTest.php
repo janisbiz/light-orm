@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Repository;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository;
+use Janisbiz\LightOrm\Repository\RepositoryException;
 use PHPUnit\Framework\TestCase;
 
 class AbstractRepositoryTest extends TestCase
@@ -55,16 +56,14 @@ class AbstractRepositoryTest extends TestCase
     public function testQuote()
     {
         $this->connection->expects($this->once())->method('quote');
-        $this->abstractRepository->quote(self::VALUE);
+        $this->abstractRepository->quote(static::VALUE);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Repository\RepositoryException
-     * @expectedExceptionMessage Parameter type "array" could not be quoted for SQL execution!
-     */
     public function testQuoteWithInvalidValue()
     {
-        $this->abstractRepository->quote(self::VALUE_INVALID);
+        $this->expectException(RepositoryException::class);
+        $this->expectExceptionMessage('Parameter type "array" could not be quoted for SQL execution!');
+
+        $this->abstractRepository->quote(static::VALUE_INVALID);
     }
 }

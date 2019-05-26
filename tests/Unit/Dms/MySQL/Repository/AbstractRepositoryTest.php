@@ -81,7 +81,7 @@ class AbstractRepositoryTest extends TestCase
             ->entity
             ->method('primaryKeysAutoIncrement')
             ->willReturn([
-                self::COLUMN_AUTO_INCREMENT,
+                static::COLUMN_AUTO_INCREMENT,
             ])
         ;
 
@@ -120,16 +120,15 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository->expects($this->once())->method('commit');
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
 
-        $this->connection->method('lastInsertId')->willReturn(self::COLUMN_AUTO_INCREMENT_VALUE);
+        $this->connection->method('lastInsertId')->willReturn(static::COLUMN_AUTO_INCREMENT_VALUE);
 
         $entity = $this->abstractRepository->insert($this->queryBuilder);
 
-        self::assertTrue($entity instanceof $this->entity);
-        self::assertEquals(self::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[self::COLUMN_AUTO_INCREMENT]);
+        static::assertTrue($entity instanceof $this->entity);
+        static::assertEquals(static::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[static::COLUMN_AUTO_INCREMENT]);
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage PDO Exception
      */
@@ -166,7 +165,6 @@ class AbstractRepositoryTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Janisbiz\LightOrm\Dms\MySQL\Repository\RepositoryException
      * @expectedExceptionMessage Cannot perform insert on query without entity! Please create query builder with entity.
      */
@@ -185,12 +183,12 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository->expects($this->once())->method('commit');
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
 
-        $this->connection->method('lastInsertId')->willReturn(self::COLUMN_AUTO_INCREMENT_VALUE);
+        $this->connection->method('lastInsertId')->willReturn(static::COLUMN_AUTO_INCREMENT_VALUE);
 
         $entity = $this->abstractRepository->insertIgnore($this->queryBuilder);
 
-        self::assertTrue($entity instanceof $this->entity);
-        self::assertEquals(self::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[self::COLUMN_AUTO_INCREMENT]);
+        static::assertTrue($entity instanceof $this->entity);
+        static::assertEquals(static::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[static::COLUMN_AUTO_INCREMENT]);
     }
 
     public function testInsertIgnoreToString()
@@ -217,12 +215,12 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository->expects($this->once())->method('commit');
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
 
-        $this->connection->method('lastInsertId')->willReturn(self::COLUMN_AUTO_INCREMENT_VALUE);
+        $this->connection->method('lastInsertId')->willReturn(static::COLUMN_AUTO_INCREMENT_VALUE);
 
         $entity = $this->abstractRepository->replace($this->queryBuilder);
 
-        self::assertTrue($entity instanceof $this->entity);
-        self::assertEquals(self::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[self::COLUMN_AUTO_INCREMENT]);
+        static::assertTrue($entity instanceof $this->entity);
+        static::assertEquals(static::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[static::COLUMN_AUTO_INCREMENT]);
     }
 
     public function testReplaceToString()
@@ -279,7 +277,6 @@ class AbstractRepositoryTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage PDO Exception
      */
@@ -348,7 +345,6 @@ class AbstractRepositoryTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage PDO Exception
      */
@@ -373,8 +369,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
             ->command(CommandEnum::UPDATE)
-            ->set(self::COLUMN_ONE, self::COLUMN_ONE_UPDATE_VALUE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -393,8 +389,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository))
             ->command(CommandEnum::UPDATE)
-            ->set(self::COLUMN_ONE, self::COLUMN_ONE_UPDATE_VALUE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -424,8 +420,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
             ->command(CommandEnum::UPDATE)
-            ->set(self::COLUMN_ONE, self::COLUMN_ONE_UPDATE_VALUE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->abstractRepository->expects($this->once())->method('addEntityUpdateQuery')->willReturn(true);
@@ -437,7 +433,6 @@ class AbstractRepositoryTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage PDO Exception
      */
@@ -445,8 +440,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
             ->command(CommandEnum::UPDATE)
-            ->set(self::COLUMN_ONE, self::COLUMN_ONE_UPDATE_VALUE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -466,8 +461,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
             ->command(CommandEnum::UPDATE_IGNORE)
-            ->set(self::COLUMN_ONE, self::COLUMN_ONE_UPDATE_VALUE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -486,8 +481,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
             ->command(CommandEnum::UPDATE_IGNORE)
-            ->set(self::COLUMN_ONE, self::COLUMN_ONE_UPDATE_VALUE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->abstractRepository->expects($this->once())->method('addEntityUpdateQuery')->willReturn(true);
@@ -502,7 +497,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
             ->command(CommandEnum::DELETE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -519,7 +514,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository))
             ->command(CommandEnum::DELETE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -531,11 +526,20 @@ class AbstractRepositoryTest extends TestCase
         $this->assertTrue($this->abstractRepository->delete($this->queryBuilder));
     }
 
+    public function testDeleteWithEntityWithoutPrimaryKeys()
+    {
+        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+            ->command(CommandEnum::DELETE)
+        ;
+
+        $this->assertFalse($this->abstractRepository->delete($this->queryBuilder));
+    }
+
     public function testDeleteToString()
     {
         $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
             ->command(CommandEnum::DELETE)
-            ->where(\sprintf('%s = %d', self::COLUMN_AUTO_INCREMENT, self::COLUMN_AUTO_INCREMENT_VALUE))
+            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->abstractRepository->expects($this->once())->method('addEntityDeleteQuery')->willReturn(true);
@@ -547,7 +551,6 @@ class AbstractRepositoryTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage PDO Exception
      */
@@ -576,17 +579,16 @@ class AbstractRepositoryTest extends TestCase
             ->command(CommandEnum::SELECT)
         ;
 
-        $this->statement->expects($this->once())->method('fetchColumn')->with(0)->willReturn(self::RESULT_COUNT);
+        $this->statement->expects($this->once())->method('fetchColumn')->with(0)->willReturn(static::RESULT_COUNT);
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute')->willReturn($this->statement);
 
         $resultCount = $this->abstractRepository->count($this->queryBuilder);
 
-        $this->assertEquals(self::RESULT_COUNT, $resultCount);
+        $this->assertEquals(static::RESULT_COUNT, $resultCount);
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Janisbiz\LightOrm\Dms\MySQL\Repository\RepositoryException
      * @expectedExceptionMessage
      * Command "DELETE" is not a valid command for count query! Use "SELECT" command to execute count query.
@@ -613,7 +615,6 @@ class AbstractRepositoryTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      * @expectedException \Exception
      * @expectedExceptionMessage PDO Exception
      */

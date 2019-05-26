@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
 
@@ -25,35 +26,33 @@ class HavingTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->bind = self::HAVING_CONDITION_BIND_DEFAULT;
-        $this->having = self::HAVING_CONDITION_DEFAULT;
+        $this->bind = static::HAVING_CONDITION_BIND_DEFAULT;
+        $this->having = static::HAVING_CONDITION_DEFAULT;
     }
 
     public function testHaving()
     {
-        $object = $this->having(self::HAVING_CONDITION, self::HAVING_CONDITION_BIND);
+        $object = $this->having(static::HAVING_CONDITION, static::HAVING_CONDITION_BIND);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(HavingTrait::class, $object);
-        $this->assertEquals(\array_merge(self::HAVING_CONDITION_DEFAULT, [self::HAVING_CONDITION]), $this->having);
+        $this->assertEquals(\array_merge(static::HAVING_CONDITION_DEFAULT, [static::HAVING_CONDITION]), $this->having);
         $this->assertEquals(
-            \array_merge(self::HAVING_CONDITION_BIND_DEFAULT, self::HAVING_CONDITION_BIND),
+            \array_merge(static::HAVING_CONDITION_BIND_DEFAULT, static::HAVING_CONDITION_BIND),
             $this->bind
         );
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $condition to having function!
-     */
     public function testHavingWithEmptyCondition()
     {
-        $this->having(self::HAVING_CONDITION_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $condition to having function!');
+
+        $this->having(static::HAVING_CONDITION_EMPTY);
     }
 
     public function testBuildHavingQueryPart()
     {
-        $this->having(self::HAVING_CONDITION, self::HAVING_CONDITION_BIND);
+        $this->having(static::HAVING_CONDITION, static::HAVING_CONDITION_BIND);
 
         $this->assertEquals(
             \sprintf('%s %s', ConditionEnum::HAVING, \implode(' AND ', \array_unique($this->having))),

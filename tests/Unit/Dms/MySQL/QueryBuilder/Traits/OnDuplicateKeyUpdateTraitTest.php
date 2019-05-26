@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OnDuplicateKeyUpdateTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ValueTrait;
 
@@ -25,8 +26,8 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->onDuplicateKeyUpdate = self::ON_DUPLICATE_KEY_UPDATE_DEFAULT;
-        $this->bindValue = self::ON_DUPLICATE_KEY_UPDATE_BIND_DEFAULT;
+        $this->onDuplicateKeyUpdate = static::ON_DUPLICATE_KEY_UPDATE_DEFAULT;
+        $this->bindValue = static::ON_DUPLICATE_KEY_UPDATE_BIND_DEFAULT;
     }
 
     /**
@@ -43,7 +44,7 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
 
         $this->assertEquals(
             \array_merge(
-                self::ON_DUPLICATE_KEY_UPDATE_DEFAULT,
+                static::ON_DUPLICATE_KEY_UPDATE_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($column) {
@@ -75,7 +76,7 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
         );
         $this->assertEquals(
             \array_merge(
-                self::ON_DUPLICATE_KEY_UPDATE_BIND_DEFAULT,
+                static::ON_DUPLICATE_KEY_UPDATE_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($column, $value) {
@@ -109,6 +110,14 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
         );
     }
 
+    public function testBuildOnDuplicateKeyUpdateWhenEmptyColumnPassed()
+    {
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $column to onDuplicateKeyUpdate function!');
+
+        $this->onDuplicateKeyUpdate('', null);
+    }
+
     /**
      * @dataProvider onDuplicateKeyUpdateData
      *
@@ -133,7 +142,6 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */

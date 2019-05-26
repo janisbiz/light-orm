@@ -42,12 +42,12 @@ class DmsDatabaseTest extends TestCase
             );
         }
 
-        $this->dmsDatabase = new DmsDatabase(self::DATABASE_NAME, $this->dmsTables);
+        $this->dmsDatabase = new DmsDatabase(static::DATABASE_NAME, $this->dmsTables);
     }
 
     public function testGetName()
     {
-        $this->assertEquals(self::DATABASE_NAME, $this->dmsDatabase->getName());
+        $this->assertEquals(static::DATABASE_NAME, $this->dmsDatabase->getName());
     }
 
     /**
@@ -67,7 +67,6 @@ class DmsDatabaseTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */

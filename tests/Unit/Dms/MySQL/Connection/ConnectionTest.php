@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Connection;
 
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionPDOException;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionTest extends TestCase
@@ -63,15 +64,14 @@ class ConnectionTest extends TestCase
         $this->assertTrue($this->connection->unsetSqlSafeUpdates() instanceof Connection);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionPDOException
-     * @expectedExceptionMessage Cannot begin transaction!
-     */
     public function testBeginTransactionWhenNotInTransactionAndCantBeginTransaction()
     {
         $this->connection->method('inTransaction')->willReturn(false);
         $this->connection->method('parentBeginTransaction')->willReturn(false);
-        $this->assertTrue($this->connection->beginTransaction() instanceof Connection);
+
+        $this->expectException(ConnectionPDOException::class);
+        $this->expectExceptionMessage('Cannot begin transaction!');
+
+        $this->connection->beginTransaction();
     }
 }

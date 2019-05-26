@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
 
 class LimitOffsetTraitTest extends AbstractTraitTestCase
@@ -17,79 +18,69 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 
     public function testOffset()
     {
-        $object = $this->limit(self::LIMIT_DEFAULT)->offset(self::OFFSET);
+        $object = $this->limit(static::LIMIT_DEFAULT)->offset(static::OFFSET);
         $this->assertObjectUsesTrait(LimitOffsetTrait::class, $object);
-        $this->assertEquals(self::OFFSET, $this->offset);
+        $this->assertEquals(static::OFFSET, $this->offset);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $offset to offset method!
-     */
     public function testOffsetEmpty()
     {
-        $this->offset(self::OFFSET_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $offset to offset method!');
+
+        $this->offset(static::OFFSET_EMPTY);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must set LIMIT before calling offset method!
-     */
     public function testOffsetWithEmptyLimit()
     {
-        $this->offset(self::OFFSET);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must set LIMIT before calling offset method!');
+
+        $this->offset(static::OFFSET);
     }
 
     public function testLimitWithOffset()
     {
-        $object = $this->limitWithOffset(self::LIMIT, self::OFFSET);
+        $object = $this->limitWithOffset(static::LIMIT, static::OFFSET);
         $this->assertObjectUsesTrait(LimitOffsetTrait::class, $object);
-        $this->assertEquals(self::LIMIT, $this->limit);
-        $this->assertEquals(self::OFFSET, $this->offset);
+        $this->assertEquals(static::LIMIT, $this->limit);
+        $this->assertEquals(static::OFFSET, $this->offset);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $limit to limit method!
-     */
     public function testLimitWithOffsetWithEmptyLimit()
     {
-        $this->limitWithOffset(self::LIMIT_EMPTY, self::OFFSET);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $limit to limit method!');
+
+        $this->limitWithOffset(static::LIMIT_EMPTY, static::OFFSET);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $offset to offset method!
-     */
     public function testLimitWithOffsetWithEmptyOffset()
     {
-        $this->limitWithOffset(self::LIMIT, self::OFFSET_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $offset to offset method!');
+
+        $this->limitWithOffset(static::LIMIT, static::OFFSET_EMPTY);
     }
 
     public function testLimit()
     {
-        $object = $this->limit(self::LIMIT);
+        $object = $this->limit(static::LIMIT);
         $this->assertObjectUsesTrait(LimitOffsetTrait::class, $object);
-        $this->assertEquals(self::LIMIT, $this->limit);
+        $this->assertEquals(static::LIMIT, $this->limit);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $limit to limit method!
-     */
     public function testLimitEmpty()
     {
-        $this->limit(self::LIMIT_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $limit to limit method!');
+
+        $this->limit(static::LIMIT_EMPTY);
     }
 
     public function testBuildLimitQueryPart()
     {
-        $this->limit(self::LIMIT);
+        $this->limit(static::LIMIT);
 
         $this->assertEquals(
             \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit),
@@ -104,7 +95,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 
     public function testBuildOffsetQueryPart()
     {
-        $this->limitWithOffset(self::LIMIT, self::OFFSET);
+        $this->limitWithOffset(static::LIMIT, static::OFFSET);
 
         $this->assertEquals(
             \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset),

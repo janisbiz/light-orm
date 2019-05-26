@@ -3,16 +3,22 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
+use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Entity\EntityInterface;
+use Janisbiz\LightOrm\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\AbstractTraitTestCase;
+use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\UnionTraitTest;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerTrait;
 
 class QueryBuilderTest extends AbstractTraitTestCase
 {
+    const COMMAND_INVALID = 'INVALID';
+
     /**
      * @var \ReflectionMethod[]
      */
@@ -29,7 +35,6 @@ class QueryBuilderTest extends AbstractTraitTestCase
     private $queryBuilder;
 
     /**
-     * @codeCoverageIgnore
      *
      * @throws \Exception
      */
@@ -72,7 +77,6 @@ class QueryBuilderTest extends AbstractTraitTestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -114,52 +118,13 @@ class QueryBuilderTest extends AbstractTraitTestCase
      */
     public function testBuildQuery($command, $methods, $expected, $expectedToString)
     {
-        foreach ($methods as $method => $value) {
-            switch ($method) {
-                case 'column':
-                case 'table':
-                case 'groupBy':
-                case 'limit':
-                case 'offset':
-                    $this->queryBuilder->$method($value);
-                    break;
-
-                case 'innerJoin':
-                case 'leftJoin':
-                case 'rightJoin':
-                case 'crossJoin':
-                case 'fullOuterJoin':
-                    $this->queryBuilder->$method($value[0], $value[1], !empty($value[2]) ? $value[2] : []);
-                    break;
-
-                case 'innerJoinAs':
-                case 'leftJoinAs':
-                case 'rightJoinAs':
-                case 'crossJoinAs':
-                case 'fullOuterJoinAs':
-                    $this->queryBuilder->$method($value[0], $value[1], $value[2], !empty($value[3]) ? $value[3] : []);
-                    break;
-
-                case 'where':
-                case 'whereIn':
-                case 'whereNotIn':
-                case 'having':
-                case 'value':
-                case 'onDuplicateKeyUpdate':
-                case 'set':
-                    $this->queryBuilder->$method($value[0], $value[1]);
-                    break;
-            }
-        }
-
-        $this->queryBuilder->command($command);
+        $this->addQueryPartsToQueryBuilder($command, $methods);
 
         $this->assertEquals(\implode(' ', $expected), $this->queryBuilder->buildQuery());
         $this->assertEquals(\implode(' ', $expectedToString), $this->queryBuilder->toString());
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -300,6 +265,10 @@ class QueryBuilderTest extends AbstractTraitTestCase
                             'havingTable1Column2' => 1.2,
                         ]
                     ],
+                    'orderBy' => [
+                        'table1.column1',
+                        KeywordEnum::DESC,
+                    ],
                     'limit' => 1,
                     'offset' => 2,
                 ],
@@ -322,6 +291,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                     'AND table1.column3 NOT IN (:0_table1column3_NotIn, :1_table1column3_NotIn)',
                     'GROUP BY table1.column1',
                     'HAVING table1.column1 = table2.column2 AND table1.column2 = :havingTable1Column2',
+                    'ORDER BY table1.column1 DESC',
                     'LIMIT 1 OFFSET 2',
                 ],
                 [
@@ -343,6 +313,53 @@ class QueryBuilderTest extends AbstractTraitTestCase
                     'AND table1.column3 NOT IN (\'table1Column3BindValue1\', \'table1Column3BindValue2\')',
                     'GROUP BY table1.column1',
                     'HAVING table1.column1 = table2.column2 AND table1.column2 = 1.2',
+                    'ORDER BY table1.column1 DESC',
+                    'LIMIT 1 OFFSET 2',
+                ],
+            ],
+            [
+                CommandEnum::SELECT,
+                [
+                    'unionAll' => function () {
+                        $queryBuilder = $this->createMock(QueryBuilderInterface::class);
+                        $queryBuilder
+                            ->method('commandData')
+                            ->willReturn(UnionTraitTest::QUERY_BUILDER_COMMAND)
+                        ;
+                        $queryBuilder
+                            ->method('bindData')
+                            ->willReturn(UnionTraitTest::QUERY_BUILDER_BIND_DATA)
+                        ;
+                        $queryBuilder
+                            ->method('buildQuery')
+                            ->willReturn(UnionTraitTest::QUERY_BUILDER_QUERY)
+                        ;
+
+                        return $queryBuilder;
+                    },
+                    'orderBy' => [
+                        'col1',
+                        KeywordEnum::DESC,
+                    ],
+                    'limit' => 1,
+                    'offset' => 2,
+                ],
+                [
+                    '(SELECT col1, col2, col3 FROM table1 WHERE table1.col1 = :col1 AND table1.col2 IS NOT NULL)',
+                    'UNION ALL',
+                    '(SELECT col1, col2, col3 FROM table1 WHERE table1.col1 = :col1 AND table1.col2 IS NOT NULL)',
+                    'UNION ALL',
+                    '(SELECT col1, col2, col3 FROM table1 WHERE table1.col1 = :col1 AND table1.col2 IS NOT NULL)',
+                    'ORDER BY col1 DESC',
+                    'LIMIT 1 OFFSET 2',
+                ],
+                [
+                    '(SELECT col1, col2, col3 FROM table1 WHERE table1.col1 = \'val1\' AND table1.col2 IS NOT NULL)',
+                    'UNION ALL',
+                    '(SELECT col1, col2, col3 FROM table1 WHERE table1.col1 = \'val1\' AND table1.col2 IS NOT NULL)',
+                    'UNION ALL',
+                    '(SELECT col1, col2, col3 FROM table1 WHERE table1.col1 = \'val1\' AND table1.col2 IS NOT NULL)',
+                    'ORDER BY col1 DESC',
                     'LIMIT 1 OFFSET 2',
                 ],
             ],
@@ -634,6 +651,95 @@ class QueryBuilderTest extends AbstractTraitTestCase
         /** phpcs:enable */
     }
 
+    /**
+     * @dataProvider buildQueryWithMissingQueryPartsProvideData
+     *
+     * @param string $command
+     * @param string[] $methods
+     * @param string $expectedException
+     * @param string $expectedExceptionMessage
+     */
+    public function testBuildQueryWithMissingQueryPartsProvided(
+        $command,
+        array $methods,
+        $expectedException,
+        $expectedExceptionMessage
+    ) {
+        $this->addQueryPartsToQueryBuilder($command, $methods);
+
+        $this->expectException($expectedException);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+
+        $this->queryBuilder->buildQuery();
+    }
+
+    /**
+     * @return array
+     */
+    public function buildQueryWithMissingQueryPartsProvideData()
+    {
+        return [
+            [
+                null,
+                [],
+                QueryBuilderException::class,
+                'Could not build query, as there is no command provided!',
+            ],
+            [
+                CommandEnum::UPDATE,
+                [],
+                QueryBuilderException::class,
+                'Cannot perform UPDATE action without SET condition!',
+            ],
+            [
+                CommandEnum::UPDATE,
+                [
+                    'set' => [
+                        'table1.column1',
+                        'table1Column1Value',
+                    ],
+                ],
+                QueryBuilderException::class,
+                'Cannot perform UPDATE action without WHERE condition!',
+            ],
+            [
+                CommandEnum::UPDATE_IGNORE,
+                [],
+                QueryBuilderException::class,
+                'Cannot perform UPDATE action without SET condition!',
+            ],
+            [
+                CommandEnum::UPDATE_IGNORE,
+                [
+                    'set' => [
+                        'table1.column1',
+                        'table1Column1Value',
+                    ],
+                ],
+                QueryBuilderException::class,
+                'Cannot perform UPDATE action without WHERE condition!',
+            ],
+            [
+                CommandEnum::DELETE,
+                [],
+                QueryBuilderException::class,
+                'Cannot perform DELETE action without WHERE condition!',
+            ],
+            [
+                CommandEnum::DELETE,
+                [],
+                QueryBuilderException::class,
+                'Cannot perform DELETE action without WHERE condition!',
+            ],
+            [
+                static::COMMAND_INVALID,
+                [],
+                QueryBuilderException::class,
+                \sprintf('Could not build query, as there is no valid(%s) command provided!', static::COMMAND_INVALID),
+            ],
+        ];
+    }
+
     public function testGetEntity()
     {
         /** @var EntityInterface $entity */
@@ -642,6 +748,73 @@ class QueryBuilderTest extends AbstractTraitTestCase
         $queryBuilder = new QueryBuilder($this->abstractRepository, $entity);
 
         $this->assertTrue($queryBuilder->getEntity() instanceof EntityInterface);
+    }
+
+    /**
+     * @param string $command
+     * @param string[] $methods
+     *
+     * @return $this
+     */
+    private function addQueryPartsToQueryBuilder($command, array $methods)
+    {
+        $this->queryBuilder->command($command);
+
+        foreach ($methods as $method => $value) {
+            switch ($method) {
+                case 'column':
+                case 'table':
+                case 'groupBy':
+                case 'limit':
+                case 'offset':
+                    $this->queryBuilder->$method($value);
+                    break;
+
+                case 'innerJoin':
+                case 'leftJoin':
+                case 'rightJoin':
+                case 'crossJoin':
+                case 'fullOuterJoin':
+                    $this->queryBuilder->$method($value[0], $value[1], !empty($value[2]) ? $value[2] : []);
+                    break;
+
+                case 'innerJoinAs':
+                case 'leftJoinAs':
+                case 'rightJoinAs':
+                case 'crossJoinAs':
+                case 'fullOuterJoinAs':
+                    $this->queryBuilder->$method($value[0], $value[1], $value[2], !empty($value[3]) ? $value[3] : []);
+                    break;
+
+                case 'where':
+                case 'whereIn':
+                case 'whereNotIn':
+                case 'having':
+                case 'value':
+                case 'onDuplicateKeyUpdate':
+                case 'set':
+                case 'orderBy':
+                    $this->queryBuilder->$method($value[0], $value[1]);
+                    break;
+
+                case 'unionAll':
+                    $queryBuilder = $value();
+
+                    $unionAllQueries = [
+                        $queryBuilder,
+                        $queryBuilder,
+                        $queryBuilder,
+                    ];
+
+                    foreach ($unionAllQueries as $unionAllQuery) {
+                        $this->queryBuilder->unionAll($unionAllQuery);
+                    }
+
+                    break;
+            }
+        }
+
+        return $this;
     }
 
     /**

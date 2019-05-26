@@ -115,24 +115,24 @@ class DmsColumn implements DmsColumnInterface
     {
         \preg_match('/^(?<type>\w+)/', $this->getType(), $matches);
         switch ($matches['type']) {
-            case self::TYPE_BIGINT:
-            case self::TYPE_INT:
-            case self::TYPE_TIMESTAMP:
-            case self::TYPE_TINYINT:
-                return self::PHP_TYPE_INTEGER;
+            case static::TYPE_BIGINT:
+            case static::TYPE_INT:
+            case static::TYPE_TIMESTAMP:
+            case static::TYPE_TINYINT:
+                return static::PHP_TYPE_INTEGER;
 
-            case self::TYPE_FLOAT:
-                return self::PHP_TYPE_DOUBLE;
+            case static::TYPE_FLOAT:
+                return static::PHP_TYPE_DOUBLE;
 
-            case self::TYPE_CHAR:
-            case self::TYPE_DATE:
-            case self::TYPE_DATETIME:
-            case self::TYPE_JSON:
-            case self::TYPE_LONGTEXT:
-            case self::TYPE_MEDIUMTEXT:
-            case self::TYPE_TEXT:
-            case self::TYPE_VARCHAR:
-                return self::PHP_TYPE_STRING;
+            case static::TYPE_CHAR:
+            case static::TYPE_DATE:
+            case static::TYPE_DATETIME:
+            case static::TYPE_JSON:
+            case static::TYPE_LONGTEXT:
+            case static::TYPE_MEDIUMTEXT:
+            case static::TYPE_TEXT:
+            case static::TYPE_VARCHAR:
+                return static::PHP_TYPE_STRING;
         }
 
         throw new DmsException(\sprintf(
@@ -175,17 +175,17 @@ class DmsColumn implements DmsColumnInterface
 
         if (null !== $default) {
             switch ($this->getPhpType()) {
-                case self::PHP_TYPE_INTEGER:
+                case static::PHP_TYPE_INTEGER:
                     $default = (int) $default;
 
                     break;
 
-                case self::PHP_TYPE_DOUBLE:
+                case static::PHP_TYPE_DOUBLE:
                     $default = (double) $default;
 
                     break;
 
-                case self::PHP_TYPE_STRING:
+                case static::PHP_TYPE_STRING:
                     $default = (string) $default;
 
                     break;

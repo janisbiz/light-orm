@@ -36,7 +36,6 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -66,7 +65,6 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */

@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderByTrait;
 
 class OrderByTraitTest extends AbstractTraitTestCase
@@ -24,7 +25,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->orderBy = self::ORDER_BY_DEFAULT;
+        $this->orderBy = static::ORDER_BY_DEFAULT;
     }
 
     /**
@@ -39,7 +40,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(OrderByTrait::class, $object);
         $this->assertEquals(
             \array_merge(
-                self::ORDER_BY_DEFAULT,
+                static::ORDER_BY_DEFAULT,
                 \array_map(
                     function ($column) use ($keyword) {
                         return \sprintf('%s %s', $column, $keyword);
@@ -75,7 +76,6 @@ class OrderByTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -83,41 +83,37 @@ class OrderByTraitTest extends AbstractTraitTestCase
     {
         return [
             [
-                self::ORDER_BY_COLUMN,
+                static::ORDER_BY_COLUMN,
                 KeywordEnum::ASC,
             ],
             [
-                self::ORDER_BY_COLUMN,
+                static::ORDER_BY_COLUMN,
                 KeywordEnum::DESC,
             ],
             [
-                self::ORDER_BY_COLUMNS,
+                static::ORDER_BY_COLUMNS,
                 KeywordEnum::ASC,
             ],
             [
-                self::ORDER_BY_COLUMNS,
+                static::ORDER_BY_COLUMNS,
                 KeywordEnum::DESC,
             ],
         ];
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $orderBy to orderBy method!
-     */
     public function testOrderByWithEmptyOrderBy()
     {
-        $this->orderBy(self::ORDER_BY_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $orderBy to orderBy method!');
+
+        $this->orderBy(static::ORDER_BY_EMPTY);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage Invalid $keyword "INVALID" for orderBy!
-     */
     public function testOrderByWithInvalidKeyword()
     {
-        $this->orderBy(self::ORDER_BY_COLUMN, self::ORDER_BY_INVALID_KEYWORD);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('Invalid $keyword "INVALID" for orderBy!');
+
+        $this->orderBy(static::ORDER_BY_COLUMN, static::ORDER_BY_INVALID_KEYWORD);
     }
 }

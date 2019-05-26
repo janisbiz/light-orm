@@ -23,27 +23,27 @@ class AbstractConnectionConfigTest extends TestCase
         $this->abstractConnectionConfig = $this->getMockForAbstractClass(
             AbstractConnectionConfig::class,
             [
-                self::CONFIG_HOST,
-                self::CONFIG_USERNAME,
-                self::CONFIG_PASSWORD,
-                self::CONFIG_DBNAME,
-                self::CONFIG_ADAPTER,
+                static::CONFIG_HOST,
+                static::CONFIG_USERNAME,
+                static::CONFIG_PASSWORD,
+                static::CONFIG_DBNAME,
+                static::CONFIG_ADAPTER,
             ]
         );
     }
 
     public function testGetUsername()
     {
-        $this->assertEquals(self::CONFIG_USERNAME, $this->abstractConnectionConfig->getUsername());
+        $this->assertEquals(static::CONFIG_USERNAME, $this->abstractConnectionConfig->getUsername());
     }
 
     public function testGetPassword()
     {
-        $this->assertEquals(self::CONFIG_PASSWORD, $this->abstractConnectionConfig->getPassword());
+        $this->assertEquals(static::CONFIG_PASSWORD, $this->abstractConnectionConfig->getPassword());
     }
 
     public function testGetDbname()
     {
-        $this->assertEquals(self::CONFIG_DBNAME, $this->abstractConnectionConfig->getDbname());
+        $this->assertEquals(static::CONFIG_DBNAME, $this->abstractConnectionConfig->getDbname());
     }
 }

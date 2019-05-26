@@ -20,8 +20,8 @@ class SetTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->bind = self::SET_BIND_DEFAULT;
-        $this->set = self::SET_DEFAULT;
+        $this->bind = static::SET_BIND_DEFAULT;
+        $this->set = static::SET_DEFAULT;
     }
 
     /**
@@ -37,7 +37,7 @@ class SetTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(SetTrait::class, $object);
         $this->assertEquals(
             \array_merge(
-                self::SET_DEFAULT,
+                static::SET_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($column) {
@@ -69,7 +69,7 @@ class SetTraitTest extends AbstractTraitTestCase
         );
         $this->assertEquals(
             \array_merge(
-                self::SET_BIND_DEFAULT,
+                static::SET_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($column, $value) {
@@ -127,7 +127,6 @@ class SetTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */

@@ -23,10 +23,10 @@ class ConnectionConfigTest extends TestCase
     public function setUp()
     {
         $this->connectionConfig = new ConnectionConfig(
-            self::CONFIG_HOST,
-            self::CONFIG_USERNAME,
-            self::CONFIG_PASSWORD,
-            self::CONFIG_DBNAME
+            static::CONFIG_HOST,
+            static::CONFIG_USERNAME,
+            static::CONFIG_PASSWORD,
+            static::CONFIG_DBNAME
         );
     }
 
@@ -35,9 +35,9 @@ class ConnectionConfigTest extends TestCase
         $this->assertEquals(
             \sprintf(
                 '%s:host=%s;dbname=%s;charset=utf8mb4',
-                self::CONFIG_ADAPTER,
-                self::CONFIG_HOST,
-                self::CONFIG_DBNAME
+                static::CONFIG_ADAPTER,
+                static::CONFIG_HOST,
+                static::CONFIG_DBNAME
             ),
             $this->connectionConfig->generateDsn()
         );
@@ -45,17 +45,17 @@ class ConnectionConfigTest extends TestCase
 
     public function testGetUsername()
     {
-        $this->assertEquals(self::CONFIG_USERNAME, $this->connectionConfig->getUsername());
+        $this->assertEquals(static::CONFIG_USERNAME, $this->connectionConfig->getUsername());
     }
 
     public function testGetPassword()
     {
-        $this->assertEquals(self::CONFIG_PASSWORD, $this->connectionConfig->getPassword());
+        $this->assertEquals(static::CONFIG_PASSWORD, $this->connectionConfig->getPassword());
     }
 
     public function testGetDbname()
     {
-        $this->assertEquals(self::CONFIG_DBNAME, $this->connectionConfig->getDbname());
+        $this->assertEquals(static::CONFIG_DBNAME, $this->connectionConfig->getDbname());
     }
 
     public function testGetAdapterConnectionClass()

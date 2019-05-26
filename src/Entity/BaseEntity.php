@@ -48,11 +48,11 @@ class BaseEntity implements EntityInterface
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->data)) {
+        if (\array_key_exists($name, $this->data)) {
             return $this->data[$name];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

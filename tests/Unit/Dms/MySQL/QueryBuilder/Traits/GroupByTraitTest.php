@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupByTrait;
 
 class GroupByTraitTest extends AbstractTraitTestCase
@@ -22,43 +23,41 @@ class GroupByTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->groupBy = self::GROUP_BY_DEFAULT;
+        $this->groupBy = static::GROUP_BY_DEFAULT;
     }
 
     public function testGroupBy()
     {
-        $this->assertEquals(self::GROUP_BY_DEFAULT, $this->groupBy);
+        $this->assertEquals(static::GROUP_BY_DEFAULT, $this->groupBy);
 
-        $object = $this->groupBy(self::GROUP_BY_ARRAY);
+        $object = $this->groupBy(static::GROUP_BY_ARRAY);
         $this->assertObjectUsesTrait(GroupByTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::GROUP_BY_DEFAULT, self::GROUP_BY_ARRAY),
+            \array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY),
             $this->groupBy
         );
 
-        $object = $this->groupBy(self::GROUP_BY);
+        $object = $this->groupBy(static::GROUP_BY);
         $this->assertObjectUsesTrait(GroupByTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::GROUP_BY_DEFAULT, self::GROUP_BY_ARRAY, [self::GROUP_BY]),
+            \array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY, [static::GROUP_BY]),
             $this->groupBy
         );
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $groupBy to groupBy method!
-     */
     public function testGroupByWhenEmpty()
     {
-        $this->groupBy(self::GROUP_BY_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $groupBy to groupBy method!');
+
+        $this->groupBy(static::GROUP_BY_EMPTY);
     }
 
     public function testBuildGroupByQueryPart()
     {
         $this
-            ->groupBy(self::GROUP_BY_ARRAY)
-            ->groupBy(self::GROUP_BY)
+            ->groupBy(static::GROUP_BY_ARRAY)
+            ->groupBy(static::GROUP_BY)
         ;
 
         $this->assertEquals(

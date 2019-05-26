@@ -16,7 +16,7 @@ class ConnectionConfig extends AbstractConnectionConfig
      */
     public function __construct($host, $username, $password, $dbname)
     {
-        parent::__construct($host, $username, $password, $dbname, self::ADAPTER);
+        parent::__construct($host, $username, $password, $dbname, static::ADAPTER);
     }
 
     /**

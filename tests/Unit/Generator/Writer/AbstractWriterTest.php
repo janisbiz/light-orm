@@ -10,25 +10,27 @@ use PHPUnit\Framework\TestCase;
 
 class AbstractWriterTest extends TestCase
 {
+    use FileTrait;
+
     /**
-     * @var AbstractWriter
+     * @var AbstractWriter|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractWriter;
 
     /**
-     * @var AbstractWriterConfig
+     * @var AbstractWriterConfig|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractWriterConfig;
 
     /**
-     * @var DmsDatabaseInterface
+     * @var DmsDatabaseInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $dmsDatabaseInterface;
+    private $dmsDatabase;
 
     /**
-     * @var DmsTableInterface
+     * @var DmsTableInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $dmsTableInterface;
+    private $dmsTable;
 
     public function setUp()
     {
@@ -55,11 +57,11 @@ class AbstractWriterTest extends TestCase
         
         $this->abstractWriter->method('getWriterConfig')->willReturn($this->abstractWriterConfig);
 
-        $this->dmsDatabaseInterface = $this->createMock(DmsDatabaseInterface::class);
-        $this->dmsDatabaseInterface->method('getPhpName')->willReturn('DmsDatabasePhpName');
+        $this->dmsDatabase = $this->createMock(DmsDatabaseInterface::class);
+        $this->dmsDatabase->method('getPhpName')->willReturn('DmsDatabasePhpName');
 
-        $this->dmsTableInterface = $this->createMock(DmsTableInterface::class);
-        $this->dmsTableInterface->method('getPhpName')->willReturn('DmsTablePhpName');
+        $this->dmsTable = $this->createMock(DmsTableInterface::class);
+        $this->dmsTable->method('getPhpName')->willReturn('DmsTablePhpName');
     }
 
     public function testGenerateNamespace()
@@ -68,11 +70,11 @@ class AbstractWriterTest extends TestCase
             \sprintf(
                 '%s\\%s\\%s%s',
                 AbstractWriterConfigTest::NAMESPACE_VALUE_EXPECTED,
-                $this->dmsDatabaseInterface->getPhpName(),
+                $this->dmsDatabase->getPhpName(),
                 AbstractWriterConfigTest::CLASS_PREFIX_VALUE_EXPECTED,
                 AbstractWriterConfigTest::CLASS_SUFFIX_VALUE_EXPECTED
             ),
-            $this->abstractWriter->generateNamespace($this->dmsDatabaseInterface)
+            $this->abstractWriter->generateNamespace($this->dmsDatabase)
         );
     }
 
@@ -83,11 +85,11 @@ class AbstractWriterTest extends TestCase
                 '',
                 [
                     AbstractWriterConfigTest::CLASS_PREFIX_VALUE_EXPECTED,
-                    $this->dmsTableInterface->getPhpName(),
+                    $this->dmsTable->getPhpName(),
                     AbstractWriterConfigTest::CLASS_SUFFIX_VALUE_EXPECTED,
                 ]
             ),
-            $this->abstractWriter->generateClassName($this->dmsTableInterface)
+            $this->abstractWriter->generateClassName($this->dmsTable)
         );
     }
 
@@ -97,14 +99,58 @@ class AbstractWriterTest extends TestCase
             \sprintf(
                 '%s\\%s\\%s%s\\%s%s%s',
                 AbstractWriterConfigTest::NAMESPACE_VALUE_EXPECTED,
-                $this->dmsDatabaseInterface->getPhpName(),
+                $this->dmsDatabase->getPhpName(),
                 AbstractWriterConfigTest::CLASS_PREFIX_VALUE_EXPECTED,
                 AbstractWriterConfigTest::CLASS_SUFFIX_VALUE_EXPECTED,
                 AbstractWriterConfigTest::CLASS_PREFIX_VALUE_EXPECTED,
-                $this->dmsTableInterface->getPhpName(),
+                $this->dmsTable->getPhpName(),
                 AbstractWriterConfigTest::CLASS_SUFFIX_VALUE_EXPECTED
             ),
-            $this->abstractWriter->generateFQDN($this->dmsDatabaseInterface, $this->dmsTableInterface)
+            $this->abstractWriter->generateFQDN($this->dmsDatabase, $this->dmsTable)
         );
+    }
+    
+    public function testRead()
+    {
+        $expectedFiles = $this->createTestFiles(
+            [
+                'FileOne.php',
+                'FileTwo.php',
+                'FileThree.php',
+            ],
+            \implode('', [
+                $this->abstractWriterConfig->getDirectory(),
+                DIRECTORY_SEPARATOR,
+                $this->dmsDatabase->getPhpName(),
+                DIRECTORY_SEPARATOR,
+                $this->abstractWriterConfig->getClassPrefix(),
+                $this->abstractWriterConfig->getClassSuffix(),
+            ])
+        );
+
+        $files = $this->abstractWriter->read($this->dmsDatabase);
+
+        $this->assertCount(\count($expectedFiles), $files);
+        $this->assertEquals($expectedFiles, \array_keys($files));
+    }
+
+    public function testReadWhenDirectoryDoesNotExist()
+    {
+        $files = $this->abstractWriter->read($this->dmsDatabase);
+
+        $this->assertCount(0, $files);
+    }
+
+    public function tearDown()
+    {
+        $this->removeDirectoryRecursive(\implode(
+            '',
+            [
+                JANISBIZ_LIGHT_ORM_ROOT_DIR,
+                'var',
+                DIRECTORY_SEPARATOR,
+                'light-orm',
+            ]
+        ));
     }
 }

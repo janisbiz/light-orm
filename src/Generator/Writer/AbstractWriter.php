@@ -181,8 +181,10 @@ abstract class AbstractWriter implements WriterInterface
      */
     protected function removeFileFromExistingFiles($fileName, array &$existingFiles)
     {
-        if (false !== ($fileIndex = \array_search(\basename($fileName), $existingFiles))) {
-            unset($existingFiles[$fileIndex]);
+        foreach ($existingFiles as $i => $existingFile) {
+            if (\basename($fileName) === \basename($existingFile)) {
+                unset($existingFiles[$i]);
+            }
         }
 
         return $this;

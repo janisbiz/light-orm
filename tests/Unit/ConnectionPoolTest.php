@@ -5,6 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Unit;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig;
+use Janisbiz\LightOrm\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionPoolTest extends TestCase
@@ -30,17 +31,17 @@ class ConnectionPoolTest extends TestCase
     public function setUp()
     {
         $connectionConfigOne = new ConnectionConfig(
-            self::CONNECTION_CONFIG_HOST,
-            self::CONNECTION_CONFIG_USERNAME,
-            self::CONNECTION_CONFIG_PASSWORD,
-            self::CONNECTION_CONFIG_DBNAME_ONE
+            static::CONNECTION_CONFIG_HOST,
+            static::CONNECTION_CONFIG_USERNAME,
+            static::CONNECTION_CONFIG_PASSWORD,
+            static::CONNECTION_CONFIG_DBNAME_ONE
         );
 
         $connectionConfigTwo = new ConnectionConfig(
-            self::CONNECTION_CONFIG_HOST,
-            self::CONNECTION_CONFIG_USERNAME,
-            self::CONNECTION_CONFIG_PASSWORD,
-            self::CONNECTION_CONFIG_DBNAME_TWO
+            static::CONNECTION_CONFIG_HOST,
+            static::CONNECTION_CONFIG_USERNAME,
+            static::CONNECTION_CONFIG_PASSWORD,
+            static::CONNECTION_CONFIG_DBNAME_TWO
         );
 
         $this->connectionPool = (new ConnectionPool())
@@ -70,46 +71,44 @@ class ConnectionPoolTest extends TestCase
     public function testGetConnection()
     {
         $this->assertTrue(
-            $this->connectionPoolMock->getConnection(self::CONNECTION_CONFIG_DBNAME_ONE)
+            $this->connectionPoolMock->getConnection(static::CONNECTION_CONFIG_DBNAME_ONE)
             instanceof ConnectionInterface
         );
         $this->assertTrue(
-            $this->connectionPoolMock->getConnection(self::CONNECTION_CONFIG_DBNAME_TWO)
+            $this->connectionPoolMock->getConnection(static::CONNECTION_CONFIG_DBNAME_TWO)
             instanceof ConnectionInterface
         );
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Exception\InvalidArgumentException
-     * @expectedExceptionMessage
-     * Could not find connection by name "dbname_non_existent"! Available connections: "dbname_one", "dbname_two".
-     */
     public function testGetConnectionException()
     {
-        $this->connectionPoolMock->getConnection(self::CONNECTION_CONFIG_DBNAME_NON_EXISTENT);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageRegExp(
+            '/Could not find connection by name "(.*)"\! Available connections: "(.*)"\./'
+        );
+
+        $this->connectionPoolMock->getConnection(static::CONNECTION_CONFIG_DBNAME_NON_EXISTENT);
     }
 
     public function testGetConnectionStatic()
     {
         $this->assertTrue(
-            ConnectionPool::getConnectionStatic(self::CONNECTION_CONFIG_DBNAME_ONE)
+            ConnectionPool::getConnectionStatic(static::CONNECTION_CONFIG_DBNAME_ONE)
             instanceof ConnectionInterface
         );
         $this->assertTrue(
-            ConnectionPool::getConnectionStatic(self::CONNECTION_CONFIG_DBNAME_TWO)
+            ConnectionPool::getConnectionStatic(static::CONNECTION_CONFIG_DBNAME_TWO)
             instanceof ConnectionInterface
         );
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Exception\InvalidArgumentException
-     * @expectedExceptionMessage
-     * Could not find connection by name "dbname_non_existent"! Available connections: "dbname_one", "dbname_two".
-     */
     public function testGetConnectionStaticException()
     {
-        ConnectionPool::getConnectionStatic(self::CONNECTION_CONFIG_DBNAME_NON_EXISTENT);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageRegExp(
+            '/Could not find connection by name "(.*)"\! Available connections: "(.*)"\./'
+        );
+
+        ConnectionPool::getConnectionStatic(static::CONNECTION_CONFIG_DBNAME_NON_EXISTENT);
     }
 }

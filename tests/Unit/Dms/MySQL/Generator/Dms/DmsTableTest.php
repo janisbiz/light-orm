@@ -33,12 +33,12 @@ class DmsTableTest extends TestCase
             );
         }
 
-        $this->dmsTable = new DmsTable(self::TABLE_NAME, $this->dmsColumns);
+        $this->dmsTable = new DmsTable(static::TABLE_NAME, $this->dmsColumns);
     }
 
     public function testGetName()
     {
-        $this->assertEquals(self::TABLE_NAME, $this->dmsTable->getName());
+        $this->assertEquals(static::TABLE_NAME, $this->dmsTable->getName());
     }
 
     /**
@@ -58,7 +58,6 @@ class DmsTableTest extends TestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */

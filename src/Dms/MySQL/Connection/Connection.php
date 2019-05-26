@@ -5,6 +5,9 @@ namespace Janisbiz\LightOrm\Dms\MySQL\Connection;
 class Connection extends \PDO implements ConnectionInterface
 {
     /**
+     * Ignoring for code coverage, as this requires to have a real connection to be tested.
+     * @codeCoverageIgnore
+     *
      * @param string $dsn
      * @param string $username
      * @param string $passwd
@@ -15,15 +18,15 @@ class Connection extends \PDO implements ConnectionInterface
         $options = \array_merge(
             $options,
             [
-                self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8mb4"',
-                self::ATTR_PERSISTENT => true,
+                static::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8mb4"',
+                static::ATTR_PERSISTENT => true,
             ]
         );
 
         parent::__construct($dsn, $username, $passwd, $options);
 
-        $this->setAttribute(self::ATTR_ERRMODE, self::ERRMODE_EXCEPTION);
-        $this->setAttribute(self::ATTR_EMULATE_PREPARES, false);
+        $this->setAttribute(static::ATTR_ERRMODE, static::ERRMODE_EXCEPTION);
+        $this->setAttribute(static::ATTR_EMULATE_PREPARES, false);
     }
 
     /**
@@ -62,6 +65,10 @@ class Connection extends \PDO implements ConnectionInterface
     }
 
     /**
+     * Ignoring for code coverage, as this requires to have a real connection to be tested and it is not possible
+     * to mock parent method call.
+     * @codeCoverageIgnore
+     *
      * @return bool
      */
     protected function parentBeginTransaction()

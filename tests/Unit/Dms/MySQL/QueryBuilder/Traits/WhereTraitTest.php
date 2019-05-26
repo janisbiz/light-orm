@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\WhereTrait;
 
@@ -30,46 +31,47 @@ class WhereTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->bind = self::WHERE_CONDITION_BIND_DEFAULT;
-        $this->where = self::WHERE_CONDITION_DEFAULT;
+        $this->bind = static::WHERE_CONDITION_BIND_DEFAULT;
+        $this->where = static::WHERE_CONDITION_DEFAULT;
     }
     
     public function testWhere()
     {
-        $object = $this->where(self::WHERE_CONDITION, self::WHERE_CONDITION_BIND);
+        $object = $this->where(static::WHERE_CONDITION, static::WHERE_CONDITION_BIND);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(WhereTrait::class, $object);
-        $this->assertEquals(\array_merge(self::WHERE_CONDITION_DEFAULT, [self::WHERE_CONDITION]), $this->where);
-        $this->assertEquals(\array_merge(self::WHERE_CONDITION_BIND_DEFAULT, self::WHERE_CONDITION_BIND), $this->bind);
+        $this->assertEquals(\array_merge(static::WHERE_CONDITION_DEFAULT, [static::WHERE_CONDITION]), $this->where);
+        $this->assertEquals(
+            \array_merge(static::WHERE_CONDITION_BIND_DEFAULT, static::WHERE_CONDITION_BIND),
+            $this->bind
+        );
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $condition name to where method!
-     */
     public function testWhereWithEmptyCondition()
     {
-        $this->where(self::WHERE_CONDITION_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $condition name to where method!');
+
+        $this->where(static::WHERE_CONDITION_EMPTY);
     }
 
     public function testWhereIn()
     {
-        $object = $this->whereIn(self::WHERE_IN_OR_NOT_IN_COLUMN, self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES);
+        $object = $this->whereIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(WhereTrait::class, $object);
         $this->assertEquals(
             \array_merge(
-                self::WHERE_CONDITION_DEFAULT,
+                static::WHERE_CONDITION_DEFAULT,
                 [
                     \sprintf(
                         '%s IN (%s)',
-                        self::WHERE_IN_OR_NOT_IN_COLUMN,
+                        static::WHERE_IN_OR_NOT_IN_COLUMN,
                         \implode(', ', \array_map(
                             function ($i) {
-                                return \sprintf(':%d_%s_In', $i, self::WHERE_IN_OR_NOT_IN_COLUMN);
+                                return \sprintf(':%d_%s_In', $i, static::WHERE_IN_OR_NOT_IN_COLUMN);
                             },
-                            \array_keys(self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+                            \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                         ))
                     ),
                 ]
@@ -78,16 +80,16 @@ class WhereTraitTest extends AbstractTraitTestCase
         );
         $this->assertEquals(
             \array_merge(
-                self::WHERE_CONDITION_BIND_DEFAULT,
+                static::WHERE_CONDITION_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($value, $i) {
                             return [
-                                \sprintf('%d_%s_In', $i, self::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
+                                \sprintf('%d_%s_In', $i, static::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
                             ];
                         },
-                        self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES,
-                        \array_keys(self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+                        static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES,
+                        \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                     ),
                     'array_merge',
                     []
@@ -99,21 +101,21 @@ class WhereTraitTest extends AbstractTraitTestCase
 
     public function testWhereNotIn()
     {
-        $object = $this->whereNotIn(self::WHERE_IN_OR_NOT_IN_COLUMN, self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES);
+        $object = $this->whereNotIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(WhereTrait::class, $object);
         $this->assertEquals(
             \array_merge(
-                self::WHERE_CONDITION_DEFAULT,
+                static::WHERE_CONDITION_DEFAULT,
                 [
                     \sprintf(
                         '%s NOT IN (%s)',
-                        self::WHERE_IN_OR_NOT_IN_COLUMN,
+                        static::WHERE_IN_OR_NOT_IN_COLUMN,
                         \implode(', ', \array_map(
                             function ($i) {
-                                return \sprintf(':%d_%s_NotIn', $i, self::WHERE_IN_OR_NOT_IN_COLUMN);
+                                return \sprintf(':%d_%s_NotIn', $i, static::WHERE_IN_OR_NOT_IN_COLUMN);
                             },
-                            \array_keys(self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+                            \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                         ))
                     ),
                 ]
@@ -122,16 +124,16 @@ class WhereTraitTest extends AbstractTraitTestCase
         );
         $this->assertEquals(
             \array_merge(
-                self::WHERE_CONDITION_BIND_DEFAULT,
+                static::WHERE_CONDITION_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($value, $i) {
                             return [
-                                \sprintf('%d_%s_NotIn', $i, self::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
+                                \sprintf('%d_%s_NotIn', $i, static::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
                             ];
                         },
-                        self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES,
-                        \array_keys(self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+                        static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES,
+                        \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                     ),
                     'array_merge',
                     []
@@ -144,9 +146,9 @@ class WhereTraitTest extends AbstractTraitTestCase
     public function testBuildWhereQueryPart()
     {
         $this
-            ->where(self::WHERE_CONDITION, self::WHERE_CONDITION_BIND)
-            ->whereIn(self::WHERE_IN_OR_NOT_IN_COLUMN, self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
-            ->whereNotIn(self::WHERE_IN_OR_NOT_IN_COLUMN, self::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+            ->where(static::WHERE_CONDITION, static::WHERE_CONDITION_BIND)
+            ->whereIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
+            ->whereNotIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
         ;
 
         $this->assertEquals(

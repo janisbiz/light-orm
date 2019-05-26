@@ -24,8 +24,8 @@ class ValueTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->value = self::VALUE_DEFAULT;
-        $this->bindValue = self::VALUE_BIND_DEFAULT;
+        $this->value = static::VALUE_DEFAULT;
+        $this->bindValue = static::VALUE_BIND_DEFAULT;
     }
 
     /**
@@ -41,7 +41,7 @@ class ValueTraitTest extends AbstractTraitTestCase
 
         $this->assertEquals(
             \array_merge(
-                self::VALUE_DEFAULT,
+                static::VALUE_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($column) {
@@ -72,7 +72,7 @@ class ValueTraitTest extends AbstractTraitTestCase
         );
         $this->assertEquals(
             \array_merge(
-                self::VALUE_BIND_DEFAULT,
+                static::VALUE_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
                         function ($column, $value) {
@@ -135,7 +135,6 @@ class ValueTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @codeCoverageIgnore
      *
      * @return array
      */
@@ -179,22 +178,22 @@ class ValueTraitTest extends AbstractTraitTestCase
 
     public function testBindValue()
     {
-        $this->assertEquals(self::VALUE_BIND_DEFAULT, $this->bindValue);
+        $this->assertEquals(static::VALUE_BIND_DEFAULT, $this->bindValue);
 
-        $object = $this->bindValue(self::VALUE_BIND);
+        $object = $this->bindValue(static::VALUE_BIND);
         $this->assertObjectUsesTrait(ValueTrait::class, $object);
-        $this->assertEquals(\array_merge(self::VALUE_BIND_DEFAULT, self::VALUE_BIND), $this->bindValue);
+        $this->assertEquals(\array_merge(static::VALUE_BIND_DEFAULT, static::VALUE_BIND), $this->bindValue);
 
-        $object = $this->bindValue(self::VALUE_BIND_OVERRIDE);
+        $object = $this->bindValue(static::VALUE_BIND_OVERRIDE);
         $this->assertObjectUsesTrait(ValueTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::VALUE_BIND_DEFAULT, self::VALUE_BIND, self::VALUE_BIND_OVERRIDE),
+            \array_merge(static::VALUE_BIND_DEFAULT, static::VALUE_BIND, static::VALUE_BIND_OVERRIDE),
             $this->bindValue
         );
     }
 
     public function testBindValueData()
     {
-        $this->assertEquals(self::VALUE_BIND_DEFAULT, $this->bindValueData());
+        $this->assertEquals(static::VALUE_BIND_DEFAULT, $this->bindValueData());
     }
 }

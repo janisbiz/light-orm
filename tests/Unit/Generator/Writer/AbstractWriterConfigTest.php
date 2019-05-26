@@ -7,20 +7,20 @@ use PHPUnit\Framework\TestCase;
 
 class AbstractWriterConfigTest extends TestCase
 {
-    const DIRECTORY_VALUE = DIRECTORY_SEPARATOR
-        . 'path'
+    const DIRECTORY_VALUE = JANISBIZ_LIGHT_ORM_ROOT_DIR
+        . 'var'
         . DIRECTORY_SEPARATOR
-        . 'to'
+        . 'light-orm'
         . DIRECTORY_SEPARATOR
-        . 'directory'
+        . 'phpunit'
         . DIRECTORY_SEPARATOR
     ;
-    const DIRECTORY_VALUE_EXPECTED = DIRECTORY_SEPARATOR
-        . 'path'
+    const DIRECTORY_VALUE_EXPECTED = JANISBIZ_LIGHT_ORM_ROOT_DIR
+        . 'var'
         . DIRECTORY_SEPARATOR
-        . 'to'
+        . 'light-orm'
         . DIRECTORY_SEPARATOR
-        . 'directory'
+        . 'phpunit'
     ;
 
     const NAMESPACE_VALUE = 'This\Is\A\Namespace\\';
@@ -44,38 +44,38 @@ class AbstractWriterConfigTest extends TestCase
 
         $directoryProperty = $abstractWriterConfigReflection->getProperty('directory');
         $directoryProperty->setAccessible(true);
-        $directoryProperty->setValue($this->abstractWriterConfig, self::DIRECTORY_VALUE);
+        $directoryProperty->setValue($this->abstractWriterConfig, static::DIRECTORY_VALUE);
 
         $namespaceProperty = $abstractWriterConfigReflection->getProperty('namespace');
         $namespaceProperty->setAccessible(true);
-        $namespaceProperty->setValue($this->abstractWriterConfig, self::NAMESPACE_VALUE);
+        $namespaceProperty->setValue($this->abstractWriterConfig, static::NAMESPACE_VALUE);
 
         $classPrefixProperty = $abstractWriterConfigReflection->getProperty('classPrefix');
         $classPrefixProperty->setAccessible(true);
-        $classPrefixProperty->setValue($this->abstractWriterConfig, self::CLASS_PREFIX_VALUE);
+        $classPrefixProperty->setValue($this->abstractWriterConfig, static::CLASS_PREFIX_VALUE);
 
         $classSuffixProperty = $abstractWriterConfigReflection->getProperty('classSuffix');
         $classSuffixProperty->setAccessible(true);
-        $classSuffixProperty->setValue($this->abstractWriterConfig, self::CLASS_SUFFIX_VALUE);
+        $classSuffixProperty->setValue($this->abstractWriterConfig, static::CLASS_SUFFIX_VALUE);
     }
 
     public function testGetDirectory()
     {
-        $this->assertEquals($this->abstractWriterConfig->getDirectory(), self::DIRECTORY_VALUE_EXPECTED);
+        $this->assertEquals($this->abstractWriterConfig->getDirectory(), static::DIRECTORY_VALUE_EXPECTED);
     }
 
     public function testGetNamespace()
     {
-        $this->assertEquals($this->abstractWriterConfig->getNamespace(), self::NAMESPACE_VALUE_EXPECTED);
+        $this->assertEquals($this->abstractWriterConfig->getNamespace(), static::NAMESPACE_VALUE_EXPECTED);
     }
 
     public function testGetClassPrefix()
     {
-        $this->assertEquals($this->abstractWriterConfig->getClassPrefix(), self::CLASS_PREFIX_VALUE_EXPECTED);
+        $this->assertEquals($this->abstractWriterConfig->getClassPrefix(), static::CLASS_PREFIX_VALUE_EXPECTED);
     }
 
     public function testGetClassSuffix()
     {
-        $this->assertEquals($this->abstractWriterConfig->getClassSuffix(), self::CLASS_SUFFIX_VALUE_EXPECTED);
+        $this->assertEquals($this->abstractWriterConfig->getClassSuffix(), static::CLASS_SUFFIX_VALUE_EXPECTED);
     }
 }

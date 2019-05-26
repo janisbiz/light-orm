@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ColumnTrait;
 
 class ColumnTraitTest extends AbstractTraitTestCase
@@ -21,47 +22,45 @@ class ColumnTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->column = self::COLUMN_DEFAULT;
+        $this->column = static::COLUMN_DEFAULT;
     }
 
     public function testColumn()
     {
-        $this->assertEquals(self::COLUMN_DEFAULT, $this->column);
+        $this->assertEquals(static::COLUMN_DEFAULT, $this->column);
 
-        $object = $this->column(self::COLUMN_ARRAY);
+        $object = $this->column(static::COLUMN_ARRAY);
         $this->assertObjectUsesTrait(ColumnTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::COLUMN_DEFAULT, self::COLUMN_ARRAY),
+            \array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY),
             $this->column
         );
 
-        $object = $this->column(self::COLUMN);
+        $object = $this->column(static::COLUMN);
         $this->assertObjectUsesTrait(ColumnTrait::class, $object);
         $this->assertEquals(
-            \array_merge(self::COLUMN_DEFAULT, self::COLUMN_ARRAY, [self::COLUMN]),
+            \array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY, [static::COLUMN]),
             $this->column
         );
     }
 
     public function testColumnClearAll()
     {
-        $this->column(self::COLUMN, true);
-        $this->assertEquals([self::COLUMN], $this->column);
+        $this->column(static::COLUMN, true);
+        $this->assertEquals([static::COLUMN], $this->column);
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @expectedException \Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException
-     * @expectedExceptionMessage You must pass $column to column method!
-     */
     public function testColumnWhenEmpty()
     {
-        $this->column(self::COLUMN_EMPTY);
+        $this->expectException(QueryBuilderException::class);
+        $this->expectExceptionMessage('You must pass $column to column method!');
+
+        $this->column(static::COLUMN_EMPTY);
     }
 
     public function testBuildColumnQueryPart()
     {
-        $this->column(self::COLUMN);
+        $this->column(static::COLUMN);
 
         $this->assertEquals(\implode(', ', $this->column), $this->buildColumnQueryPart());
     }
