@@ -76,7 +76,7 @@ class Generator
     protected function removeExistingFiles(array &$existingFiles)
     {
         foreach (\array_keys($existingFiles) as $path) {
-            if (!\is_dir($path)) {
+            if (!\is_dir($path) && \file_exists($path)) {
                 \unlink($path);
                 unset($existingFiles[$path]);
             }

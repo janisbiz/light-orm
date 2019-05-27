@@ -69,6 +69,9 @@ class ConnectionPool
     }
 
     /**
+     * Ignoring for code coverage, as this requires to have a real connection to be tested.
+     * @codeCoverageIgnore
+     *
      * @param ConnectionConfigInterface $connectionConfig
      *
      * @return ConnectionInterface

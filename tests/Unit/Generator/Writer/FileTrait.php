@@ -46,7 +46,7 @@ trait FileTrait
 
         $files = [];
         foreach ($fileNames as $fileName) {
-            $files[] = sprintf('%s/%s', $fileDirectory, $fileName);
+            $files[] = sprintf('%s/%s', \rtrim($fileDirectory, '/'), $fileName);
         }
 
         foreach ($files as $file) {

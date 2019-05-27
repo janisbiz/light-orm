@@ -2,6 +2,10 @@
 
 namespace Janisbiz\LightOrm;
 
+/**
+ * @deprecated This is not properly implemented yet, please don't use!
+ * @codeCoverageIgnore
+ */
 class Paginator
 {
     protected $page;

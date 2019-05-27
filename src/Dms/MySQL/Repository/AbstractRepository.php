@@ -373,7 +373,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
     protected function addEntityDeleteQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity)
     {
         $performDelete = false;
-        $entityData = &$entity->data();
+        $entityData = $entity->data();
 
         foreach ($entity->primaryKeys() as $primaryKey) {
             if (isset($entityData[$primaryKey]) && !\is_null($entityData[$primaryKey])) {
