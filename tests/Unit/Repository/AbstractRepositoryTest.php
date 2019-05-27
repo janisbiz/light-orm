@@ -109,8 +109,7 @@ class AbstractRepositoryTest extends TestCase
             '',
             true,
             true,
-            true
-            ,
+            true,
             [
                 'getModelClass',
             ]
