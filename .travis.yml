@@ -18,7 +18,7 @@ before_script:
   - composer install
 
 script:
-  - vendor/bin/phpcs -p ./src --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
+  - vendor/bin/phpcs -p ./src -p ./tests --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-
   - vendor/bin/phpunit -c phpunit.xml --coverage-clover=coverage.xml
   - vendor/bin/behat
 
