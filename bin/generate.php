@@ -27,6 +27,8 @@ $directoryPersistent = \implode(
         DIRECTORY_SEPARATOR,
         'Behat',
         DIRECTORY_SEPARATOR,
+        'Bootstrap',
+        DIRECTORY_SEPARATOR,
         'Generated'
     ]
 );
