@@ -14,6 +14,7 @@ class ConnectionConfigTest extends TestCase
     const CONFIG_DBNAME = 'dbname';
     const CONFIG_ADAPTER = ConnectionConfig::ADAPTER;
     const CONFIG_ADAPTER_INVALID = 'adapter_invalid';
+    const CONFIG_PORT = 1234;
 
     /**
      * @var ConnectionConfig
@@ -26,7 +27,8 @@ class ConnectionConfigTest extends TestCase
             static::CONFIG_HOST,
             static::CONFIG_USERNAME,
             static::CONFIG_PASSWORD,
-            static::CONFIG_DBNAME
+            static::CONFIG_DBNAME,
+            static::CONFIG_PORT
         );
     }
 
@@ -34,10 +36,11 @@ class ConnectionConfigTest extends TestCase
     {
         $this->assertEquals(
             \sprintf(
-                '%s:host=%s;dbname=%s;charset=utf8mb4',
+                '%s:host=%s;dbname=%s;charset=utf8mb4;port=%d',
                 static::CONFIG_ADAPTER,
                 static::CONFIG_HOST,
-                static::CONFIG_DBNAME
+                static::CONFIG_DBNAME,
+                static::CONFIG_PORT
             ),
             $this->connectionConfig->generateDsn()
         );

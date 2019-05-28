@@ -2,7 +2,7 @@
 
 use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Generator;
-use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig as MySQLConnectionConfig;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfigUrl as MySQLConnectionConfigUrl;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter;
@@ -13,14 +13,7 @@ include_once __DIR__ . '/../vendor/autoload.php';
 
 $databaseName = 'light_orm_mysql';
 $connectionPool = (new ConnectionPool())
-    ->addConnectionConfig(
-        new MySQLConnectionConfig(
-            'mysql',
-            'root',
-            'password',
-            $databaseName
-        )
-    )
+    ->addConnectionConfig(new MySQLConnectionConfigUrl(\sprintf('mysql://root:password@mysql/%s', $databaseName)))
 ;
 
 $directoryPersistent = \implode(

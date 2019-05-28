@@ -30,19 +30,26 @@ abstract class AbstractConnectionConfig implements ConnectionConfigInterface
     protected $adapter;
 
     /**
+     * @var int
+     */
+    protected $port;
+
+    /**
      * @param string $host
      * @param string $username
      * @param string $password
      * @param string $dbname
      * @param string $adapter
+     * @param int $port
      */
-    public function __construct($host, $username, $password, $dbname, $adapter)
+    public function __construct($host, $username, $password, $dbname, $adapter, $port = 3306)
     {
         $this->host = $host;
         $this->username = $username;
         $this->password = $password;
         $this->dbname = $dbname;
         $this->adapter = $adapter;
+        $this->port = $port;
     }
 
     /**
