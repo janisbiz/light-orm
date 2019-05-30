@@ -77,14 +77,14 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
      */
     protected function paginator(QueryBuilderInterface $queryBuilder, $pageSize, $currentPage = 1, array $options = [])
     {
-        if ($pageSize < 1 || !\is_int($pageSize)) {
+        if ($pageSize < 1) {
             $pageSize = 1;
         }
 
         return new Paginator(
             $queryBuilder,
-            function (QueryBuilderInterface $queryBuilder, $currentPage) use ($pageSize) {
-                $this->addPaginateQuery($queryBuilder, $currentPage, $pageSize);
+            function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage) {
+                $this->addPaginateQuery($queryBuilder, $pageSize, $currentPage);
             },
             function (QueryBuilderInterface $queryBuilder, $toString) {
                 return $this->getPaginateResult($queryBuilder, $toString);
@@ -246,12 +246,12 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
 
     /**
      * @param QueryBuilderInterface $queryBuilder
-     * @param int $currentPage
      * @param int $pageSize
+     * @param int $currentPage
      *
      * @return $this
      */
-    abstract protected function addPaginateQuery(QueryBuilderInterface $queryBuilder, $currentPage, $pageSize);
+    abstract protected function addPaginateQuery(QueryBuilderInterface $queryBuilder, $pageSize, $currentPage);
 
     /**
      * @param QueryBuilderInterface $queryBuilder

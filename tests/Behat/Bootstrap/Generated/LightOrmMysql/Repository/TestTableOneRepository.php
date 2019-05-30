@@ -221,6 +221,17 @@ class TestTableOneRepository extends AbstractRepository
     }
 
     /**
+     * @param int $pageSize
+     * @param int $currentPage
+     *
+     * @return TestTableOneEntity[]
+     */
+    public function createPaginator($pageSize, $currentPage)
+    {
+        return $this->paginator($this->createQueryBuilder(), (int) $pageSize, (int) $currentPage);
+    }
+
+    /**
      * @param int $id
      * @param int $intColNotNull
      * @param string $varcharColNotNull

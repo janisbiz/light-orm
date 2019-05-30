@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
 use Janisbiz\LightOrm\Entity\EntityInterface;
+use Janisbiz\LightOrm\Paginator\PaginatorInterface;
 use Janisbiz\LightOrm\Repository\RepositoryInterface;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\AbstractFeatureContext;
 
@@ -27,4 +28,9 @@ abstract class AbstractRepositoryFeatureContext extends AbstractFeatureContext
      * @var EntityInterface[]
      */
     protected static $entities = [];
+
+    /**
+     * @var PaginatorInterface
+     */
+    protected static $paginator;
 }

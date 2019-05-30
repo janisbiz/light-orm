@@ -80,7 +80,13 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
         static::$entities = [];
 
         foreach ($parameters as $methodParameters) {
-            static::$entities[] = \call_user_func_array([static::$repository, $method], $methodParameters);
+            $methodResult = \call_user_func_array([static::$repository, $method], $methodParameters);
+
+            if (\is_array($methodResult)) {
+                static::$entities = \array_merge(static::$entities, $methodResult);
+            } else {
+                static::$entities[] = $methodResult;
+            }
         }
 
         \array_filter(static::$entities);

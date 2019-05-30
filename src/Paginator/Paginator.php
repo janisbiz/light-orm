@@ -86,7 +86,7 @@ class Paginator implements PaginatorInterface
         $this->addPaginateQuery = $addPaginateQuery;
         $this->getPaginateResult = $getPaginateResult;
         $this->pageSize = $pageSize;
-        $this->currentPage = $currentPage;
+        $this->currentPage = (int) $currentPage;
         $this->options = \array_merge(
             [
                 static::OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE => 2,
@@ -139,7 +139,7 @@ class Paginator implements PaginatorInterface
 
         $this->setPaginateMethod(__METHOD__);
 
-        \call_user_func($this->addPaginateQuery, $this->queryBuilder, $this->currentPage, $this->pageSize);
+        \call_user_func($this->addPaginateQuery, $this->queryBuilder, $this->pageSize, $this->currentPage);
         $this->result = \call_user_func($this->getPaginateResult, $this->queryBuilder, $toString);
         $this->paginate = false;
 
@@ -163,7 +163,7 @@ class Paginator implements PaginatorInterface
                 $currentPage--;
                 $resultTotalPages = $currentPage;
             } else {
-                $resultTotalPages = $currentPage++;
+                $resultTotalPages = $currentPage + 1;
             }
         }
 

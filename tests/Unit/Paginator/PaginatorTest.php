@@ -103,7 +103,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::CURRENT_PAGE, static::PAGE_SIZE])
+            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE])
         ;
 
         $resultExpected = [];
@@ -139,7 +139,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::CURRENT_PAGE_LOW, static::RESULT_COUNT_LOW])
+            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE_LOW])
         ;
 
         $resultExpected = [];
@@ -172,7 +172,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::CURRENT_PAGE, static::PAGE_SIZE])
+            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE])
         ;
 
         $resultExpected = [];
@@ -207,7 +207,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::CURRENT_PAGE, static::PAGE_SIZE])
+            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE])
         ;
 
         $resultExpected = [];
@@ -237,10 +237,7 @@ class PaginatorTest extends TestCase
         ;
 
         $pages = \range(static::CURRENT_PAGE - $pagesBeforeAfter, static::CURRENT_PAGE + $pagesBeforeAfter);
-        $this->assertEquals(
-            \array_combine($pages, $pages),
-            $paginator->getPageNumbers()
-        );
+        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWithUnlimitedOption()
@@ -259,22 +256,20 @@ class PaginatorTest extends TestCase
 
         $totalPages = static::RESULT_COUNT / static::PAGE_SIZE;
         $pages = \range($totalPages - $totalPages + 1, $totalPages);
-        $this->assertEquals(
-            \array_combine($pages, $pages),
-            $paginator->getPageNumbers()
-        );
+        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWhenPaginateFake()
     {
         $paginator = $this->testPaginateFake();
+        $pagesBeforeAfter = $this
+            ->createAccessibleProperty($paginator, 'options')
+            ->getValue($paginator)[Paginator::OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE]
+        ;
 
         $totalPages = static::CURRENT_PAGE;
-        $pages = \range($totalPages - 1, $totalPages + 1);
-        $this->assertEquals(
-            \array_combine($pages, $pages),
-            $paginator->getPageNumbers()
-        );
+        $pages = \range($totalPages - $pagesBeforeAfter, $totalPages + 1);
+        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWhenPaginateFakeWithoutResult()
@@ -288,10 +283,7 @@ class PaginatorTest extends TestCase
         $totalPages = static::CURRENT_PAGE - 1;
         $pages = \range($totalPages - $pagesBeforeAfter, $totalPages);
 
-        $this->assertEquals(
-            \array_combine($pages, $pages),
-            $paginator->getPageNumbers()
-        );
+        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWhenNotPaginated()
@@ -470,17 +462,17 @@ class PaginatorTest extends TestCase
      */
     private function createPaginator()
     {
-        $this->addPaginateQuery = function (QueryBuilderInterface $queryBuilder, $currentPage, $pageSize) {
+        $this->addPaginateQuery = function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage) {
             $this
                 ->createAccessibleMethod($this->abstractRepository, 'addPaginateQuery')
-                ->invoke($this->abstractRepository, $queryBuilder, $currentPage, $pageSize)
+                ->invoke($this->abstractRepository, $queryBuilder, $pageSize, $currentPage)
             ;
         };
         $this->getPaginateResult = function (QueryBuilderInterface $queryBuilder, $toString) {
             return $this
                 ->createAccessibleMethod($this->abstractRepository, 'getPaginateResult')
                 ->invoke($this->abstractRepository, $queryBuilder, $toString)
-                ;
+            ;
         };
 
         return new Paginator(

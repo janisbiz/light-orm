@@ -410,12 +410,12 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
     /**
      * @param BaseQueryBuilderInterface $queryBuilder
-     * @param int $currentPage
      * @param int $pageSize
+     * @param int $currentPage
      *
      * @return $this
      */
-    protected function addPaginateQuery(BaseQueryBuilderInterface $queryBuilder, $currentPage, $pageSize)
+    protected function addPaginateQuery(BaseQueryBuilderInterface $queryBuilder, $pageSize, $currentPage)
     {
         /** @var QueryBuilderInterface $queryBuilder */
         $queryBuilder->limitWithOffset($pageSize, $pageSize * $currentPage - $pageSize);

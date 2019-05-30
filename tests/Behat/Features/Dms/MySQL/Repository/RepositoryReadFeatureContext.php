@@ -11,13 +11,23 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $method
      * @param TableNode $rows
-     *
-     * @throws \Exception
      */
     public function iCallMethodOnRepositoryWhichWillReturnFollowingRows($method, TableNode $rows)
     {
         static::$entities = static::$repository->$method();
 
+        $this->iHaveFollowingRows($rows);
+    }
+
+    /**
+     * @Then /^I have following rows:$/
+     *
+     * @param TableNode $rows
+     *
+     * @throws \Exception
+     */
+    public function iHaveFollowingRows(TableNode $rows)
+    {
         if (($entitiesCount = \count(static::$entities)) !== ($expectedRowsCount = \count($rows->getRows()) - 1)) {
             throw new \Exception(\sprintf(
                 'Count of expected rows(%d) does not match to count of returned rows(%d)!',
@@ -98,6 +108,83 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
                 $integer,
                 $returnedInteger
             ));
+        }
+    }
+
+    /**
+     * @codingStandardsIgnoreStart
+     * @Then /^I call method "(.*)" on repository which will return paginator with page size of (\d+) and current page (\d+)$/
+     * @codingStandardsIgnoreEnd
+     *
+     * @param string $method
+     * @param int $pageSize
+     * @param int $currentPage
+     */
+    public function iCallPaginatorMethodOnRepositoryWithPageSizeOfAndCurrentPage($method, $pageSize, $currentPage)
+    {
+        static::$paginator = static::$repository->$method($pageSize, $currentPage);
+    }
+
+    /**
+     * @Then /^I call method "(.*)" on paginator which will return entities$/
+     *
+     * @param string $method
+     */
+    public function iCallMethodOnPaginatorWhichWillReturnEntities($method)
+    {
+        static::$entities = static::$paginator->$method();
+    }
+
+    /**
+     * @Then /^I call method "(.*)" on paginator which will return following integer (\d+)$/
+     *
+     * @param string $method
+     * @param int $integer
+     *
+     * @throws \Exception
+     */
+    public function iCallMethodOnPaginatorWhichWillReturnFollowingInteger($method, $integer)
+    {
+        $returnedInteger = static::$paginator->$method();
+
+        if ($returnedInteger !== (int) $integer) {
+            throw new \Exception(\sprintf(
+                'Expected integer(%d) does not match returned integer(%d)!',
+                $integer,
+                $returnedInteger
+            ));
+        }
+    }
+
+    /**
+     * @Then /^I get following page numbers from paginator:$/
+     *
+     * @param TableNode $expectedPageNumbers
+     */
+    public function iGetFollowingPageNumbersFromPaginator(TableNode $expectedPageNumbers)
+    {
+        $pageNumbers = self::$paginator->getPageNumbers();
+
+        if (($pageNumbersCount = \count($pageNumbers))
+            !== ($expectedPageNumbersCount = \count($expectedPageNumbers->getRows()) - 1)
+        ) {
+            throw new \Exception(\sprintf(
+                'Count of expected page numbers(%d) does not match to count of existing page numbers(%d)!',
+                $expectedPageNumbersCount,
+                $pageNumbersCount
+            ));
+        }
+
+        foreach ($expectedPageNumbers as $expectedPageNumberRow) {
+            foreach ($expectedPageNumberRow as $value) {
+                if (!isset($pageNumbers[$value]) || $value != ($pageNumber = $pageNumbers[$value])) {
+                    throw new \Exception(\sprintf(
+                        'Data mismatch, when reading page numbers! %s != %s',
+                        $value,
+                        isset($pageNumber) ? $pageNumber : null
+                    ));
+                }
+            }
         }
     }
 }

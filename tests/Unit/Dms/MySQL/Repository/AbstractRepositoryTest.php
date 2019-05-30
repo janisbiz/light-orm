@@ -820,8 +820,8 @@ class AbstractRepositoryTest extends TestCase
             ->invoke(
                 $this->abstractRepository,
                 $queryBuilder,
-                static::PAGINATE_CURRENT_PAGE,
-                static::PAGINATE_PAGE_SIZE
+                static::PAGINATE_PAGE_SIZE,
+                static::PAGINATE_CURRENT_PAGE
             )
         ;
 
