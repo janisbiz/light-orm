@@ -36,7 +36,7 @@ trait LimitOffsetTrait
      */
     public function offset($offset)
     {
-        if (empty($offset)) {
+        if (0 !== $offset && empty($offset)) {
             throw new QueryBuilderException('You must pass $offset to offset method!');
         }
 

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="janisbiz_light-orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <description>Coding Standard for janisbiz/light-orm.</description>
+
+    <!-- Run against the PSR2 ruleset -->
+    <rule ref="PSR2"/>
+
+    <!-- Run against the PHPCompatibility ruleset -->
+    <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility"/>
+    <config name="testVersion" value="5.6-"/>
+    <rule ref="PHPCompatibility"/>
+</ruleset>

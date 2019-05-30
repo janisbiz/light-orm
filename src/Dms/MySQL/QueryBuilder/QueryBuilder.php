@@ -2,7 +2,6 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 
-use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 
@@ -11,9 +10,9 @@ class QueryBuilder implements QueryBuilderInterface
     use Traits;
 
     /**
-     * @var AbstractRepository
+     * @var \Closure
      */
-    protected $repository;
+    protected $repositoryCallback;
 
     /**
      * @var null|EntityInterface
@@ -21,12 +20,12 @@ class QueryBuilder implements QueryBuilderInterface
     protected $entity;
 
     /**
-     * @param AbstractRepository $repository
+     * @param \Closure $repositoryCallback
      * @param EntityInterface|null $entity
      */
-    public function __construct(AbstractRepository $repository, EntityInterface $entity = null)
+    public function __construct(\Closure $repositoryCallback, EntityInterface $entity = null)
     {
-        $this->repository = $repository;
+        $this->repositoryCallback = $repositoryCallback;
         $this->entity = $entity;
     }
 
@@ -39,7 +38,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::INSERT_INTO);
 
-        return $this->repository->insert($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'insert', $this, $toString);
     }
 
     /**
@@ -51,7 +50,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::INSERT_IGNORE_INTO);
 
-        return $this->repository->insertIgnore($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'insertIgnore', $this, $toString);
     }
 
     /**
@@ -63,7 +62,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::REPLACE_INTO);
 
-        return $this->repository->replace($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'replace', $this, $toString);
     }
 
     /**
@@ -75,7 +74,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::SELECT);
 
-        return $this->repository->find($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'find', $this, $toString);
     }
 
     /**
@@ -87,7 +86,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::SELECT);
 
-        return $this->repository->findOne($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'findOne', $this, $toString);
     }
 
     /**
@@ -99,7 +98,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::UPDATE);
 
-        return $this->repository->update($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'update', $this, $toString);
     }
 
     /**
@@ -111,7 +110,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::UPDATE_IGNORE);
 
-        return $this->repository->updateIgnore($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'updateIgnore', $this, $toString);
     }
 
     /**
@@ -123,7 +122,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::DELETE);
 
-        return $this->repository->delete($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'delete', $this, $toString);
     }
 
     /**
@@ -135,7 +134,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         $this->command(CommandEnum::SELECT);
 
-        return $this->repository->count($this, $toString);
+        return \call_user_func($this->repositoryCallback, 'count', $this, $toString);
     }
 
     /**

@@ -20,4 +20,11 @@ interface QueryBuilderInterface
      * @return string
      */
     public function toString();
+
+    /**
+     * @param bool $toString
+     *
+     * @return int
+     */
+    public function count($toString = false);
 }

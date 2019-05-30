@@ -5,15 +5,19 @@ namespace Janisbiz\LightOrm\Tests\Unit\Repository;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Connection\ConnectionInvalidArgumentException;
 use Janisbiz\LightOrm\ConnectionPool;
+use Janisbiz\LightOrm\Paginator\PaginatorInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Repository\RepositoryException;
+use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
 class AbstractRepositoryTest extends TestCase
 {
+    use ReflectionTrait;
+
     const DATABASE_NAME = 'database_name';
 
     const CONSTANT = 'constant_value';
@@ -21,6 +25,13 @@ class AbstractRepositoryTest extends TestCase
     const CONSTANT_NAME_NON_EXISTENT = 'CONSTANT_NON_EXISTENT';
 
     const VALUE_INVALID = [];
+
+    const QUERY_BUILDER_COUNT_RESULT = 5;
+
+    const PAGINATOR_PAGE = 1;
+    const PAGINATOR_PAGE_SIZE = 2;
+    const PAGINATOR_PAGE_SIZE_INVALID = 0;
+    const PAGINATOR_PAGE_SIZE_FIRST_PAGE = 1;
 
     /**
      * @var ConnectionInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -38,9 +49,24 @@ class AbstractRepositoryTest extends TestCase
     private $queryBuilder;
 
     /**
-     * @var AbstractRepository
+     * @var AbstractRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractRepository;
+
+    /**
+     * @var \ReflectionMethod
+     */
+    private $abstractRepositoryQuoteMethod;
+
+    /**
+     * @var \ReflectionMethod
+     */
+    private $abstractRepositoryPaginatorMethod;
+
+    /**
+     * @var \ReflectionMethod
+     */
+    private $abstractRepositoryLogMethod;
 
     /**
      * @var \ReflectionMethod
@@ -116,50 +142,32 @@ class AbstractRepositoryTest extends TestCase
         );
         $this->abstractRepository->method('getModelClass')->willReturn(static::class);
 
-        $this->abstractRepositoryBeginTransactionMethod = new \ReflectionMethod(
-            $this->abstractRepository,
-            'beginTransaction'
-        );
-        $this->abstractRepositoryBeginTransactionMethod->setAccessible(true);
-
-        $this->abstractRepositoryCommitMethod = new \ReflectionMethod(
-            $this->abstractRepository,
-            'commit'
-        );
-        $this->abstractRepositoryCommitMethod->setAccessible(true);
-
-        $this->abstractRepositoryRollBackMethod = new \ReflectionMethod(
-            $this->abstractRepository,
-            'rollBack'
-        );
-        $this->abstractRepositoryRollBackMethod->setAccessible(true);
-
-        $this->abstractRepositoryPrepareAndExecuteMethod = new \ReflectionMethod(
-            $this->abstractRepository,
-            'prepareAndExecute'
-        );
-        $this->abstractRepositoryPrepareAndExecuteMethod->setAccessible(true);
-
-        $this->abstractRepositoryGetConnectionMethod = new \ReflectionMethod(
-            $this->abstractRepository,
-            'getConnection'
-        );
-        $this->abstractRepositoryGetConnectionMethod->setAccessible(true);
-
-        $this->abstractRepositoryGetModelConstantMethod = new \ReflectionMethod(
-            $this->abstractRepository,
-            'getModelClassConstant'
-        );
-        $this->abstractRepositoryGetModelConstantMethod->setAccessible(true);
+        $this->abstractRepositoryQuoteMethod = $this->createAccessibleMethod($this->abstractRepository, 'quote');
+        $this->abstractRepositoryPaginatorMethod = $this
+            ->createAccessibleMethod($this->abstractRepository, 'paginator')
+        ;
+        $this->abstractRepositoryLogMethod = $this->createAccessibleMethod($this->abstractRepository, 'log');
+        $this->abstractRepositoryBeginTransactionMethod = $this
+            ->createAccessibleMethod($this->abstractRepository, 'beginTransaction')
+        ;
+        $this->abstractRepositoryCommitMethod = $this->createAccessibleMethod($this->abstractRepository, 'commit');
+        $this->abstractRepositoryRollBackMethod = $this->createAccessibleMethod($this->abstractRepository, 'rollBack');
+        $this->abstractRepositoryPrepareAndExecuteMethod = $this
+            ->createAccessibleMethod($this->abstractRepository, 'prepareAndExecute')
+        ;
+        $this->abstractRepositoryGetConnectionMethod = $this
+            ->createAccessibleMethod($this->abstractRepository, 'getConnection')
+        ;
+        $this->abstractRepositoryGetModelConstantMethod = $this
+            ->createAccessibleMethod($this->abstractRepository, 'getModelClassConstant')
+        ;
 
         $this->connectionPool = $this->createMock(ConnectionPool::class);
         $this->connectionPool->method('getConnection')->willReturn($this->connection);
 
-        $this->abstractRepositoryConnectionPoolProperty = new \ReflectionProperty(
-            $this->abstractRepository,
-            'connectionPool'
-        );
-        $this->abstractRepositoryConnectionPoolProperty->setAccessible(true);
+        $this->abstractRepositoryConnectionPoolProperty = $this
+            ->createAccessibleProperty($this->abstractRepository, 'connectionPool')
+        ;
         $this->abstractRepositoryConnectionPoolProperty->setValue($this->abstractRepository, $this->connectionPool);
     }
 
@@ -171,7 +179,8 @@ class AbstractRepositoryTest extends TestCase
     public function testQuote($value)
     {
         $this->connection->expects($this->once())->method('quote');
-        $this->abstractRepository->quote($value);
+
+        $this->abstractRepositoryQuoteMethod->invoke($this->abstractRepository, $value);
     }
 
     /**
@@ -203,13 +212,49 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(RepositoryException::class);
         $this->expectExceptionMessage('Parameter type "array" could not be quoted for SQL execution!');
 
-        $this->abstractRepository->quote(static::VALUE_INVALID);
+        $this->abstractRepositoryQuoteMethod->invoke($this->abstractRepository, static::VALUE_INVALID);
+    }
+
+    public function testPaginator()
+    {
+        $this->queryBuilder->method('count')->willReturn(static::QUERY_BUILDER_COUNT_RESULT);
+
+        $paginator = $this->abstractRepositoryPaginatorMethod->invoke(
+            $this->abstractRepository,
+            $this->queryBuilder,
+            static::PAGINATOR_PAGE_SIZE,
+            static::PAGINATOR_PAGE
+        );
+
+        $this->assertTrue($paginator instanceof PaginatorInterface);
+
+        $this->abstractRepository->expects($this->once())->method('addPaginateQuery');
+        $this->abstractRepository->expects($this->once())->method('getPaginateResult');
+
+        $paginator->paginate();
+    }
+
+    public function testPaginatorWhenCurrentPageSizeIsLessThanOne()
+    {
+        $paginator = $this->abstractRepositoryPaginatorMethod->invoke(
+            $this->abstractRepository,
+            $this->queryBuilder,
+            static::PAGINATOR_PAGE_SIZE_INVALID,
+            static::PAGINATOR_PAGE
+        );
+
+        $this->assertTrue($paginator instanceof PaginatorInterface);
+
+        $paginator->paginateFake();
+
+        $this->assertEquals(static::PAGINATOR_PAGE_SIZE_FIRST_PAGE, $paginator->getPageSize());
     }
 
     public function testLog()
     {
         $this->abstractRepository->setLogger(new NullLogger());
-        $abstractRepository = $this->abstractRepository->log(
+        $abstractRepository = $this->abstractRepositoryLogMethod->invoke(
+            $this->abstractRepository,
             LogLevel::DEBUG,
             'Test Message',
             [
@@ -222,7 +267,8 @@ class AbstractRepositoryTest extends TestCase
 
     public function testLogWithoutLogger()
     {
-        $abstractRepository = $this->abstractRepository->log(
+        $abstractRepository = $this->abstractRepositoryLogMethod->invoke(
+            $this->abstractRepository,
             LogLevel::DEBUG,
             'Test Message',
             [
@@ -269,33 +315,35 @@ class AbstractRepositoryTest extends TestCase
         $this->assertTrue($abstractRepository instanceof $this->abstractRepository);
     }
 
-    public function testCommit()
+    public function testCommitWhenConnectionCommitIsSuccessful()
     {
         $this
             ->abstractRepositoryBeginTransactionMethod
             ->invoke($this->abstractRepository, $this->connection)
         ;
 
-        $this->connection->expects($this->once())->method('commit');
+        $this->connection->method('commit')->willReturn(true);
 
-        $abstractRepository = $this
-            ->abstractRepositoryCommitMethod
+        $this->assertTrue($this->abstractRepositoryCommitMethod->invoke($this->abstractRepository, $this->connection));
+    }
+
+    public function testCommitWhenConnectionCommitIsUnsuccessful()
+    {
+        $this
+            ->abstractRepositoryBeginTransactionMethod
             ->invoke($this->abstractRepository, $this->connection)
         ;
 
-        $this->assertTrue($abstractRepository instanceof $this->abstractRepository);
+        $this->connection->method('commit')->willReturn(false);
+
+        $this->assertFalse($this->abstractRepositoryCommitMethod->invoke($this->abstractRepository, $this->connection));
     }
 
     public function testCommitWhenNotInTransaction()
     {
         $this->connection->expects($this->never())->method('commit');
 
-        $abstractRepository = $this
-            ->abstractRepositoryCommitMethod
-            ->invoke($this->abstractRepository, $this->connection)
-        ;
-
-        $this->assertTrue($abstractRepository instanceof $this->abstractRepository);
+        $this->assertTrue($this->abstractRepositoryCommitMethod->invoke($this->abstractRepository, $this->connection));
     }
 
     public function testCommitWithoutConnection()
@@ -305,14 +353,9 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $this->connection)
         ;
 
-        $this->connection->expects($this->once())->method('commit');
+        $this->connection->expects($this->once())->method('commit')->willReturn(true);
 
-        $abstractRepository = $this
-            ->abstractRepositoryCommitMethod
-            ->invoke($this->abstractRepository)
-        ;
-
-        $this->assertTrue($abstractRepository instanceof $this->abstractRepository);
+        $this->assertTrue($this->abstractRepositoryCommitMethod->invoke($this->abstractRepository));
     }
 
     public function testRollBack()

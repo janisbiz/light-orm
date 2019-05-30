@@ -4,23 +4,32 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Repository;
 
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
-use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\RepositoryException;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
+use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsTableTest;
+use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\QueryBuilderTrait;
+use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
 use PHPUnit\Framework\TestCase;
 
 class AbstractRepositoryTest extends TestCase
 {
+    use QueryBuilderTrait;
+    use ReflectionTrait;
+
     const COLUMN_AUTO_INCREMENT = 'colAI';
     const COLUMN_AUTO_INCREMENT_VALUE = 1;
     const COLUMN_ONE = 'col1';
     const COLUMN_ONE_UPDATE_VALUE = 'val1Update';
 
+    const TABLE = 'table';
+
     const RESULT_COUNT = 3;
+
+    const PAGINATE_CURRENT_PAGE = 2;
+    const PAGINATE_PAGE_SIZE = 10;
 
     /**
      * @var \PDOStatement|\PHPUnit_Framework_MockObject_MockObject
@@ -31,11 +40,6 @@ class AbstractRepositoryTest extends TestCase
      * @var ConnectionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $connection;
-
-    /**
-     * @var QueryBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $queryBuilder;
 
     /**
      * @var EntityInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -124,7 +128,8 @@ class AbstractRepositoryTest extends TestCase
 
     public function testInsert()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::INSERT_INTO)
         ;
 
@@ -133,7 +138,10 @@ class AbstractRepositoryTest extends TestCase
 
         $this->connection->method('lastInsertId')->willReturn(static::COLUMN_AUTO_INCREMENT_VALUE);
 
-        $entity = $this->abstractRepository->insert($this->queryBuilder);
+        $entity = $this
+            ->createAccessibleMethod($this->abstractRepository, 'insert')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         static::assertTrue($entity instanceof $this->entity);
         static::assertEquals(static::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[static::COLUMN_AUTO_INCREMENT]);
@@ -141,7 +149,8 @@ class AbstractRepositoryTest extends TestCase
 
     public function testInsertWithSqlException()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::INSERT_INTO)
         ;
 
@@ -156,16 +165,23 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
-        $this->abstractRepository->insert($this->queryBuilder);
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'insert')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testInsertToString()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::INSERT_INTO)
         ;
 
-        $insertQuery = $this->abstractRepository->insert($this->queryBuilder, true);
+        $insertQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'insert')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($insertQuery));
         $this->assertStringStartsWith(CommandEnum::INSERT_INTO, $insertQuery);
@@ -178,12 +194,18 @@ class AbstractRepositoryTest extends TestCase
             'Cannot perform insert on query without entity! Please create query builder with entity.'
         );
 
-        $this->abstractRepository->insert(new QueryBuilder($this->abstractRepository));
+        $queryBuilder = $this->createQueryBuilder($this->abstractRepository);
+
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'insert')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testInsertIgnore()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::INSERT_IGNORE_INTO)
         ;
 
@@ -192,7 +214,10 @@ class AbstractRepositoryTest extends TestCase
 
         $this->connection->method('lastInsertId')->willReturn(static::COLUMN_AUTO_INCREMENT_VALUE);
 
-        $entity = $this->abstractRepository->insertIgnore($this->queryBuilder);
+        $entity = $this
+            ->createAccessibleMethod($this->abstractRepository, 'insertIgnore')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         static::assertTrue($entity instanceof $this->entity);
         static::assertEquals(static::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[static::COLUMN_AUTO_INCREMENT]);
@@ -200,11 +225,15 @@ class AbstractRepositoryTest extends TestCase
 
     public function testInsertIgnoreToString()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::INSERT_IGNORE_INTO)
         ;
 
-        $insertIgnoreQuery = $this->abstractRepository->insertIgnore($this->queryBuilder, true);
+        $insertIgnoreQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'insertIgnore')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($insertIgnoreQuery));
         $this->assertStringStartsWith(CommandEnum::INSERT_IGNORE_INTO, $insertIgnoreQuery);
@@ -212,7 +241,8 @@ class AbstractRepositoryTest extends TestCase
 
     public function testReplace()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::REPLACE_INTO)
         ;
 
@@ -221,7 +251,10 @@ class AbstractRepositoryTest extends TestCase
 
         $this->connection->method('lastInsertId')->willReturn(static::COLUMN_AUTO_INCREMENT_VALUE);
 
-        $entity = $this->abstractRepository->replace($this->queryBuilder);
+        $entity = $this
+            ->createAccessibleMethod($this->abstractRepository, 'replace')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         static::assertTrue($entity instanceof $this->entity);
         static::assertEquals(static::COLUMN_AUTO_INCREMENT_VALUE, $entity->data()[static::COLUMN_AUTO_INCREMENT]);
@@ -229,11 +262,15 @@ class AbstractRepositoryTest extends TestCase
 
     public function testReplaceToString()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::REPLACE_INTO)
         ;
 
-        $replaceQuery = $this->abstractRepository->replace($this->queryBuilder, true);
+        $replaceQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'replace')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($replaceQuery));
         $this->assertStringStartsWith(CommandEnum::REPLACE_INTO, $replaceQuery);
@@ -241,7 +278,8 @@ class AbstractRepositoryTest extends TestCase
 
     public function testFindOne()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::SELECT)
         ;
 
@@ -261,18 +299,25 @@ class AbstractRepositoryTest extends TestCase
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute')->willReturn($this->statement);
 
-        $entity = $this->abstractRepository->findOne($this->queryBuilder);
+        $entity = $this
+            ->createAccessibleMethod($this->abstractRepository, 'findOne')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         $this->assertTrue($entity instanceof $this->entity);
     }
 
     public function testFindOneToString()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::SELECT)
         ;
 
-        $findOneQuery = $this->abstractRepository->findOne($this->queryBuilder, true);
+        $findOneQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'findOne')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($findOneQuery));
         $this->assertStringStartsWith(CommandEnum::SELECT, $findOneQuery);
@@ -280,7 +325,8 @@ class AbstractRepositoryTest extends TestCase
 
     public function testFindOneWithException()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::SELECT)
         ;
 
@@ -295,12 +341,16 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
-        $this->abstractRepository->findOne($this->queryBuilder);
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'findOne')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testFind()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::SELECT)
         ;
 
@@ -325,7 +375,10 @@ class AbstractRepositoryTest extends TestCase
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute')->willReturn($this->statement);
 
-        $resultArray = $this->abstractRepository->find($this->queryBuilder);
+        $resultArray = $this
+            ->createAccessibleMethod($this->abstractRepository, 'find')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         $this->assertCount(\count($entityArray), $resultArray);
         foreach ($resultArray as $resultEntity) {
@@ -335,11 +388,15 @@ class AbstractRepositoryTest extends TestCase
 
     public function testFindToString()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::SELECT)
         ;
 
-        $findQuery = $this->abstractRepository->find($this->queryBuilder, true);
+        $findQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'find')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($findQuery));
         $this->assertStringStartsWith(CommandEnum::SELECT, $findQuery);
@@ -347,7 +404,8 @@ class AbstractRepositoryTest extends TestCase
 
     public function testFindWithException()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::SELECT)
         ;
 
@@ -362,7 +420,10 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
-        $this->abstractRepository->find($this->queryBuilder);
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'find')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testUpdate()
@@ -374,7 +435,8 @@ class AbstractRepositoryTest extends TestCase
         $this->entity->method('isNew')->willReturn(false);
         $this->entity->method('isSaved')->willReturn(true);
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::UPDATE)
         ;
 
@@ -382,16 +444,25 @@ class AbstractRepositoryTest extends TestCase
         $this->connection->expects($this->once())->method('unsetSqlSafeUpdates');
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
-        $this->abstractRepository->expects($this->once())->method('commit');
+        $this->abstractRepository->expects($this->once())->method('commit')->willReturn(true);
 
-        $entity = $this->abstractRepository->update($this->queryBuilder);
+        $entity = $this
+            ->createAccessibleMethod($this->abstractRepository, 'update')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         $this->assertTrue($entity instanceof $this->entity);
+        $this->assertEquals($entity->data()[static::COLUMN_AUTO_INCREMENT], static::COLUMN_AUTO_INCREMENT_VALUE);
+        $this->assertEquals(
+            $entity->dataOriginal()[static::COLUMN_AUTO_INCREMENT],
+            static::COLUMN_AUTO_INCREMENT_VALUE
+        );
     }
 
     public function testUpdateWithoutEntity()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository)
             ->command(CommandEnum::UPDATE)
             ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
             ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
@@ -401,9 +472,13 @@ class AbstractRepositoryTest extends TestCase
         $this->connection->expects($this->once())->method('unsetSqlSafeUpdates');
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
-        $this->abstractRepository->expects($this->once())->method('commit');
+        $this->abstractRepository->expects($this->once())->method('commit')->willReturn(true);
 
-        $this->assertTrue($this->abstractRepository->update($this->queryBuilder));
+        $this->assertTrue(
+            $this
+                ->createAccessibleMethod($this->abstractRepository, 'update')
+                ->invoke($this->abstractRepository, $queryBuilder)
+        );
     }
 
     public function testUpdateWithoutEntityChanges()
@@ -411,7 +486,8 @@ class AbstractRepositoryTest extends TestCase
         $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
         $this->dataOriginal[static::COLUMN_AUTO_INCREMENT] = 1;
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::UPDATE)
         ;
 
@@ -421,7 +497,10 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository->expects($this->never())->method('prepareAndExecute');
         $this->abstractRepository->expects($this->never())->method('commit');
 
-        $entity = $this->abstractRepository->update($this->queryBuilder);
+        $entity = $this
+            ->createAccessibleMethod($this->abstractRepository, 'update')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         $this->assertTrue($entity instanceof $this->entity);
         $this->assertEquals($this->entity, $entity);
@@ -436,11 +515,15 @@ class AbstractRepositoryTest extends TestCase
         $this->entity->method('isNew')->willReturn(false);
         $this->entity->method('isSaved')->willReturn(true);
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::UPDATE)
         ;
 
-        $updateQuery = $this->abstractRepository->update($this->queryBuilder, true);
+        $updateQuery = $this
+                ->createAccessibleMethod($this->abstractRepository, 'update')
+                ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($updateQuery));
         $this->assertStringStartsWith(CommandEnum::UPDATE, $updateQuery);
@@ -455,7 +538,8 @@ class AbstractRepositoryTest extends TestCase
         $this->entity->method('isNew')->willReturn(false);
         $this->entity->method('isSaved')->willReturn(true);
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::UPDATE)
         ;
 
@@ -471,7 +555,10 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
-        $this->abstractRepository->update($this->queryBuilder);
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'update')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testUpdateIgnore()
@@ -483,7 +570,8 @@ class AbstractRepositoryTest extends TestCase
         $this->entity->method('isNew')->willReturn(false);
         $this->entity->method('isSaved')->willReturn(true);
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::UPDATE_IGNORE)
         ;
 
@@ -491,11 +579,19 @@ class AbstractRepositoryTest extends TestCase
         $this->connection->expects($this->once())->method('unsetSqlSafeUpdates');
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
-        $this->abstractRepository->expects($this->once())->method('commit');
+        $this->abstractRepository->expects($this->once())->method('commit')->willReturn(true);
 
-        $entity = $this->abstractRepository->updateIgnore($this->queryBuilder);
+        $entity = $this
+            ->createAccessibleMethod($this->abstractRepository, 'updateIgnore')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         $this->assertTrue($entity instanceof $this->entity);
+        $this->assertEquals($entity->data()[static::COLUMN_AUTO_INCREMENT], static::COLUMN_AUTO_INCREMENT_VALUE);
+        $this->assertEquals(
+            $entity->dataOriginal()[static::COLUMN_AUTO_INCREMENT],
+            static::COLUMN_AUTO_INCREMENT_VALUE
+        );
     }
 
     public function testUpdateIgnoreToString()
@@ -507,11 +603,15 @@ class AbstractRepositoryTest extends TestCase
         $this->entity->method('isNew')->willReturn(false);
         $this->entity->method('isSaved')->willReturn(true);
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::UPDATE_IGNORE)
         ;
 
-        $updateIgnoreQuery = $this->abstractRepository->updateIgnore($this->queryBuilder, true);
+        $updateIgnoreQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'updateIgnore')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($updateIgnoreQuery));
         $this->assertStringStartsWith(CommandEnum::UPDATE_IGNORE, $updateIgnoreQuery);
@@ -521,7 +621,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::DELETE)
         ;
 
@@ -529,14 +630,19 @@ class AbstractRepositoryTest extends TestCase
         $this->connection->expects($this->once())->method('unsetSqlSafeUpdates');
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
-        $this->abstractRepository->expects($this->once())->method('commit');
+        $this->abstractRepository->expects($this->once())->method('commit')->willReturn(true);
 
-        $this->assertTrue($this->abstractRepository->delete($this->queryBuilder));
+        $this->assertTrue(
+            $this
+                ->createAccessibleMethod($this->abstractRepository, 'delete')
+                ->invoke($this->abstractRepository, $queryBuilder)
+        );
     }
 
     public function testDeleteWithoutEntity()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository)
             ->command(CommandEnum::DELETE)
             ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
@@ -545,29 +651,42 @@ class AbstractRepositoryTest extends TestCase
         $this->connection->expects($this->once())->method('unsetSqlSafeUpdates');
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute');
-        $this->abstractRepository->expects($this->once())->method('commit');
+        $this->abstractRepository->expects($this->once())->method('commit')->willReturn(true);
 
-        $this->assertTrue($this->abstractRepository->delete($this->queryBuilder));
+        $this->assertTrue(
+            $this
+                ->createAccessibleMethod($this->abstractRepository, 'delete')
+                ->invoke($this->abstractRepository, $queryBuilder)
+        );
     }
 
     public function testDeleteWithEntityWithoutPrimaryKeys()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::DELETE)
         ;
 
-        $this->assertFalse($this->abstractRepository->delete($this->queryBuilder));
+        $this->assertFalse(
+            $this
+                ->createAccessibleMethod($this->abstractRepository, 'delete')
+                ->invoke($this->abstractRepository, $queryBuilder)
+        );
     }
 
     public function testDeleteToString()
     {
         $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::DELETE)
         ;
 
-        $deleteQuery = $this->abstractRepository->delete($this->queryBuilder, true);
+        $deleteQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'delete')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($deleteQuery));
         $this->assertStringStartsWith(CommandEnum::DELETE, $deleteQuery);
@@ -577,7 +696,8 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::DELETE)
         ;
 
@@ -593,45 +713,56 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
-        $this->abstractRepository->delete($this->queryBuilder);
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'delete')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testCount()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository, $this->entity))
-            ->command(CommandEnum::SELECT)
-        ;
+        $queryBuilder = $this->createQueryBuilder($this->abstractRepository)->command(CommandEnum::SELECT);
 
         $this->statement->expects($this->once())->method('fetchColumn')->with(0)->willReturn(static::RESULT_COUNT);
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute')->willReturn($this->statement);
+        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
 
-        $resultCount = $this->abstractRepository->count($this->queryBuilder);
+        $resultCount = $this
+            ->createAccessibleMethod($this->abstractRepository, 'count')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
 
         $this->assertEquals(static::RESULT_COUNT, $resultCount);
     }
 
     public function testCountWithWrongCommand()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository))
-            ->command(CommandEnum::DELETE)
-        ;
+        $queryBuilder = $this->createQueryBuilder($this->abstractRepository)->command(CommandEnum::DELETE);
+
+        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
 
         $this->expectException(RepositoryException::class);
         $this->expectExceptionMessage(
             'Command "DELETE" is not a valid command for count query! Use "SELECT" command to execute count query.'
         );
 
-        $this->abstractRepository->count($this->queryBuilder);
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'count')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testCountToString()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository))
-            ->command(CommandEnum::SELECT)
-        ;
+        $queryBuilder = $this->createQueryBuilder($this->abstractRepository)->command(CommandEnum::SELECT);
 
-        $countQuery = $this->abstractRepository->count($this->queryBuilder, true);
+        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
+
+        $countQuery = $this
+            ->createAccessibleMethod($this->abstractRepository, 'count')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
+        ;
 
         $this->assertTrue(\is_string($countQuery));
         $this->assertStringStartsWith(CommandEnum::SELECT, $countQuery);
@@ -639,10 +770,9 @@ class AbstractRepositoryTest extends TestCase
 
     public function testCountWithException()
     {
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository))
-            ->command(CommandEnum::SELECT)
-        ;
+        $queryBuilder = $this->createQueryBuilder($this->abstractRepository)->command(CommandEnum::SELECT);
 
+        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
@@ -654,7 +784,10 @@ class AbstractRepositoryTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
-        $this->abstractRepository->count($this->queryBuilder);
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'count')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
     }
 
     public function testCreateQueryBuilder()
@@ -673,5 +806,69 @@ class AbstractRepositoryTest extends TestCase
         $queryBuilder = $createQueryBuilderMethod->invoke($this->abstractRepository);
 
         $this->assertTrue($queryBuilder instanceof QueryBuilderInterface);
+    }
+
+    public function testAddPaginateQuery()
+    {
+        $queryBuilder = $this
+            ->createQueryBuilder($this->abstractRepository, $this->entity)
+            ->command(CommandEnum::SELECT)
+        ;
+
+        $this
+            ->createAccessibleMethod($this->abstractRepository, 'addPaginateQuery')
+            ->invoke(
+                $this->abstractRepository,
+                $queryBuilder,
+                static::PAGINATE_CURRENT_PAGE,
+                static::PAGINATE_PAGE_SIZE
+            )
+        ;
+
+        $this->assertEquals(
+            static::PAGINATE_PAGE_SIZE,
+            $this->createAccessibleProperty($queryBuilder, 'limit')->getValue($queryBuilder)
+        );
+        $this->assertEquals(
+            static::PAGINATE_PAGE_SIZE * static::PAGINATE_CURRENT_PAGE - static::PAGINATE_PAGE_SIZE,
+            $this->createAccessibleProperty($queryBuilder, 'offset')->getValue($queryBuilder)
+        );
+    }
+
+    public function testGetPaginateResult()
+    {
+        $queryBuilder = $this->createQueryBuilder($this->abstractRepository, $this->entity);
+
+        $entityArray = [
+            $this->entity,
+            $this->entity,
+            $this->entity,
+        ];
+
+        $this->statement->expects($this->once())->method('fetchAll')->willReturn($entityArray);
+        $this
+            ->statement
+            ->expects($this->once())
+            ->method('setFetchMode')
+            ->with(
+                \PDO::FETCH_CLASS,
+                \get_class($this->entity),
+                [
+                    false,
+                ]
+            )
+        ;
+
+        $this->abstractRepository->expects($this->once())->method('prepareAndExecute')->willReturn($this->statement);
+
+        $resultArray = $this
+            ->createAccessibleMethod($this->abstractRepository, 'getPaginateResult')
+            ->invoke($this->abstractRepository, $queryBuilder)
+        ;
+
+        $this->assertCount(\count($entityArray), $resultArray);
+        foreach ($resultArray as $resultEntity) {
+            $this->assertTrue($resultEntity instanceof $this->entity);
+        }
     }
 }

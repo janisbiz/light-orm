@@ -10,13 +10,16 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Repository\AbstractRepository as BaseAbstractRepository;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\AbstractTraitTestCase;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\UnionTraitTest;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerTrait;
+use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
 
 class QueryBuilderTest extends AbstractTraitTestCase
 {
+    use ReflectionTrait;
+    use QueryBuilderTrait;
+
     const COMMAND_INVALID = 'INVALID';
 
     /**
@@ -25,7 +28,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
     private $abstractRepositoryPublicMethods = [];
 
     /**
-     * @var AbstractRepository
+     * @var AbstractRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $abstractRepository;
 
@@ -54,7 +57,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
             $this->abstractRepositoryPublicMethods
         );
 
-        $this->queryBuilder = (new QueryBuilder($this->abstractRepository));
+        $this->queryBuilder = $this->createQueryBuilder($this->abstractRepository);
     }
 
     public function testQueryBuilderUsesTraits()
@@ -70,9 +73,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
      */
     public function testCrud($method, $toString)
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject $abstractRepository */
-        $abstractRepository = $this->abstractRepository;
-        $abstractRepository->expects($this->once())->method($method)->with($this->queryBuilder, $toString);
+        $this->abstractRepository->expects($this->once())->method($method)->with($this->queryBuilder, $toString);
         $this->queryBuilder->$method($toString);
     }
 
@@ -745,7 +746,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
         /** @var EntityInterface $entity */
         $entity = $this->createMock(EntityInterface::class);
 
-        $queryBuilder = new QueryBuilder($this->abstractRepository, $entity);
+        $queryBuilder = $this->createQueryBuilder($this->abstractRepository, $entity);
 
         $this->assertTrue($queryBuilder->getEntity() instanceof EntityInterface);
     }
@@ -826,14 +827,17 @@ class QueryBuilderTest extends AbstractTraitTestCase
 
         return \array_filter(\array_diff(
             \array_map(
-                function (\ReflectionMethod $abstractRepositoryPublicMethod) {
-                    if (2 === \count($abstractRepositoryPublicMethod->getParameters())) {
-                        return $abstractRepositoryPublicMethod->getName();
+                function (\ReflectionMethod $abstractRepositoryMethod) {
+                    if (2 === $abstractRepositoryMethod->getNumberOfParameters()
+                        && 'queryBuilder' === $abstractRepositoryMethod->getParameters()[0]->getName()
+                        && 'toString' === $abstractRepositoryMethod->getParameters()[1]->getName()
+                    ) {
+                        return $abstractRepositoryMethod->getName();
                     }
 
                     return null;
                 },
-                $abstractRepositoryReflection->getMethods(\ReflectionMethod::IS_PUBLIC)
+                $abstractRepositoryReflection->getMethods(\ReflectionMethod::IS_PROTECTED)
             ),
             \array_reduce(
                 \array_map(
@@ -846,8 +850,8 @@ class QueryBuilderTest extends AbstractTraitTestCase
                         );
                     },
                     [
-                        (new \ReflectionClass(LoggerTrait::class))->getMethods(\ReflectionMethod::IS_PUBLIC),
-                        (new \ReflectionClass(LoggerAwareTrait::class))->getMethods(\ReflectionMethod::IS_PUBLIC),
+                        (new \ReflectionClass(BaseAbstractRepository::class))
+                            ->getMethods(\ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_ABSTRACT),
                     ]
                 ),
                 'array_merge',

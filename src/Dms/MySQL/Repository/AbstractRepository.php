@@ -23,7 +23,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return string|EntityInterface
      * @throws RepositoryException|\Exception
      */
-    public function insert(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function insert(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (!($entity = $queryBuilder->getEntity())) {
             throw new RepositoryException(
@@ -67,7 +67,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return string|EntityInterface
      */
-    public function insertIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function insertIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         return $this->insert($queryBuilder, $toString);
     }
@@ -78,7 +78,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return string|EntityInterface
      */
-    public function replace(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function replace(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         return $this->insert($queryBuilder, $toString);
     }
@@ -90,7 +90,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return null|string
      * @throws \Exception
      */
-    public function findOne(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function findOne(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -121,7 +121,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return array|string
      * @throws \Exception
      */
-    public function find(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function find(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -152,7 +152,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return null|bool|EntityInterface|string
      * @throws \Exception
      */
-    public function update(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function update(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityUpdateQuery($queryBuilder, $entity, $toString)) {
             return $entity;
@@ -177,9 +177,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             throw $e;
         }
 
-        $this->commit($connection);
-
-        return $entity ?: true;
+        return $this->commit($connection) ? ($entity ?: true) : false;
     }
 
     /**
@@ -188,7 +186,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return null|string|bool|EntityInterface
      */
-    public function updateIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function updateIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         return $this->update($queryBuilder, $toString);
     }
@@ -200,7 +198,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return bool|string
      * @throws \Exception
      */
-    public function delete(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function delete(QueryBuilderInterface $queryBuilder, $toString = false)
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityDeleteQuery($queryBuilder, $entity)) {
             return false;
@@ -225,9 +223,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             throw $e;
         }
 
-        $this->commit($connection);
-
-        return true;
+        return $this->commit($connection);
     }
 
     /**
@@ -237,7 +233,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return int
      * @throws RepositoryException|\Exception
      */
-    public function count(BaseQueryBuilderInterface $queryBuilder, $toString = false)
+    protected function count(BaseQueryBuilderInterface $queryBuilder, $toString = false)
     {
         /** @var QueryBuilderInterface $queryBuilder */
 
@@ -252,10 +248,11 @@ abstract class AbstractRepository extends BaseAbstractRepository
         /** Flush all columns and use "true" as a value to avoid column conflicts and get actual result count */
         $queryBuilder->column(true, true);
 
-        $queryBuilderCount = (new QueryBuilder($this))
+        $queryBuilderCount = $this
+            ->createQueryBuilder()
             ->command($queryBuilder->commandData())
-            ->column('COUNT(*)')
-            ->table(\sprintf('(%s) AS total_count', $queryBuilder->buildQuery()))
+            ->column('COUNT(*)', true)
+            ->table(\sprintf('(%s) AS total_count', $queryBuilder->buildQuery()), true)
             ->bind($queryBuilder->bindData())
         ;
 
@@ -283,7 +280,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      */
     protected function createQueryBuilder(EntityInterface $entity = null)
     {
-        return (new QueryBuilder($this, $entity))
+        return (new QueryBuilder($this->createRepositoryCallClosure(), $entity))
             ->column(\sprintf('%s.*', $this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME)))
             ->table($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
@@ -409,5 +406,32 @@ abstract class AbstractRepository extends BaseAbstractRepository
         }
 
         return $performDelete;
+    }
+
+    /**
+     * @param BaseQueryBuilderInterface $queryBuilder
+     * @param int $currentPage
+     * @param int $pageSize
+     *
+     * @return $this
+     */
+    protected function addPaginateQuery(BaseQueryBuilderInterface $queryBuilder, $currentPage, $pageSize)
+    {
+        /** @var QueryBuilderInterface $queryBuilder */
+        $queryBuilder->limitWithOffset($pageSize, $pageSize * $currentPage - $pageSize);
+
+        return $this;
+    }
+
+    /**
+     * @param BaseQueryBuilderInterface $queryBuilder
+     * @param bool $toString
+     *
+     * @return EntityInterface[]
+     */
+    protected function getPaginateResult(BaseQueryBuilderInterface $queryBuilder, $toString = false)
+    {
+        /** @var QueryBuilderInterface $queryBuilder */
+        return $queryBuilder->find($toString);
     }
 }

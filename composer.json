@@ -22,6 +22,7 @@
   },
   "require-dev": {
     "behat/behat": "^3.0",
+    "friendsofphp/php-cs-fixer": "^2.0",
     "jakub-onderka/php-parallel-lint": "^1.0",
     "monolog/monolog": "^1.0",
     "phpcompatibility/php-compatibility": "^9.0",
@@ -42,10 +43,6 @@
     "files": [
       "config/config.php"
     ]
-  },
-  "scripts": {
-    "post-install-cmd": "\"./vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
-    "post-update-cmd" : "\"./vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
   },
   "config": {
     "sort-packages": true
