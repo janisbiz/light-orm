@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder;
 
@@ -7,24 +7,26 @@ use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\AbstractTraitTest
 
 class TraitsTest extends AbstractTraitTestCase
 {
-    use Traits;
-    
     public function test()
     {
-        $this->assertObjectUsesTrait(Traits::class, $this);
-        $this->assertObjectUsesTrait(Traits\BindTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\ColumnTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\CommandTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\TableTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\GroupByTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\HavingTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\JoinTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\LimitOffsetTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\OnDuplicateKeyUpdateTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\OrderByTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\SetTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\UnionTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\ValueTrait::class, $this);
-        $this->assertObjectUsesTrait(Traits\WhereTrait::class, $this);
+        $traitsClass = new class () {
+            use Traits;
+        };
+        
+        $this->assertObjectUsesTrait(Traits::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\BindTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\ColumnTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\CommandTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\TableTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\GroupByTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\HavingTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\JoinTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\LimitOffsetTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\OnDuplicateKeyUpdateTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\OrderByTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\SetTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\UnionTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\ValueTrait::class, $traitsClass);
+        $this->assertObjectUsesTrait(Traits\WhereTrait::class, $traitsClass);
     }
 }

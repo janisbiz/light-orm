@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Connection;
 
@@ -42,8 +42,14 @@ abstract class AbstractConnectionConfig implements ConnectionConfigInterface
      * @param string $adapter
      * @param int $port
      */
-    public function __construct($host, $username, $password, $dbname, $adapter, $port = 3306)
-    {
+    public function __construct(
+        string $host,
+        string $username,
+        string $password,
+        string $dbname,
+        string $adapter,
+        int $port = 3306
+    ) {
         $this->host = $host;
         $this->username = $username;
         $this->password = $password;
@@ -55,7 +61,7 @@ abstract class AbstractConnectionConfig implements ConnectionConfigInterface
     /**
      * @return string
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -63,7 +69,7 @@ abstract class AbstractConnectionConfig implements ConnectionConfigInterface
     /**
      * @return string
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -71,7 +77,7 @@ abstract class AbstractConnectionConfig implements ConnectionConfigInterface
     /**
      * @return string
      */
-    public function getDbname()
+    public function getDbname(): string
     {
         return $this->dbname;
     }

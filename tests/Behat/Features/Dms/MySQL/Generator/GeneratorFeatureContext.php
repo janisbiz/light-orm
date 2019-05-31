@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Generator;
 
@@ -12,7 +12,6 @@ use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\WriterConfig as MySQLWriterConf
 use Janisbiz\LightOrm\Generator;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\AbstractFeatureContext;
-use Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext;
 
 class GeneratorFeatureContext extends AbstractFeatureContext
 {
@@ -38,7 +37,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @throws \Exception
      */
-    public function iCreateGeneratorForConnection($connectionName)
+    public function iCreateGeneratorForConnection(string $connectionName)
     {
         $this->connectionName = $connectionName;
 
@@ -67,7 +66,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @param null|string $directoryOverride
      */
-    public function iAddWritersToGeneratorWithDirectoryOverride($directoryOverride)
+    public function iAddWritersToGeneratorWithDirectoryOverride(string $directoryOverride)
     {
         $directoryOverride = \preg_replace('/\/\\\/', DIRECTORY_SEPARATOR, $directoryOverride);
 
@@ -113,7 +112,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @param string $directory
      */
-    public function iRemoveDirectory($directory)
+    public function iRemoveDirectory(string $directory)
     {
         if (\is_dir($directory)) {
             $recursiveDirectoryIterator = new \RecursiveDirectoryIterator(
@@ -138,7 +137,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
     /**
      * @param null|string $directoryOverride
      */
-    private function addWritersToGenerator($directoryOverride = null)
+    private function addWritersToGenerator(string $directoryOverride = null)
     {
         switch ($this->getConnectionConfig($this->connectionName)['adapter']) {
             case MySQLConnectionConfig::ADAPTER:
@@ -155,7 +154,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @throws \Exception
      */
-    private function addMySQLWriters($directoryOverride)
+    private function addMySQLWriters(?string $directoryOverride)
     {
         foreach ($this->getWritersConfig($this->connectionName) as $writerClass => $writerConfig) {
             switch ($writerClass) {

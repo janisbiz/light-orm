@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Connection;
 
@@ -20,7 +20,7 @@ class ConnectionFeatureContext extends AbstractFeatureContext
      *
      * @throws \Exception
      */
-    public function iHaveExistingConnectionConfig($connectionName)
+    public function iHaveExistingConnectionConfig(string $connectionName)
     {
         $connectionConfigArray = $this->getConnectionConfig($connectionName);
 
@@ -50,7 +50,7 @@ class ConnectionFeatureContext extends AbstractFeatureContext
      *
      * @param string $connectionName
      */
-    public function iShouldHaveConnection($connectionName)
+    public function iShouldHaveConnection(string $connectionName)
     {
         $this->connectionPool->getConnection($connectionName);
     }

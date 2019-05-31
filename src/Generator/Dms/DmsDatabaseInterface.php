@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Generator\Dms;
 
@@ -7,15 +7,15 @@ interface DmsDatabaseInterface
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @return string
      */
-    public function getPhpName();
+    public function getPhpName(): string;
 
     /**
      * @return DmsTableInterface[]
      */
-    public function getDmsTables();
+    public function getDmsTables(): array;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -8,12 +8,11 @@ abstract class AbstractTraitTestCase extends TestCase
 {
     /**
      * @param string $trait
-     * @param object $object
+     * @param string|object $object
      * @param string $message
      */
-    protected function assertObjectUsesTrait($trait, $object, $message = '')
+    protected function assertObjectUsesTrait(string $trait, $object, string $message = '')
     {
-
         $traits = [];
         $this->getTraits($object, $traits);
 
@@ -31,7 +30,7 @@ abstract class AbstractTraitTestCase extends TestCase
     }
 
     /**
-     * @param string $class
+     * @param string|object $class
      * @param array $traits
      */
     private function getTraits($class, array &$traits)

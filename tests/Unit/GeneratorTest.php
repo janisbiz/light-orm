@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit;
 
@@ -10,8 +10,9 @@ use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\Tests\Unit\Generator\Writer\AbstractWriterConfigTest;
 use Janisbiz\LightOrm\Tests\Unit\Generator\Writer\FileTrait;
+use PHPUnit\Framework\TestCase;
 
-class GeneratorTest extends \PHPUnit_Framework_TestCase
+class GeneratorTest extends TestCase
 {
     use FileTrait;
 

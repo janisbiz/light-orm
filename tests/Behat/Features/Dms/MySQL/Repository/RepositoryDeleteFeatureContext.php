@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
@@ -9,7 +9,7 @@ class RepositoryDeleteFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $method
      */
-    public function iCallMethodOnRepositoryWithExistingEntities($method)
+    public function iCallMethodOnRepositoryWithExistingEntities(string $method)
     {
         $this->callMethodOnRepositoryWithExistingEntities($method);
     }
@@ -19,7 +19,7 @@ class RepositoryDeleteFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $method
      */
-    public function iCallMethodOnRepositoryWithExistingEntitiesAndExpectingException($method)
+    public function iCallMethodOnRepositoryWithExistingEntitiesAndExpectingException(string $method)
     {
         try {
             $this->callMethodOnRepositoryWithExistingEntities($method);
@@ -31,7 +31,7 @@ class RepositoryDeleteFeatureContext extends AbstractRepositoryFeatureContext
     /**
      * @param string $method
      */
-    private function callMethodOnRepositoryWithExistingEntities($method)
+    private function callMethodOnRepositoryWithExistingEntities(string $method)
     {
         foreach (static::$entities as $entity) {
             \call_user_func_array(

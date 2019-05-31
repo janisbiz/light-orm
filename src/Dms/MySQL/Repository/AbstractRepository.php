@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Repository;
 
@@ -23,7 +23,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return string|EntityInterface
      * @throws RepositoryException|\Exception
      */
-    protected function insert(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function insert(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         if (!($entity = $queryBuilder->getEntity())) {
             throw new RepositoryException(
@@ -67,7 +67,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return string|EntityInterface
      */
-    protected function insertIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function insertIgnore(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         return $this->insert($queryBuilder, $toString);
     }
@@ -78,7 +78,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return string|EntityInterface
      */
-    protected function replace(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function replace(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         return $this->insert($queryBuilder, $toString);
     }
@@ -90,7 +90,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return null|string
      * @throws \Exception
      */
-    protected function findOne(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function findOne(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -121,7 +121,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return array|string
      * @throws \Exception
      */
-    protected function find(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function find(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -152,7 +152,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return null|bool|EntityInterface|string
      * @throws \Exception
      */
-    protected function update(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function update(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityUpdateQuery($queryBuilder, $entity, $toString)) {
             return $entity;
@@ -186,7 +186,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return null|string|bool|EntityInterface
      */
-    protected function updateIgnore(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function updateIgnore(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         return $this->update($queryBuilder, $toString);
     }
@@ -198,7 +198,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return bool|string
      * @throws \Exception
      */
-    protected function delete(QueryBuilderInterface $queryBuilder, $toString = false)
+    protected function delete(QueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityDeleteQuery($queryBuilder, $entity)) {
             return false;
@@ -233,7 +233,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      * @return int
      * @throws RepositoryException|\Exception
      */
-    protected function count(BaseQueryBuilderInterface $queryBuilder, $toString = false)
+    protected function count(BaseQueryBuilderInterface $queryBuilder, bool $toString = false)
     {
         /** @var QueryBuilderInterface $queryBuilder */
 
@@ -278,7 +278,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return QueryBuilderInterface
      */
-    protected function createQueryBuilder(EntityInterface $entity = null)
+    protected function createQueryBuilder(?EntityInterface $entity = null): BaseQueryBuilderInterface
     {
         return (new QueryBuilder($this->createRepositoryCallClosure(), $entity))
             ->column(\sprintf('%s.*', $this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME)))
@@ -316,7 +316,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
     protected function addEntityUpdateQuery(
         QueryBuilderInterface $queryBuilder,
         EntityInterface $entity,
-        $toString
+        bool $toString
     ) {
         $performUpdate = false;
         $entityData = &$entity->data();
@@ -415,8 +415,11 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return $this
      */
-    protected function addPaginateQuery(BaseQueryBuilderInterface $queryBuilder, $pageSize, $currentPage)
-    {
+    protected function addPaginateQuery(
+        BaseQueryBuilderInterface $queryBuilder,
+        int $pageSize,
+        int $currentPage
+    ): BaseAbstractRepository {
         /** @var QueryBuilderInterface $queryBuilder */
         $queryBuilder->limitWithOffset($pageSize, $pageSize * $currentPage - $pageSize);
 
@@ -429,7 +432,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
      *
      * @return EntityInterface[]
      */
-    protected function getPaginateResult(BaseQueryBuilderInterface $queryBuilder, $toString = false)
+    protected function getPaginateResult(BaseQueryBuilderInterface $queryBuilder, bool $toString = false): array
     {
         /** @var QueryBuilderInterface $queryBuilder */
         return $queryBuilder->find($toString);

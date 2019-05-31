@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator;
 
@@ -7,6 +7,9 @@ use Janisbiz\LightOrm\Generator\AbstractDmsFactory;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsDatabase;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsTable;
+use Janisbiz\LightOrm\Generator\Dms\DmsColumnInterface;
+use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
+use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 
 class DmsFactory extends AbstractDmsFactory
 {
@@ -16,7 +19,7 @@ class DmsFactory extends AbstractDmsFactory
      *
      * @return DmsDatabase
      */
-    public function createDmsDatabase($databaseName, ConnectionInterface $connection)
+    public function createDmsDatabase(string $databaseName, ConnectionInterface $connection): DmsDatabaseInterface
     {
         $tablesInDatabase = $connection->query('SHOW TABLES', \PDO::FETCH_CLASS, \stdClass::class);
 
@@ -34,7 +37,7 @@ class DmsFactory extends AbstractDmsFactory
      *
      * @return DmsTable
      */
-    protected function createDmsTable($tableName, ConnectionInterface $connection)
+    protected function createDmsTable(string $tableName, ConnectionInterface $connection): DmsTableInterface
     {
         $columnsInTable = $connection->query(
             \sprintf('SHOW COLUMNS FROM %s', $tableName),
@@ -49,7 +52,7 @@ class DmsFactory extends AbstractDmsFactory
                 $columnInTable->Type,
                 $columnInTable->Null === 'YES',
                 $columnInTable->Key,
-                $columnInTable->Default,
+                (string) $columnInTable->Default,
                 $columnInTable->Extra
             );
         }
@@ -67,8 +70,14 @@ class DmsFactory extends AbstractDmsFactory
      *
      * @return DmsColumn
      */
-    protected function createDmsColumn($name, $type, $nullable, $key, $default, $extra)
-    {
+    protected function createDmsColumn(
+        string $name,
+        string $type,
+        bool $nullable,
+        string $key,
+        string $default,
+        ?string $extra
+    ): DmsColumnInterface {
         return new DmsColumn($name, $type, $nullable, $key, $default, $extra);
     }
 }

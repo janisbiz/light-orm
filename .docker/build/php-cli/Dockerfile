@@ -1,4 +1,4 @@
-FROM php:5.6-cli-alpine
+FROM php:7.1-cli-alpine
 
 # Setup the Composer installer
 RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \

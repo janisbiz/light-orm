@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Writer;
 
@@ -78,7 +78,7 @@ class EntityClassWriterTest extends BaseEntityClassWriterTest
         $this->assertEquals(
             /** @lang PHP */
             <<<PHP
-<?php
+<?php declare(strict_types=1);
 
 namespace None\Existent\Namespace\DatabaseNameSnakeCase\Entity;
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
@@ -47,7 +47,7 @@ class DmsTableTest extends TestCase
      * @param string $name
      * @param string $phpName
      */
-    public function testGetPhpName($name, $phpName)
+    public function testGetPhpName(string $name, string $phpName)
     {
         $dmsTable = new DmsTable(
             $name,

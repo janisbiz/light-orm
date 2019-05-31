@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Entity;
 
@@ -46,7 +46,7 @@ class BaseEntity implements EntityInterface
      *
      * @return string|int|bool
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if (\array_key_exists($name, $this->data)) {
             return $this->data[$name];
@@ -61,7 +61,7 @@ class BaseEntity implements EntityInterface
      * @param string $name
      * @param string|int|bool $value
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         $this->data[$name] = $value;
 
@@ -78,7 +78,7 @@ class BaseEntity implements EntityInterface
      * @throws EntityException
      * @return bool|null|string|$this
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, ?array $arguments)
     {
         $methodName = \substr($name, 0, 3);
         \preg_match_all('/[A-Z0-9][^A-Z0-9]*/', $name, $results);
@@ -88,7 +88,7 @@ class BaseEntity implements EntityInterface
                 if (\array_key_exists(\mb_strtolower(\implode('_', $results[0])), $this->data)) {
                     $variable = $this->data[\strtolower(\implode('_', $results[0]))];
 
-                    if ($arguments && $arguments[0] === true) {
+                    if ($arguments && $arguments[0] === true && \is_string($variable)) {
                         /** Stripping tags, output for user */
                         return \nl2br(\htmlspecialchars(\trim($variable), ENT_QUOTES, 'UTF-8'));
                     }
@@ -118,7 +118,7 @@ class BaseEntity implements EntityInterface
      * @return null|array|string|int|double
      * @throws EntityException
      */
-    public function &data($key = null)
+    public function &data(?string $key = null)
     {
         if (null !== $key && \is_string($key)) {
             if (!\array_key_exists($key, $this->data)) {
@@ -137,7 +137,7 @@ class BaseEntity implements EntityInterface
      * @return null|array|string|int|double
      * @throws EntityException
      */
-    public function &dataOriginal($key = null)
+    public function &dataOriginal(?string $key = null)
     {
         if (null !== $key && \is_string($key)) {
             if (!\array_key_exists($key, $this->data)) {
@@ -153,7 +153,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return bool
      */
-    public function isNew()
+    public function isNew(): bool
     {
         return $this->isNew;
     }
@@ -161,7 +161,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return bool
      */
-    public function isSaved()
+    public function isSaved(): bool
     {
         return $this->isSaved;
     }
@@ -169,7 +169,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return string[]
      */
-    public function primaryKeys()
+    public function primaryKeys(): array
     {
         return $this->primaryKeys;
     }
@@ -177,7 +177,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return string[]
      */
-    public function primaryKeysAutoIncrement()
+    public function primaryKeysAutoIncrement(): array
     {
         return $this->primaryKeysAutoIncrement;
     }
@@ -185,7 +185,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return string[]
      */
-    public function columns()
+    public function columns(): array
     {
         return $this->columns;
     }

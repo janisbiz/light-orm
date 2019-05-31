@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -19,13 +19,19 @@ trait LimitOffsetTrait
 
     /**
      * @param int $limit
-     * @param int $offset
      *
      * @return $this
+     * @throws QueryBuilderException
      */
-    public function limitWithOffset($limit, $offset)
+    public function limit(int $limit)
     {
-        return $this->limit($limit)->offset($offset);
+        if (0 >= $limit) {
+            throw new QueryBuilderException('You must pass $limit to limit method!');
+        }
+
+        $this->limit = (int) $limit;
+
+        return $this;
     }
 
     /**
@@ -34,9 +40,9 @@ trait LimitOffsetTrait
      * @return $this
      * @throws QueryBuilderException
      */
-    public function offset($offset)
+    public function offset(int $offset)
     {
-        if (0 !== $offset && empty($offset)) {
+        if (0 > $offset) {
             throw new QueryBuilderException('You must pass $offset to offset method!');
         }
 
@@ -51,25 +57,19 @@ trait LimitOffsetTrait
 
     /**
      * @param int $limit
+     * @param int $offset
      *
      * @return $this
-     * @throws QueryBuilderException
      */
-    public function limit($limit)
+    public function limitWithOffset(int $limit, int $offset)
     {
-        if (empty($limit)) {
-            throw new QueryBuilderException('You must pass $limit to limit method!');
-        }
-
-        $this->limit = (int) $limit;
-
-        return $this;
+        return $this->limit($limit)->offset($offset);
     }
 
     /**
      * @return null|string
      */
-    protected function buildLimitQueryPart()
+    protected function buildLimitQueryPart(): ?string
     {
         return empty($this->limit) ? null : \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit);
     }
@@ -77,7 +77,7 @@ trait LimitOffsetTrait
     /**
      * @return null|string
      */
-    protected function buildOffsetQueryPart()
+    protected function buildOffsetQueryPart(): ?string
     {
         return empty($this->offset) ? null : \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset);
     }

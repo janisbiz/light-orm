@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Paginator;
 
@@ -78,8 +78,8 @@ class Paginator implements PaginatorInterface
         QueryBuilderInterface $queryBuilder,
         \Closure $addPaginateQuery,
         \Closure $getPaginateResult,
-        $pageSize,
-        $currentPage = 1,
+        int $pageSize,
+        int $currentPage = 1,
         array $options = []
     ) {
         $this->queryBuilder = clone $queryBuilder;
@@ -100,7 +100,7 @@ class Paginator implements PaginatorInterface
      *
      * @return EntityInterface[]|string
      */
-    public function paginate($toString = false)
+    public function paginate(bool $toString = false)
     {
         if (false === $this->paginate) {
             return $this->result;
@@ -131,7 +131,7 @@ class Paginator implements PaginatorInterface
      *
      * @return EntityInterface[]|string
      */
-    public function paginateFake($toString = false)
+    public function paginateFake(bool $toString = false)
     {
         if (false === $this->paginate) {
             return $this->result;
@@ -150,7 +150,7 @@ class Paginator implements PaginatorInterface
      * @return array
      * @throws PaginatorException
      */
-    public function getPageNumbers()
+    public function getPageNumbers(): array
     {
         if (true === $this->paginate) {
             throw new PaginatorException('You must call "paginate" or "paginateFake" before calling this method!');
@@ -197,7 +197,7 @@ class Paginator implements PaginatorInterface
      * @return int
      * @throws PaginatorException
      */
-    public function getTotalPages()
+    public function getTotalPages(): int
     {
         if (true === $this->paginate) {
             throw new PaginatorException('You must call "paginate" or "paginateFake" before calling this method!');
@@ -218,7 +218,7 @@ class Paginator implements PaginatorInterface
      * @return int
      * @throws PaginatorException
      */
-    public function getCurrentPageNumber()
+    public function getCurrentPageNumber(): int
     {
         if (true === $this->paginate) {
             throw new PaginatorException('You must call "paginate" or "paginateFake" before calling this method!');
@@ -231,7 +231,7 @@ class Paginator implements PaginatorInterface
      * @return null|int
      * @throws PaginatorException
      */
-    public function getNextPageNumber()
+    public function getNextPageNumber(): ?int
     {
         if (true === $this->paginate) {
             throw new PaginatorException('You must call "paginate" or "paginateFake" before calling this method!');
@@ -248,7 +248,7 @@ class Paginator implements PaginatorInterface
      * @return null|int
      * @throws PaginatorException
      */
-    public function getPreviousPageNumber()
+    public function getPreviousPageNumber(): ?int
     {
         if (true === $this->paginate) {
             throw new PaginatorException('You must call "paginate" or "paginateFake" before calling this method!');
@@ -265,7 +265,7 @@ class Paginator implements PaginatorInterface
      * @return int
      * @throws PaginatorException
      */
-    public function getResultTotalCount()
+    public function getResultTotalCount(): int
     {
         if (true === $this->paginate) {
             throw new PaginatorException('You must call "paginate" or "paginateFake" before calling this method!');
@@ -284,7 +284,7 @@ class Paginator implements PaginatorInterface
      * @return int
      * @throws PaginatorException
      */
-    public function getPageSize()
+    public function getPageSize(): int
     {
         if (true === $this->paginate) {
             throw new PaginatorException('You must call "paginate" or "paginateFake" before calling this method!');
@@ -298,7 +298,7 @@ class Paginator implements PaginatorInterface
      *
      * @return $this
      */
-    protected function setPaginateMethod($paginateMethod)
+    protected function setPaginateMethod(string $paginateMethod): Paginator
     {
         if (null === $this->paginateMethod) {
             $this->paginateMethod = \explode('::', $paginateMethod)[1];

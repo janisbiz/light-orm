@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Entity;
 
@@ -11,37 +11,37 @@ interface EntityInterface
      *
      * @return null|array|string|int|double
      */
-    public function &data($key = null);
+    public function &data(?string $key = null);
 
     /**
      * @param null|string $key
      *
      * @return null|array|string|int|double
      */
-    public function &dataOriginal($key = null);
+    public function &dataOriginal(?string $key = null);
 
     /**
      * @return bool
      */
-    public function isNew();
+    public function isNew(): bool;
 
     /**
      * @return bool
      */
-    public function isSaved();
+    public function isSaved(): bool;
 
     /**
      * @return string[]
      */
-    public function primaryKeys();
+    public function primaryKeys(): array;
 
     /**
      * @return string[]
      */
-    public function primaryKeysAutoIncrement();
+    public function primaryKeysAutoIncrement(): array;
 
     /**
      * @return string[]
      */
-    public function columns();
+    public function columns(): array;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
@@ -28,5 +28,5 @@ interface WriterInterface
      *
      * @return string[]
      */
-    public function read(DmsDatabaseInterface $dmsDatabase);
+    public function read(DmsDatabaseInterface $dmsDatabase): array;
 }

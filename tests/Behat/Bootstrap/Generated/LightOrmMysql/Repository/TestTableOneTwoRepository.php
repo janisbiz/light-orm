@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
 
@@ -103,7 +103,7 @@ class TestTableOneTwoRepository extends AbstractRepository
     /**
     * @return string
     */
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return TestTableOneTwoEntity::class;
     }

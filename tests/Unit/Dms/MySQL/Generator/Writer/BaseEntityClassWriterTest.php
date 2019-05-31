@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Writer;
 
@@ -69,7 +69,7 @@ class BaseEntityClassWriterTest extends TestCase
                 \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
                 DmsColumnTest::COLUMN_TYPE,
                 DmsColumnTest::COLUMN_NULLABLE,
-                2 >= $i ? DmsColumnTest::COLUMN_KEY : null,
+                2 >= $i ? DmsColumnTest::COLUMN_KEY : '',
                 DmsColumnTest::COLUMN_DEFAULT,
                 1 === $i ? DmsColumnTest::COLUMN_EXTRA : null
             );
@@ -121,7 +121,7 @@ class BaseEntityClassWriterTest extends TestCase
         $this->assertEquals(
             /** @lang PHP */
             <<<PHP
-<?php
+<?php declare(strict_types=1);
 
 namespace None\Existent\Namespace\DatabaseNameSnakeCase\Base;
 

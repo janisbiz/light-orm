@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -6,8 +6,6 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 
 class BindTraitTest extends AbstractTraitTestCase
 {
-    use BindTrait;
-
     const BIND = [
         'key2' => 'val2',
         'key3' => 'val3',
@@ -20,24 +18,39 @@ class BindTraitTest extends AbstractTraitTestCase
         'key1' => 'valN',
     ];
 
+    /**
+     * @var BindTrait
+     */
+    private $bindTraitClass;
+
     public function setUp()
     {
-        $this->bind = static::BIND_DEFAULT;
+        $this->bindTraitClass = new class (BindTraitTest::BIND_DEFAULT) {
+            use BindTrait;
+
+            /**
+             * @param array $bindDefault
+             */
+            public function __construct(array $bindDefault)
+            {
+                $this->bind = $bindDefault;
+            }
+        };
     }
 
     public function testBind()
     {
-        $this->assertEquals(static::BIND_DEFAULT, $this->bind);
+        $this->assertEquals(static::BIND_DEFAULT, $this->bindTraitClass->bindData());
 
-        $object = $this->bind(static::BIND);
+        $object = $this->bindTraitClass->bind(static::BIND);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
-        $this->assertEquals(\array_merge(static::BIND_DEFAULT, static::BIND), $this->bind);
+        $this->assertEquals(\array_merge(static::BIND_DEFAULT, static::BIND), $this->bindTraitClass->bindData());
 
-        $object = $this->bind(static::BIND_OVERRIDE);
+        $object = $this->bindTraitClass->bind(static::BIND_OVERRIDE);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::BIND_DEFAULT, static::BIND, static::BIND_OVERRIDE),
-            $this->bind
+            $this->bindTraitClass->bindData()
         );
     }
 
@@ -45,7 +58,7 @@ class BindTraitTest extends AbstractTraitTestCase
     {
         $this->assertEquals(
             static::BIND_DEFAULT,
-            $this->bindData()
+            $this->bindTraitClass->bindData()
         );
     }
 }

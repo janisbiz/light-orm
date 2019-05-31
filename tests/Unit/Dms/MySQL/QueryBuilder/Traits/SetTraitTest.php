@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -8,9 +8,6 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\SetTrait;
 
 class SetTraitTest extends AbstractTraitTestCase
 {
-    use BindTrait;
-    use SetTrait;
-
     const SET_DEFAULT = [
         'column1' => 'column1 = :Column1_Update',
     ];
@@ -18,10 +15,45 @@ class SetTraitTest extends AbstractTraitTestCase
         'Column1_Update' => 'value1',
     ];
 
+    /**
+     * @var BindTrait|SetTrait
+     */
+    private $setTraitClass;
+
     public function setUp()
     {
-        $this->bind = static::SET_BIND_DEFAULT;
-        $this->set = static::SET_DEFAULT;
+        $this->setTraitClass = new class (SetTraitTest::SET_BIND_DEFAULT, SetTraitTest::SET_DEFAULT) {
+            use BindTrait;
+            use SetTrait;
+
+            /**
+             * @param array $bindDataDefault
+             * @param array $setDataDefault
+             */
+            public function __construct(array $bindDataDefault, array $setDataDefault)
+            {
+                $this->bind = $bindDataDefault;
+                $this->set = $setDataDefault;
+            }
+
+            /**
+             * @return array
+             */
+            public function setData(): array
+            {
+                return $this->set;
+            }
+
+            public function clearSetData()
+            {
+                $this->set = [];
+            }
+
+            public function buildSetQueryPartPublic(): ?string
+            {
+                return $this->buildSetQueryPart();
+            }
+        };
     }
 
     /**
@@ -32,7 +64,7 @@ class SetTraitTest extends AbstractTraitTestCase
      */
     public function testSet($column, $value)
     {
-        $object = $this->set($column, $value);
+        $object = $this->setTraitClass->set($column, $value);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(SetTrait::class, $object);
         $this->assertEquals(
@@ -65,7 +97,7 @@ class SetTraitTest extends AbstractTraitTestCase
                     []
                 )
             ),
-            $this->set
+            $this->setTraitClass->setData()
         );
         $this->assertEquals(
             \array_merge(
@@ -99,7 +131,7 @@ class SetTraitTest extends AbstractTraitTestCase
                     []
                 )
             ),
-            $this->bind
+            $this->setTraitClass->bindData()
         );
     }
 
@@ -111,19 +143,19 @@ class SetTraitTest extends AbstractTraitTestCase
      */
     public function testBuildSetQueryPart($column, $value)
     {
-        $this->set($column, $value);
+        $this->setTraitClass->set($column, $value);
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::SET, \implode(', ', \array_unique($this->set))),
-            $this->buildSetQueryPart()
+            \sprintf('%s %s', ConditionEnum::SET, \implode(', ', \array_unique($this->setTraitClass->setData()))),
+            $this->setTraitClass->buildSetQueryPartPublic()
         );
     }
 
     public function testBuildSetQueryPartWhenEmpty()
     {
-        $this->set = [];
+        $this->setTraitClass->clearSetData();
 
-        $this->assertEquals(null, $this->buildSetQueryPart());
+        $this->assertEquals(null, $this->setTraitClass->buildSetQueryPartPublic());
     }
 
     /**

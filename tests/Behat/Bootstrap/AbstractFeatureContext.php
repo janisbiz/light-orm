@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap;
 
@@ -48,7 +48,7 @@ abstract class AbstractFeatureContext implements Context
      * @return array
      * @throws \Exception
      */
-    protected function getConnectionConfig($connectionName = null)
+    protected function getConnectionConfig(?string $connectionName = null)
     {
         if (null !== $connectionName) {
             if (!isset($this->getConfig()['connections'][$connectionName])) {
@@ -67,7 +67,7 @@ abstract class AbstractFeatureContext implements Context
      * @return array
      * @throws \Exception
      */
-    protected function getWritersConfig($connectionName)
+    protected function getWritersConfig(string $connectionName)
     {
         if (!isset($this->getConfig()['generator'][$connectionName]['writers'])) {
             throw new \Exception(\sprintf('Could not get writer config for connection "%s"', $connectionName));
