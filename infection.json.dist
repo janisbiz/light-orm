@@ -11,7 +11,10 @@
     ]
   },
   "logs": {
-    "text": "var\/log\/infection.log"
+    "text": "var\/log\/infection.log",
+    "badge": {
+      "branch": "master"
+    }
   },
   "mutators": {
     "@default": true
