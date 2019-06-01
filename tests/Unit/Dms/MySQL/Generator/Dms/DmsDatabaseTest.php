@@ -35,7 +35,7 @@ class DmsDatabaseTest extends TestCase
             );
         }
 
-        for ($i = 1; $i <=3; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $this->dmsTables[] = new DmsTable(
                 \sprintf('%s_%d', DmsTableTest::TABLE_NAME, $i),
                 $dmsColumns
