@@ -75,8 +75,8 @@ use {$this->entityClassWriter->generateFQDN($dmsDatabase, $dmsTable)};
 class {$this->generateClassName($dmsTable)} extends AbstractRepository
 {
     /**
-    * @return string
-    */
+     * @return string
+     */
     protected function getModelClass(): string
     {
         return {$this->entityClassWriter->generateClassName($dmsTable)}::class;

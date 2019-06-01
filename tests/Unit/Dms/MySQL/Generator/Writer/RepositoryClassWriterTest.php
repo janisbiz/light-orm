@@ -90,8 +90,8 @@ use None\Existent\Namespace\DatabaseNameSnakeCase\Repository\TableNameSnakeCase4
 class TableNameSnakeCase4Repository extends AbstractRepository
 {
     /**
-    * @return string
-    */
+     * @return string
+     */
     protected function getModelClass(): string
     {
         return TableNameSnakeCase4Repository::class;

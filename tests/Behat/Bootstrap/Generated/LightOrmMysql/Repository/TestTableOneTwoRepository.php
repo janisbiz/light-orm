@@ -101,8 +101,8 @@ class TestTableOneTwoRepository extends AbstractRepository
     }
 
     /**
-    * @return string
-    */
+     * @return string
+     */
     protected function getModelClass(): string
     {
         return TestTableOneTwoEntity::class;
