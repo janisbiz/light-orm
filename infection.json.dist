@@ -1,0 +1,19 @@
+{
+  "timeout": 360,
+  "source": {
+    "directories": [
+      "src"
+    ],
+    "excludes": [
+      "/ConnectionPool\\.php/",
+      "/Dms\\/MySQL\\/Connection\\/Connection\\.php/",
+      "/Generator\\/Writer\\/AbstractWriter\\.php/"
+    ]
+  },
+  "logs": {
+    "text": "var\/log\/infection.log"
+  },
+  "mutators": {
+    "@default": true
+  }
+}

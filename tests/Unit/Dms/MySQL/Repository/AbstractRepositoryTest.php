@@ -99,7 +99,7 @@ class AbstractRepositoryTest extends TestCase
                 'beginTransaction',
                 'commit',
                 'getConnection',
-                'getModelClassConstant',
+                'getEntityClassConstant',
                 'prepareAndExecute',
                 'rollBack',
             ]
@@ -734,7 +734,7 @@ class AbstractRepositoryTest extends TestCase
         $this->statement->expects($this->once())->method('fetchColumn')->with(0)->willReturn(static::RESULT_COUNT);
 
         $this->abstractRepository->expects($this->once())->method('prepareAndExecute')->willReturn($this->statement);
-        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
+        $this->abstractRepository->method('getEntityClassConstant')->willReturn(static::TABLE);
 
         $resultCount = $this
             ->createAccessibleMethod($this->abstractRepository, 'count')
@@ -748,7 +748,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $queryBuilder = $this->createQueryBuilder($this->abstractRepository)->command(CommandEnum::DELETE);
 
-        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
+        $this->abstractRepository->method('getEntityClassConstant')->willReturn(static::TABLE);
 
         $this->expectException(RepositoryException::class);
         $this->expectExceptionMessage(
@@ -765,7 +765,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $queryBuilder = $this->createQueryBuilder($this->abstractRepository)->command(CommandEnum::SELECT);
 
-        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
+        $this->abstractRepository->method('getEntityClassConstant')->willReturn(static::TABLE);
 
         $countQuery = $this
             ->createAccessibleMethod($this->abstractRepository, 'count')
@@ -780,7 +780,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $queryBuilder = $this->createQueryBuilder($this->abstractRepository)->command(CommandEnum::SELECT);
 
-        $this->abstractRepository->method('getModelClassConstant')->willReturn(static::TABLE);
+        $this->abstractRepository->method('getEntityClassConstant')->willReturn(static::TABLE);
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
@@ -806,7 +806,7 @@ class AbstractRepositoryTest extends TestCase
 
         $this->abstractRepository
             ->expects($this->any())
-            ->method('getModelClassConstant')
+            ->method('getEntityClassConstant')
             ->withConsecutive([WriterInterface::CLASS_CONSTANT_TABLE_NAME])
             ->willReturn(DmsTableTest::TABLE_NAME)
         ;

@@ -68,7 +68,7 @@ class BaseEntityClassWriter extends AbstractWriter
     /**
      * @return {$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? 'null|' : '')}{$column->getPhpType()}
      */
-    public function get{$column->getPhpName()}()
+    public function get{$column->getPhpName()}(): {$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? '?' : '')}{$column->getPhpType()}
     {
         return \$this->data['{$column->getName()}'];
     }
@@ -78,7 +78,7 @@ class BaseEntityClassWriter extends AbstractWriter
      *
      * @return \$this
      */
-    public function set{$column->getPhpName()}(\${$this->heredoc(\lcfirst($column->getPhpName()))})
+    public function set{$column->getPhpName()}({$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? '?' : '')}{$column->getPhpType()} \${$this->heredoc(\lcfirst($column->getPhpName()))}): {$this->generateClassName($dmsTable)}
     {
         \$this->data['{$column->getName()}'] = \${$this->heredoc(\lcfirst($column->getPhpName()))};
 

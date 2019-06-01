@@ -163,7 +163,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
     /**
      * @return null|string
      */
-    public function getNameSnakeCase1()
+    public function getNameSnakeCase1(): ?string
     {
         return \$this->data['name_snake_case_1'];
     }
@@ -173,7 +173,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
      *
      * @return \$this
      */
-    public function setNameSnakeCase1(\$nameSnakeCase1)
+    public function setNameSnakeCase1(?string \$nameSnakeCase1): BaseTableNameSnakeCase4
     {
         \$this->data['name_snake_case_1'] = \$nameSnakeCase1;
 
@@ -184,7 +184,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
     /**
      * @return null|string
      */
-    public function getNameSnakeCase2()
+    public function getNameSnakeCase2(): ?string
     {
         return \$this->data['name_snake_case_2'];
     }
@@ -194,7 +194,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
      *
      * @return \$this
      */
-    public function setNameSnakeCase2(\$nameSnakeCase2)
+    public function setNameSnakeCase2(?string \$nameSnakeCase2): BaseTableNameSnakeCase4
     {
         \$this->data['name_snake_case_2'] = \$nameSnakeCase2;
 
@@ -205,7 +205,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
     /**
      * @return null|string
      */
-    public function getNameSnakeCase3()
+    public function getNameSnakeCase3(): ?string
     {
         return \$this->data['name_snake_case_3'];
     }
@@ -215,7 +215,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
      *
      * @return \$this
      */
-    public function setNameSnakeCase3(\$nameSnakeCase3)
+    public function setNameSnakeCase3(?string \$nameSnakeCase3): BaseTableNameSnakeCase4
     {
         \$this->data['name_snake_case_3'] = \$nameSnakeCase3;
 

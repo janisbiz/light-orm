@@ -92,7 +92,7 @@ class TableNameSnakeCase4Repository extends AbstractRepository
     /**
      * @return string
      */
-    protected function getModelClass(): string
+    protected function getEntityClass(): string
     {
         return TableNameSnakeCase4Repository::class;
     }

@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 DOCKER_COMPOSE ?= docker-compose
 DOCKER_COMPOSE_EXEC_PHP = $(DOCKER_COMPOSE) exec php-cli
-PHPUNIT_COVERATE_REPORT_FILE=file://$(shell pwd)/var/phpunit/coverage/index.html
+PHPUNIT_COVERATE_REPORT_FILE=file://$(shell pwd)/var/phpunit/coverage-html/index.html
 
 include .env
 
@@ -12,14 +12,20 @@ help:
 	grep -E '^[a-zA-Z-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "[32m%-12s[0m %s\n", $$1, $$2}'
 
 .PHONY: test
-test: test-phpcs test-phpunit test-behat ## Run tests
+test: test-phpcs test-phpstan test-phpunit test-infection test-behat ## Run tests
 
 test-phpcs: ## Run PHPCS tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests
 
+test-phpstan: ## Run PHPSTAN tests
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpstan analyse -l 2 src
+
 test-phpunit: ## Run PHPUNIT tests
-	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpunit -c phpunit.xml --coverage-html=var/phpunit/coverage
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpunit --coverage-html=var/phpunit/coverage-html --coverage-xml=var/phpunit/coverage-xml --log-junit=var/phpunit/phpunit.junit.xml
 	@echo -e "Test coverage can be found here: $(PHPUNIT_COVERATE_REPORT_FILE)"
+
+test-infection: ## Run INFECTION tests
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/infection --threads=4 --only-covered --coverage=var/phpunit
 
 test-behat: ## Run BEHAT tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/behat

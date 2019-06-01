@@ -212,18 +212,18 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         }
 
         return $this->connectionPool->getConnection(
-            $this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_DATABASE_NAME)
+            $this->getEntityClassConstant(WriterInterface::CLASS_CONSTANT_DATABASE_NAME)
         );
     }
 
     /**
      * @param string $constant
      *
-     * @return string|int
+     * @return string
      */
-    protected function getModelClassConstant($constant): string
+    protected function getEntityClassConstant($constant): string
     {
-        return \constant(\sprintf('%s::%s', $this->getModelClass(), $constant));
+        return \constant(\sprintf('%s::%s', $this->getEntityClass(), $constant));
     }
 
     /**
@@ -246,7 +246,7 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
     /**
      * @return string
      */
-    abstract protected function getModelClass(): string;
+    abstract protected function getEntityClass(): string;
 
     /**
      * @param QueryBuilderInterface $queryBuilder

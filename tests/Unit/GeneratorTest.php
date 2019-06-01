@@ -125,6 +125,14 @@ class GeneratorTest extends TestCase
 
     public function tearDown()
     {
-        $this->removeDirectoryRecursive(AbstractWriterConfigTest::DIRECTORY_VALUE);
+        $this->removeDirectoryRecursive(\implode(
+            '',
+            [
+                JANISBIZ_LIGHT_ORM_ROOT_DIR,
+                'var',
+                DIRECTORY_SEPARATOR,
+                'light-orm',
+            ]
+        ));
     }
 }

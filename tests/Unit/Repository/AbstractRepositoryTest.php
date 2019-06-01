@@ -137,10 +137,10 @@ class AbstractRepositoryTest extends TestCase
             true,
             true,
             [
-                'getModelClass',
+                'getEntityClass',
             ]
         );
-        $this->abstractRepository->method('getModelClass')->willReturn(static::class);
+        $this->abstractRepository->method('getEntityClass')->willReturn(static::class);
 
         $this->abstractRepositoryQuoteMethod = $this->createAccessibleMethod($this->abstractRepository, 'quote');
         $this->abstractRepositoryPaginatorMethod = $this
@@ -159,7 +159,7 @@ class AbstractRepositoryTest extends TestCase
             ->createAccessibleMethod($this->abstractRepository, 'getConnection')
         ;
         $this->abstractRepositoryGetModelConstantMethod = $this
-            ->createAccessibleMethod($this->abstractRepository, 'getModelClassConstant')
+            ->createAccessibleMethod($this->abstractRepository, 'getEntityClassConstant')
         ;
 
         $this->connectionPool = $this->createMock(ConnectionPool::class);

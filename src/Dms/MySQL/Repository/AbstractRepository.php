@@ -100,7 +100,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData());
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
-                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
+                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getEntityClass(),
                 [
                     false,
                 ]
@@ -131,7 +131,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData());
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
-                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getModelClass(),
+                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getEntityClass(),
                 [
                     false,
                 ]
@@ -227,7 +227,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
     }
 
     /**
-     * @param BaseQueryBuilderInterface $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return int
@@ -235,8 +235,6 @@ abstract class AbstractRepository extends BaseAbstractRepository
      */
     protected function count(BaseQueryBuilderInterface $queryBuilder, bool $toString = false)
     {
-        /** @var QueryBuilderInterface $queryBuilder */
-
         if (CommandEnum::SELECT !== $queryBuilder->commandData()) {
             throw new RepositoryException(\sprintf(
                 'Command "%s" is not a valid command for count query! Use "%s" command to execute count query.',
@@ -281,8 +279,8 @@ abstract class AbstractRepository extends BaseAbstractRepository
     protected function createQueryBuilder(?EntityInterface $entity = null): BaseQueryBuilderInterface
     {
         return (new QueryBuilder($this->createRepositoryCallClosure(), $entity))
-            ->column(\sprintf('%s.*', $this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME)))
-            ->table($this->getModelClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
+            ->column(\sprintf('%s.*', $this->getEntityClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME)))
+            ->table($this->getEntityClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
     }
 
@@ -409,7 +407,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
     }
 
     /**
-     * @param BaseQueryBuilderInterface $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param int $pageSize
      * @param int $currentPage
      *
@@ -420,21 +418,19 @@ abstract class AbstractRepository extends BaseAbstractRepository
         int $pageSize,
         int $currentPage
     ): BaseAbstractRepository {
-        /** @var QueryBuilderInterface $queryBuilder */
         $queryBuilder->limitWithOffset($pageSize, $pageSize * $currentPage - $pageSize);
 
         return $this;
     }
 
     /**
-     * @param BaseQueryBuilderInterface $queryBuilder
+     * @param QueryBuilderInterface $queryBuilder
      * @param bool $toString
      *
      * @return EntityInterface[]
      */
     protected function getPaginateResult(BaseQueryBuilderInterface $queryBuilder, bool $toString = false): array
     {
-        /** @var QueryBuilderInterface $queryBuilder */
         return $queryBuilder->find($toString);
     }
 }

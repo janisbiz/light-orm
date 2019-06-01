@@ -77,7 +77,7 @@ class {$this->generateClassName($dmsTable)} extends AbstractRepository
     /**
      * @return string
      */
-    protected function getModelClass(): string
+    protected function getEntityClass(): string
     {
         return {$this->entityClassWriter->generateClassName($dmsTable)}::class;
     }

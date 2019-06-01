@@ -253,11 +253,11 @@ class QueryBuilder implements QueryBuilderInterface
     }
 
     /**
-     * @param $query
+     * @param string $query
      *
      * @return string
      */
-    protected function generateSqlExecuteString($query): string
+    protected function generateSqlExecuteString(string $query): string
     {
         foreach ($this->bind as $bindName => $bindValue) {
             $query = \preg_replace(

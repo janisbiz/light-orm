@@ -51,7 +51,7 @@ class TestTableTwoRepository extends AbstractRepository
     /**
      * @return string
      */
-    protected function getModelClass(): string
+    protected function getEntityClass(): string
     {
         return TestTableTwoEntity::class;
     }

@@ -19,7 +19,9 @@ before_script:
 
 script:
   - vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests
-  - vendor/bin/phpunit -c phpunit.xml --coverage-clover=coverage.xml
+  - vendor/bin/phpstan analyse -l 2 ./src
+  - vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-xml=var/phpunit/coverage-xml --log-junit=var/phpunit/phpunit.junit.xml
+  - vendor/bin/infection --threads=4 --only-covered --coverage=var/phpunit
   - vendor/bin/behat
 
 after_success:

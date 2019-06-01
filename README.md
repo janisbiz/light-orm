@@ -288,9 +288,9 @@ class TestTableOneRepository extends AbstractRepository
     }
 
     /**
-    * @return string
-    */
-    protected function getModelClass(): string
+     * @return string
+     */
+    protected function getEntityClass(): string
     {
         return TestTableOneEntity::class;
     }
@@ -313,7 +313,7 @@ There are two ways to run tests:
 2) By using your local php and mysql database environment:
     - Ensure, that your php version is `7.1+`
     - Execute `composer install`
-    - Execute `vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests; vendor/bin/phpunit -c phpunit.xml; vendor/bin/behat;`
+    - Execute `vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests; vendor/bin/phpunit; vendor/bin/behat;`
 
 ## TODO
 
