@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -10,7 +10,7 @@ interface WhereTraitInterface
      *
      * @return $this
      */
-    public function where($condition, array $bind = []);
+    public function where(string $condition, array $bind = []);
 
     /**
      * @param string $column
@@ -18,7 +18,7 @@ interface WhereTraitInterface
      *
      * @return $this
      */
-    public function whereIn($column, array $params = []);
+    public function whereIn(string $column, array $params = []);
 
     /**
      * @param string $column
@@ -26,5 +26,5 @@ interface WhereTraitInterface
      *
      * @return $this
      */
-    public function whereNotIn($column, array $params = []);
+    public function whereNotIn(string $column, array $params = []);
 }

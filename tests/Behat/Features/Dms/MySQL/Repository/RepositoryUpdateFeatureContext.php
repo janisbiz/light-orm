@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
@@ -12,7 +12,7 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
      * @param string $method
      * @param TableNode $parameters
      */
-    public function iCallMethodOnRepositoryWithExistingEntitiesAndParameters($method, TableNode $parameters)
+    public function iCallMethodOnRepositoryWithExistingEntitiesAndParameters(string $method, TableNode $parameters)
     {
         $this->callMethodOnRepositoryWithExistingEntitiesAndParameters($method, $parameters);
     }
@@ -23,7 +23,7 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
      * @param TableNode $parameters
      */
     public function iCallMethodOnRepositoryWithExistingEntitiesAndParametersAndExpectingException(
-        $method,
+        string $method,
         TableNode $parameters
     ) {
         try {
@@ -38,7 +38,7 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
      * @param string $method
      * @param TableNode $parameters
      */
-    private function callMethodOnRepositoryWithExistingEntitiesAndParameters($method, TableNode $parameters)
+    private function callMethodOnRepositoryWithExistingEntitiesAndParameters(string $method, TableNode $parameters)
     {
         $entitiesStorage = static::$entities;
         static::$entities = [];

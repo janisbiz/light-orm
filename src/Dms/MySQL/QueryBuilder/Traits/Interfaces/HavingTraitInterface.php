@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -10,5 +10,5 @@ interface HavingTraitInterface
      *
      * @return $this
      */
-    public function having($condition, array $bind = []);
+    public function having(string $condition, array $bind = []);
 }

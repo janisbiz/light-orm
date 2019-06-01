@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Generator;
 
@@ -13,5 +13,5 @@ interface DmsFactoryInterface
      *
      * @return DmsDatabaseInterface
      */
-    public function createDmsDatabase($databaseName, ConnectionInterface $connection);
+    public function createDmsDatabase(string $databaseName, ConnectionInterface $connection): DmsDatabaseInterface;
 }

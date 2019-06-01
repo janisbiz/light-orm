@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -38,7 +38,7 @@ trait UnionTrait
     /**
      * @return null|string
      */
-    protected function buildUnionAllQueryPart()
+    protected function buildUnionAllQueryPart(): ?string
     {
         return empty($this->unionAll) ? null : \implode(' UNION ALL ', $this->unionAll);
     }

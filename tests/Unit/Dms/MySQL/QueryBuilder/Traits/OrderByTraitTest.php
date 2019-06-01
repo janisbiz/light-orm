@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -9,8 +9,6 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderByTrait;
 
 class OrderByTraitTest extends AbstractTraitTestCase
 {
-    use OrderByTrait;
-
     const ORDER_BY_DEFAULT = [
         'col1 DESC',
         'col2 ASC',
@@ -23,9 +21,46 @@ class OrderByTraitTest extends AbstractTraitTestCase
     const ORDER_BY_EMPTY = null;
     const ORDER_BY_INVALID_KEYWORD = 'INVALID';
 
+    /**
+     * @var OrderByTrait
+     */
+    private $orderByTraitClass;
+
     public function setUp()
     {
         $this->orderBy = static::ORDER_BY_DEFAULT;
+        $this->orderByTraitClass = new class (OrderByTraitTest::ORDER_BY_DEFAULT) {
+            use OrderByTrait;
+
+            /**
+             * @param array $orderByDataDefault
+             */
+            public function __construct(array $orderByDataDefault)
+            {
+                $this->orderBy = $orderByDataDefault;
+            }
+
+            /**
+             * @return array
+             */
+            public function orderByData(): array
+            {
+                return $this->orderBy;
+            }
+
+            public function clearOrderByData()
+            {
+                $this->orderBy = [];
+            }
+
+            /**
+             * @return null|string
+             */
+            public function buildOrderByQueryPartPublic(): ?string
+            {
+                return $this->buildOrderByQueryPart();
+            }
+        };
     }
 
     /**
@@ -36,7 +71,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
      */
     public function testOrderBy($columns, $keyword)
     {
-        $object = $this->orderBy($columns, $keyword);
+        $object = $this->orderByTraitClass->orderBy($columns, $keyword);
         $this->assertObjectUsesTrait(OrderByTrait::class, $object);
         $this->assertEquals(
             \array_merge(
@@ -48,7 +83,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
                     \is_array($columns) ? $columns : [$columns]
                 )
             ),
-            $this->orderBy
+            $this->orderByTraitClass->orderByData()
         );
     }
 
@@ -60,19 +95,19 @@ class OrderByTraitTest extends AbstractTraitTestCase
      */
     public function testBuildOrderByQueryPart($columns, $keyword)
     {
-        $this->orderBy($columns, $keyword);
+        $this->orderByTraitClass->orderBy($columns, $keyword);
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::ORDER_BY, \implode(', ', $this->orderBy)),
-            $this->buildOrderByQueryPart()
+            \sprintf('%s %s', ConditionEnum::ORDER_BY, \implode(', ', $this->orderByTraitClass->orderByData())),
+            $this->orderByTraitClass->buildOrderByQueryPartPublic()
         );
     }
 
     public function testBuildOrderByQueryPartWhenEmpty()
     {
-        $this->orderBy = [];
+        $this->orderByTraitClass->clearOrderByData();
 
-        $this->assertEquals(null, $this->buildOrderByQueryPart());
+        $this->assertEquals(null, $this->orderByTraitClass->buildOrderByQueryPartPublic());
     }
 
     /**
@@ -106,7 +141,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $orderBy to orderBy method!');
 
-        $this->orderBy(static::ORDER_BY_EMPTY);
+        $this->orderByTraitClass->orderBy(static::ORDER_BY_EMPTY);
     }
 
     public function testOrderByWithInvalidKeyword()
@@ -114,6 +149,6 @@ class OrderByTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('Invalid $keyword "INVALID" for orderBy!');
 
-        $this->orderBy(static::ORDER_BY_COLUMN, static::ORDER_BY_INVALID_KEYWORD);
+        $this->orderByTraitClass->orderBy(static::ORDER_BY_COLUMN, static::ORDER_BY_INVALID_KEYWORD);
     }
 }

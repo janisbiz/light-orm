@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -10,7 +10,7 @@ interface ValueTraitInterface
      *
      * @return $this
      */
-    public function value($column, $value);
+    public function value(string $column, $value);
 
     /**
      * @param array $bindValue
@@ -22,5 +22,5 @@ interface ValueTraitInterface
     /**
      * @return array
      */
-    public function bindValueData();
+    public function bindValueData(): array;
 }

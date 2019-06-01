@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm;
 
@@ -34,7 +34,7 @@ class Generator
      *
      * @return $this
      */
-    public function addWriter(WriterInterface $writer)
+    public function addWriter(WriterInterface $writer): Generator
     {
         $writerClass = \get_class($writer);
 
@@ -51,7 +51,7 @@ class Generator
      *
      * @return $this
      */
-    public function generate(ConnectionInterface $connection, $databaseName)
+    public function generate(ConnectionInterface $connection, string $databaseName): Generator
     {
         $dmsDatabase = $this->dmsFactory->createDmsDatabase($databaseName, $connection);
 
@@ -73,7 +73,7 @@ class Generator
      *
      * @return $this
      */
-    protected function removeExistingFiles(array &$existingFiles)
+    protected function removeExistingFiles(array &$existingFiles): Generator
     {
         foreach (\array_keys($existingFiles) as $path) {
             if (!\is_dir($path) && \file_exists($path)) {

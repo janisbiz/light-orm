@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -36,7 +36,7 @@ trait GroupByTrait
     /**
      * @return null|string
      */
-    protected function buildGroupByQueryPart()
+    protected function buildGroupByQueryPart(): ?string
     {
         return empty($this->groupBy)
             ? null

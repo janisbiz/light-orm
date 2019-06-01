@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -24,7 +24,7 @@ trait BindTrait
     /**
      * @return array
      */
-    public function bindData()
+    public function bindData(): array
     {
         return $this->bind;
     }

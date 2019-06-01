@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -22,7 +22,7 @@ trait ValueTrait
      *
      * @return $this
      */
-    public function value($column, $value)
+    public function value(string $column, $value)
     {
         $columnNormalised = \sprintf(
             '%s_Value',
@@ -60,7 +60,7 @@ trait ValueTrait
     /**
      * @return array
      */
-    public function bindValueData()
+    public function bindValueData(): array
     {
         return $this->bindValue;
     }
@@ -68,7 +68,7 @@ trait ValueTrait
     /**
      * @return null|string
      */
-    protected function buildValueQueryPart()
+    protected function buildValueQueryPart(): ?string
     {
         return empty($this->value)
             ? null

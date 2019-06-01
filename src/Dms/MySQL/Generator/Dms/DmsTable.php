@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Dms;
 
@@ -21,7 +21,7 @@ class DmsTable implements DmsTableInterface
      * @param string $name
      * @param DmsColumnInterface[] $dmsColumns
      */
-    public function __construct($name, array $dmsColumns)
+    public function __construct(string $name, array $dmsColumns)
     {
         $this->name = $name;
         $this->dmsColumns = $dmsColumns;
@@ -30,7 +30,7 @@ class DmsTable implements DmsTableInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -38,7 +38,7 @@ class DmsTable implements DmsTableInterface
     /**
      * @return string
      */
-    public function getPhpName()
+    public function getPhpName(): string
     {
         return \ucfirst(\preg_replace_callback(
             '/[^a-z0-9]+(?<name>\w{1})/i',
@@ -52,7 +52,7 @@ class DmsTable implements DmsTableInterface
     /**
      * @return DmsColumnInterface[]
      */
-    public function getDmsColumns()
+    public function getDmsColumns(): array
     {
         return $this->dmsColumns;
     }

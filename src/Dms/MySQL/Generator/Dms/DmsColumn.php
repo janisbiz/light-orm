@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Dms;
 
@@ -67,8 +67,14 @@ class DmsColumn implements DmsColumnInterface
      * @param string $default
      * @param null|string $extra
      */
-    public function __construct($name, $type, $nullable, $key, $default, $extra)
-    {
+    public function __construct(
+        string $name,
+        string $type,
+        bool $nullable,
+        string $key,
+        string $default,
+        ?string $extra
+    ) {
         $this->name = $name;
         $this->type = $type;
         $this->nullable = $nullable;
@@ -80,7 +86,7 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -88,7 +94,7 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return string
      */
-    public function getPhpName()
+    public function getPhpName(): string
     {
         return \ucfirst(\preg_replace_callback(
             '/[^a-z0-9]+(?<name>\w{1})/i',
@@ -102,7 +108,7 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -111,7 +117,7 @@ class DmsColumn implements DmsColumnInterface
      * @return string
      * @throws DmsException
      */
-    public function getPhpType()
+    public function getPhpType(): string
     {
         \preg_match('/^(?<type>\w+)/', $this->getType(), $matches);
         switch ($matches['type']) {
@@ -145,7 +151,7 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return bool
      */
-    public function isNullable()
+    public function isNullable(): bool
     {
         return $this->nullable;
     }
@@ -153,7 +159,7 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
@@ -161,7 +167,7 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return string
      */
-    public function getDefault()
+    public function getDefault(): string
     {
         return $this->default;
     }
@@ -169,9 +175,9 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return string
      */
-    public function getPhpDefaultType()
+    public function getPhpDefaultType(): string
     {
-        $default = $this->getDefault();
+        $default = empty($this->getDefault()) ? null : $this->getDefault();
 
         if (null !== $default) {
             switch ($this->getPhpType()) {
@@ -192,7 +198,7 @@ class DmsColumn implements DmsColumnInterface
     /**
      * @return null|string
      */
-    public function getExtra()
+    public function getExtra(): ?string
     {
         return $this->extra;
     }

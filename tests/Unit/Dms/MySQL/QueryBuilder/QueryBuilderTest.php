@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder;
 
@@ -71,7 +71,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
      * @param string $method
      * @param bool $toString
      */
-    public function testCrud($method, $toString)
+    public function testCrud(string $method, bool $toString)
     {
         $this->abstractRepository->expects($this->once())->method($method)->with($this->queryBuilder, $toString);
         $this->queryBuilder->$method($toString);
@@ -117,7 +117,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
      * @param array $expected
      * @param array $expectedToString
      */
-    public function testBuildQuery($command, $methods, $expected, $expectedToString)
+    public function testBuildQuery(string $command, array $methods, array $expected, array $expectedToString)
     {
         $this->addQueryPartsToQueryBuilder($command, $methods);
 
@@ -661,10 +661,10 @@ class QueryBuilderTest extends AbstractTraitTestCase
      * @param string $expectedExceptionMessage
      */
     public function testBuildQueryWithMissingQueryPartsProvided(
-        $command,
+        string $command,
         array $methods,
-        $expectedException,
-        $expectedExceptionMessage
+        string $expectedException,
+        string $expectedExceptionMessage
     ) {
         $this->addQueryPartsToQueryBuilder($command, $methods);
 
@@ -681,7 +681,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
     {
         return [
             [
-                null,
+                '',
                 [],
                 QueryBuilderException::class,
                 'Could not build query, as there is no command provided!',
@@ -757,7 +757,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
      *
      * @return $this
      */
-    private function addQueryPartsToQueryBuilder($command, array $methods)
+    private function addQueryPartsToQueryBuilder(string $command, array $methods)
     {
         $this->queryBuilder->command($command);
 
@@ -769,6 +769,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                 case 'limit':
                 case 'offset':
                     $this->queryBuilder->$method($value);
+
                     break;
 
                 case 'innerJoin':
@@ -777,6 +778,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                 case 'crossJoin':
                 case 'fullOuterJoin':
                     $this->queryBuilder->$method($value[0], $value[1], !empty($value[2]) ? $value[2] : []);
+
                     break;
 
                 case 'innerJoinAs':
@@ -785,6 +787,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                 case 'crossJoinAs':
                 case 'fullOuterJoinAs':
                     $this->queryBuilder->$method($value[0], $value[1], $value[2], !empty($value[3]) ? $value[3] : []);
+
                     break;
 
                 case 'where':
@@ -796,6 +799,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                 case 'set':
                 case 'orderBy':
                     $this->queryBuilder->$method($value[0], $value[1]);
+
                     break;
 
                 case 'unionAll':

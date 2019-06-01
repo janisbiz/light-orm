@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -9,16 +9,13 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\WhereTrait;
 
 class WhereTraitTest extends AbstractTraitTestCase
 {
-    use BindTrait;
-    use WhereTrait;
-    
     const WHERE_CONDITION_DEFAULT = [
         'column1 = :value1Bind',
     ];
     const WHERE_CONDITION_BIND_DEFAULT = [
         'value1Bind' => 'value1',
     ];
-    const WHERE_CONDITION_EMPTY = null;
+    const WHERE_CONDITION_EMPTY = '';
     const WHERE_CONDITION = 'column2 = :value2Bind';
     const WHERE_CONDITION_BIND = [
         'value2Bind' => 'value2',
@@ -29,21 +26,65 @@ class WhereTraitTest extends AbstractTraitTestCase
         'value4',
     ];
 
+    /**
+     * @var BindTrait|WhereTrait
+     */
+    private $whereTraitClass;
+    
     public function setUp()
     {
-        $this->bind = static::WHERE_CONDITION_BIND_DEFAULT;
-        $this->where = static::WHERE_CONDITION_DEFAULT;
+        $this->whereTraitClass = new class (
+            WhereTraitTest::WHERE_CONDITION_BIND_DEFAULT,
+            WhereTraitTest::WHERE_CONDITION_DEFAULT
+        ) {
+            use BindTrait;
+            use WhereTrait;
+
+            /**
+             * @param array $bindDataDefault
+             * @param array $whereDataDefault
+             */
+            public function __construct(array $bindDataDefault, array $whereDataDefault)
+            {
+                $this->bind = $bindDataDefault;
+                $this->where = $whereDataDefault;
+            }
+
+            /**
+             * @return array
+             */
+            public function whereData(): array
+            {
+                return $this->where;
+            }
+            
+            public function clearWhereData()
+            {
+                $this->where = [];
+            }
+
+            /**
+             * @return null|string
+             */
+            public function buildWhereQueryPartPublic(): ?string
+            {
+                return $this->buildWhereQueryPart();
+            }
+        };
     }
     
     public function testWhere()
     {
-        $object = $this->where(static::WHERE_CONDITION, static::WHERE_CONDITION_BIND);
+        $object = $this->whereTraitClass->where(static::WHERE_CONDITION, static::WHERE_CONDITION_BIND);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(WhereTrait::class, $object);
-        $this->assertEquals(\array_merge(static::WHERE_CONDITION_DEFAULT, [static::WHERE_CONDITION]), $this->where);
+        $this->assertEquals(
+            \array_merge(static::WHERE_CONDITION_DEFAULT, [static::WHERE_CONDITION]),
+            $this->whereTraitClass->whereData()
+        );
         $this->assertEquals(
             \array_merge(static::WHERE_CONDITION_BIND_DEFAULT, static::WHERE_CONDITION_BIND),
-            $this->bind
+            $this->whereTraitClass->bindData()
         );
     }
 
@@ -52,12 +93,18 @@ class WhereTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $condition name to where method!');
 
-        $this->where(static::WHERE_CONDITION_EMPTY);
+        $this->whereTraitClass->where(static::WHERE_CONDITION_EMPTY);
     }
 
     public function testWhereIn()
     {
-        $object = $this->whereIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES);
+        $object = $this
+            ->whereTraitClass
+            ->whereIn(
+                static::WHERE_IN_OR_NOT_IN_COLUMN,
+                static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES
+            )
+        ;
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(WhereTrait::class, $object);
         $this->assertEquals(
@@ -76,7 +123,7 @@ class WhereTraitTest extends AbstractTraitTestCase
                     ),
                 ]
             ),
-            $this->where
+            $this->whereTraitClass->whereData()
         );
         $this->assertEquals(
             \array_merge(
@@ -95,13 +142,19 @@ class WhereTraitTest extends AbstractTraitTestCase
                     []
                 )
             ),
-            $this->bind
+            $this->whereTraitClass->bindData()
         );
     }
 
     public function testWhereNotIn()
     {
-        $object = $this->whereNotIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES);
+        $object = $this
+            ->whereTraitClass
+            ->whereNotIn(
+                static::WHERE_IN_OR_NOT_IN_COLUMN,
+                static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES
+            )
+        ;
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(WhereTrait::class, $object);
         $this->assertEquals(
@@ -120,7 +173,7 @@ class WhereTraitTest extends AbstractTraitTestCase
                     ),
                 ]
             ),
-            $this->where
+            $this->whereTraitClass->whereData()
         );
         $this->assertEquals(
             \array_merge(
@@ -139,28 +192,33 @@ class WhereTraitTest extends AbstractTraitTestCase
                     []
                 )
             ),
-            $this->bind
+            $this->whereTraitClass->bindData()
         );
     }
 
     public function testBuildWhereQueryPart()
     {
         $this
+            ->whereTraitClass
             ->where(static::WHERE_CONDITION, static::WHERE_CONDITION_BIND)
             ->whereIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
             ->whereNotIn(static::WHERE_IN_OR_NOT_IN_COLUMN, static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
         ;
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::WHERE, \implode(' AND ', \array_unique($this->where))),
-            $this->buildWhereQueryPart()
+            \sprintf(
+                '%s %s',
+                ConditionEnum::WHERE,
+                \implode(' AND ', \array_unique($this->whereTraitClass->whereData()))
+            ),
+            $this->whereTraitClass->buildWhereQueryPartPublic()
         );
     }
 
     public function testBuildWhereQueryPartWhenEmpty()
     {
-        $this->where = [];
+        $this->whereTraitClass->clearWhereData();
 
-        $this->assertEquals(null, $this->buildWhereQueryPart());
+        $this->assertEquals(null, $this->whereTraitClass->buildWhereQueryPartPublic());
     }
 }

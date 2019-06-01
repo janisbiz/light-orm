@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
@@ -7,20 +7,20 @@ interface WriterConfigInterface
     /**
      * @return string
      */
-    public function getDirectory();
+    public function getDirectory(): string;
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getNamespace();
+    public function getNamespace(): ?string;
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getClassPrefix();
+    public function getClassPrefix(): ?string;
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getClassSuffix();
+    public function getClassSuffix(): ?string;
 }

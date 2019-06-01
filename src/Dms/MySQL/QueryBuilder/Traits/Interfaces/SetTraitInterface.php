@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -10,5 +10,5 @@ interface SetTraitInterface
      *
      * @return $this
      */
-    public function set($column, $value);
+    public function set(string $column, $value);
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -14,7 +14,7 @@ trait CommandTrait
      *
      * @return $this
      */
-    public function command($command)
+    public function command(string $command)
     {
         $this->command = $command;
 
@@ -24,7 +24,7 @@ trait CommandTrait
     /**
      * @return string
      */
-    public function commandData()
+    public function commandData(): string
     {
         return $this->command;
     }
@@ -32,7 +32,7 @@ trait CommandTrait
     /**
      * @return string
      */
-    protected function buildCommandQueryPart()
+    protected function buildCommandQueryPart(): string
     {
         return $this->command;
     }

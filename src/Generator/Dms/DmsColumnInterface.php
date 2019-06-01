@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Generator\Dms;
 
@@ -7,46 +7,45 @@ interface DmsColumnInterface
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @return string
      */
-    public function getPhpName();
+    public function getPhpName(): string;
 
     /**
      * @return string
      */
-    public function getType();
+    public function getType(): string;
 
     /**
-     * @throws DmsException
      * @return string
      */
-    public function getPhpType();
+    public function getPhpType(): string;
 
     /**
      * @return bool
      */
-    public function isNullable();
+    public function isNullable(): bool;
 
     /**
      * @return string
      */
-    public function getKey();
+    public function getKey(): string;
 
     /**
      * @return string
      */
-    public function getDefault();
+    public function getDefault(): string;
 
     /**
      * @return string
      */
-    public function getPhpDefaultType();
+    public function getPhpDefaultType(): string;
 
     /**
      * @return null|string
      */
-    public function getExtra();
+    public function getExtra(): ?string;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Repository;
 
@@ -6,6 +6,7 @@ use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\RepositoryException;
+use Janisbiz\LightOrm\Entity\BaseEntity;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
@@ -42,7 +43,7 @@ class AbstractRepositoryTest extends TestCase
     private $connection;
 
     /**
-     * @var EntityInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityInterface
      */
     private $entity;
 
@@ -85,23 +86,7 @@ class AbstractRepositoryTest extends TestCase
         );
         $this->connection->method('prepare')->willReturn($this->statement);
 
-        $this->entity = $this->createMock(EntityInterface::class);
-        $this->dataOriginal = new \ArrayObject($this->dataOriginal);
-        $this->data = clone $this->dataOriginal;
-        $this->entity->method('dataOriginal')->willReturnReference($this->dataOriginal);
-        $this->entity->method('data')->willReturnReference($this->data);
-        $this->entity->method('columns')->willReturn(\array_keys($this->data->getArrayCopy()));
-        $this->entity->method('primaryKeys')->willReturn([
-            static::COLUMN_AUTO_INCREMENT,
-        ]);
-
-        $this
-            ->entity
-            ->method('primaryKeysAutoIncrement')
-            ->willReturn([
-                static::COLUMN_AUTO_INCREMENT,
-            ])
-        ;
+        $this->entity = $this->createEntity();
 
         $this->abstractRepository = $this->getMockForAbstractClass(
             AbstractRepository::class,
@@ -428,12 +413,14 @@ class AbstractRepositoryTest extends TestCase
 
     public function testUpdate()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
-        $this->data[static::COLUMN_ONE] = static::COLUMN_ONE_UPDATE_VALUE;
-        $this->dataOriginal[static::COLUMN_AUTO_INCREMENT] = 1;
-
-        $this->entity->method('isNew')->willReturn(false);
-        $this->entity->method('isSaved')->willReturn(true);
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+            ->setCol1(static::COLUMN_ONE_UPDATE_VALUE)
+            ->setDataOriginal(static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -452,7 +439,8 @@ class AbstractRepositoryTest extends TestCase
         ;
 
         $this->assertTrue($entity instanceof $this->entity);
-        $this->assertEquals($entity->data()[static::COLUMN_AUTO_INCREMENT], static::COLUMN_AUTO_INCREMENT_VALUE);
+
+        $this->assertEquals($entity->data(static::COLUMN_AUTO_INCREMENT), static::COLUMN_AUTO_INCREMENT_VALUE);
         $this->assertEquals(
             $entity->dataOriginal()[static::COLUMN_AUTO_INCREMENT],
             static::COLUMN_AUTO_INCREMENT_VALUE
@@ -483,9 +471,6 @@ class AbstractRepositoryTest extends TestCase
 
     public function testUpdateWithoutEntityChanges()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
-        $this->dataOriginal[static::COLUMN_AUTO_INCREMENT] = 1;
-
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
             ->command(CommandEnum::UPDATE)
@@ -508,12 +493,14 @@ class AbstractRepositoryTest extends TestCase
 
     public function testUpdateToString()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
-        $this->data[static::COLUMN_ONE] = static::COLUMN_ONE_UPDATE_VALUE;
-        $this->dataOriginal[static::COLUMN_AUTO_INCREMENT] = 1;
-
-        $this->entity->method('isNew')->willReturn(false);
-        $this->entity->method('isSaved')->willReturn(true);
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+            ->setCol1(static::COLUMN_ONE_UPDATE_VALUE)
+            ->setDataOriginal(static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -521,8 +508,8 @@ class AbstractRepositoryTest extends TestCase
         ;
 
         $updateQuery = $this
-                ->createAccessibleMethod($this->abstractRepository, 'update')
-                ->invoke($this->abstractRepository, $queryBuilder, true)
+            ->createAccessibleMethod($this->abstractRepository, 'update')
+            ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
         $this->assertTrue(\is_string($updateQuery));
@@ -531,12 +518,14 @@ class AbstractRepositoryTest extends TestCase
 
     public function testUpdateWithException()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
-        $this->data[static::COLUMN_ONE] = static::COLUMN_ONE_UPDATE_VALUE;
-        $this->dataOriginal[static::COLUMN_AUTO_INCREMENT] = 1;
-
-        $this->entity->method('isNew')->willReturn(false);
-        $this->entity->method('isSaved')->willReturn(true);
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+            ->setCol1(static::COLUMN_ONE_UPDATE_VALUE)
+            ->setDataOriginal(static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -563,12 +552,14 @@ class AbstractRepositoryTest extends TestCase
 
     public function testUpdateIgnore()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
-        $this->data[static::COLUMN_ONE] = static::COLUMN_ONE_UPDATE_VALUE;
-        $this->dataOriginal[static::COLUMN_AUTO_INCREMENT] = 1;
-
-        $this->entity->method('isNew')->willReturn(false);
-        $this->entity->method('isSaved')->willReturn(true);
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+            ->setCol1(static::COLUMN_ONE_UPDATE_VALUE)
+            ->setDataOriginal(static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -596,12 +587,14 @@ class AbstractRepositoryTest extends TestCase
 
     public function testUpdateIgnoreToString()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
-        $this->data[static::COLUMN_ONE] = static::COLUMN_ONE_UPDATE_VALUE;
-        $this->dataOriginal[static::COLUMN_AUTO_INCREMENT] = 1;
-
-        $this->entity->method('isNew')->willReturn(false);
-        $this->entity->method('isSaved')->willReturn(true);
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+            ->setCol1(static::COLUMN_ONE_UPDATE_VALUE)
+            ->setDataOriginal(static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -619,7 +612,12 @@ class AbstractRepositoryTest extends TestCase
 
     public function testDelete()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -676,7 +674,12 @@ class AbstractRepositoryTest extends TestCase
 
     public function testDeleteToString()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -694,7 +697,12 @@ class AbstractRepositoryTest extends TestCase
 
     public function testDeleteWithException()
     {
-        $this->data[static::COLUMN_AUTO_INCREMENT] = 1;
+        $this
+            ->entity
+            ->setIsNew(false)
+            ->setIsSaved(true)
+            ->setColAI(static::COLUMN_AUTO_INCREMENT_VALUE)
+        ;
 
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository, $this->entity)
@@ -870,5 +878,79 @@ class AbstractRepositoryTest extends TestCase
         foreach ($resultArray as $resultEntity) {
             $this->assertTrue($resultEntity instanceof $this->entity);
         }
+    }
+
+    /**
+     * @return EntityInterface
+     */
+    private function createEntity()
+    {
+        return new class(
+            $this->dataOriginal,
+            \array_keys($this->dataOriginal),
+            [
+                AbstractRepositoryTest::COLUMN_AUTO_INCREMENT,
+            ],
+            [
+                AbstractRepositoryTest::COLUMN_AUTO_INCREMENT,
+            ]
+        ) extends BaseEntity {
+            const TABLE_NAME = AbstractRepositoryTest::TABLE;
+
+            /**
+             * @param array $dataOriginal
+             * @param array $columns
+             * @param array $primaryKeys
+             * @param array $primaryKeysAutoIncrement
+             */
+            public function __construct(
+                array &$dataOriginal,
+                array $columns,
+                array $primaryKeys,
+                array $primaryKeysAutoIncrement
+            ) {
+                $this->dataOriginal = $this->data = $dataOriginal;
+                $this->columns = $columns;
+                $this->primaryKeys = $primaryKeys;
+                $this->primaryKeysAutoIncrement = $primaryKeysAutoIncrement;
+            }
+
+            /**
+             * @param bool $isNew
+             *
+             * @return $this
+             */
+            public function setIsNew(bool $isNew): BaseEntity
+            {
+                $this->isNew = $isNew;
+
+                return $this;
+            }
+
+            /**
+             * @param bool $isSaved
+             *
+             * @return $this
+             */
+            public function setIsSaved(bool $isSaved): BaseEntity
+            {
+                $this->isSaved = $isSaved;
+
+                return $this;
+            }
+
+            /**
+             * @param string $key
+             * @param array|string|int|double|null $value
+             *
+             * @return $this
+             */
+            public function setDataOriginal(string $key, $value): BaseEntity
+            {
+                $this->dataOriginal[$key] = $value;
+
+                return $this;
+            }
+        };
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -17,7 +17,7 @@ trait SetTrait
      *
      * @return $this
      */
-    public function set($column, $value)
+    public function set(string $column, $value)
     {
         $columnNormalised = \sprintf(
             '%s_Update',
@@ -43,7 +43,7 @@ trait SetTrait
     /**
      * @return null|string
      */
-    protected function buildSetQueryPart()
+    protected function buildSetQueryPart(): ?string
     {
         return empty($this->set)
             ? null

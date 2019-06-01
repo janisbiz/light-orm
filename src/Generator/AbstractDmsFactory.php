@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Generator;
 
@@ -14,7 +14,7 @@ abstract class AbstractDmsFactory implements DmsFactoryInterface
      *
      * @return DmsTableInterface
      */
-    abstract protected function createDmsTable($tableName, ConnectionInterface $connection);
+    abstract protected function createDmsTable(string $tableName, ConnectionInterface $connection): DmsTableInterface;
 
     /**
      * @param string $name
@@ -26,5 +26,12 @@ abstract class AbstractDmsFactory implements DmsFactoryInterface
      *
      * @return DmsColumnInterface
      */
-    abstract protected function createDmsColumn($name, $type, $nullable, $key, $default, $extra);
+    abstract protected function createDmsColumn(
+        string $name,
+        string $type,
+        bool $nullable,
+        string $key,
+        string $default,
+        ?string $extra
+    ): DmsColumnInterface;
 }

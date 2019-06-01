@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
@@ -8,12 +8,16 @@ class WriterConfig extends AbstractWriterConfig
 {
     /**
      * @param string $directory
-     * @param string $namespace
-     * @param string $classPrefix
-     * @param string $classSuffix
+     * @param null|string $namespace
+     * @param null|string $classPrefix
+     * @param null|string $classSuffix
      */
-    public function __construct($directory, $namespace = '', $classPrefix = '', $classSuffix = '')
-    {
+    public function __construct(
+        string $directory,
+        ?string $namespace = '',
+        ?string $classPrefix = '',
+        ?string $classSuffix = ''
+    ) {
         $this->directory = $directory;
         $this->namespace = $namespace;
         $this->classPrefix = $classPrefix;

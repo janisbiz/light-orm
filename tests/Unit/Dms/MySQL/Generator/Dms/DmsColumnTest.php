@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
@@ -67,7 +67,7 @@ class DmsColumnTest extends TestCase
      * @param string $name
      * @param string $phpName
      */
-    public function testGetPhpName($name, $phpName)
+    public function testGetPhpName(string $name, string $phpName)
     {
         $dmsColumn = new DmsColumn(
             $name,
@@ -132,11 +132,11 @@ class DmsColumnTest extends TestCase
     /**
      * @dataProvider defaultData
      *
-     * @param int|double|string|array $default
+     * @param string $default
      * @param string $dmsType
      * @param string $phpDefaultType
      */
-    public function testGetPhpDefaultType($default, $dmsType, $phpDefaultType)
+    public function testGetPhpDefaultType(string $default, string $dmsType, string $phpDefaultType)
     {
         $dmsColumn = new DmsColumn(
             static::COLUMN_NAME,
@@ -158,12 +158,12 @@ class DmsColumnTest extends TestCase
     {
         return [
             [
-                1,
+                '1',
                 'int',
                 'int',
             ],
             [
-                1.1,
+                '1.1',
                 'float',
                 'float',
             ],
@@ -173,7 +173,7 @@ class DmsColumnTest extends TestCase
                 'string',
             ],
             [
-                null,
+                '',
                 'varchar',
                 'null',
             ],
@@ -186,7 +186,7 @@ class DmsColumnTest extends TestCase
      * @param bool $isNullable
      * @param bool $expectedIsNullable
      */
-    public function testIsNullable($isNullable, $expectedIsNullable)
+    public function testIsNullable(bool $isNullable, bool $expectedIsNullable)
     {
         $dmsColumn = new DmsColumn(
             static::COLUMN_NAME,
@@ -224,7 +224,7 @@ class DmsColumnTest extends TestCase
      * @param string $key
      * @param string $expectedKey
      */
-    public function testGetKey($key, $expectedKey)
+    public function testGetKey(string $key, string $expectedKey)
     {
         $dmsColumn = new DmsColumn(
             static::COLUMN_NAME,
@@ -266,7 +266,7 @@ class DmsColumnTest extends TestCase
      * @param array $dmsTypes
      * @param $phpType
      */
-    public function testGetPhpType(array $dmsTypes, $phpType)
+    public function testGetPhpType(array $dmsTypes, string $phpType)
     {
         foreach ($dmsTypes as $dmsType) {
             $dmsColumn = new DmsColumn(
