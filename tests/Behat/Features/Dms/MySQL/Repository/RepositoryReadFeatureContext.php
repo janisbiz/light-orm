@@ -41,7 +41,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
 
             foreach ($row as $column => $value) {
                 $getterMethod = \sprintf('get%s', \ucfirst($column));
-                if ($value != $entity->$getterMethod()) {
+                if ($value !== $entity->$getterMethod()) {
                     throw new \Exception(\sprintf(
                         'Data mismatch, when reading stored row data! %s::%s => %s != %s => %s',
                         \get_class($entity),
@@ -76,7 +76,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
             $entity = static::$entities[$i];
 
             foreach ($row as $column => $value) {
-                if ($value != $entity->data($column)) {
+                if ($value !== $entity->data($column)) {
                     throw new \Exception(\sprintf(
                         'Data mismatch, when reading stored row data! %s::data(%s) => %s != %s => %s',
                         \get_class($entity),
@@ -180,7 +180,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
 
         foreach ($this->normalizeTableNode($expectedPageNumbers) as $expectedPageNumberRow) {
             foreach ($expectedPageNumberRow as $value) {
-                if (!isset($pageNumbers[$value]) || $value != ($pageNumber = $pageNumbers[$value])) {
+                if (!isset($pageNumbers[$value]) || $value !== ($pageNumber = $pageNumbers[$value])) {
                     throw new \Exception(\sprintf(
                         'Data mismatch, when reading page numbers! %s != %s',
                         $value,
