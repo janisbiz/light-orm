@@ -6,6 +6,7 @@
 [![Total Downloads](https://poser.pugx.org/janisbiz/light-orm/downloads)](https://packagist.org/packages/janisbiz/light-orm)
 ![Deps](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
 [![Mutation testing badge](https://badge.stryker-mutator.io/github.com/janisbiz/light-orm/master)](https://stryker-mutator.github.io)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/janisbiz/light-orm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/janisbiz/light-orm/?branch=master)
 
 A light ORM for php with easy to use query builder, repository generator and connection pool manager.
 
