@@ -28,7 +28,7 @@ There is still a lot work to do, so it would be great to have some contributors 
 
 **Connection pool** is a singleton (yes I know...), which holds all the DMS connections used by ORM. To set-up connection pool you need to create a config for your DMS. Afterwards, you can add this config to connection pool, and it will establish connection to server only when it is required. To set-up connection pool, see example below:
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfigUrl as MySQLConnectionConfigUrl;
 
@@ -44,9 +44,9 @@ $connectionPool = (new ConnectionPool())->addConnectionConfig($mysqlConnectionCo
 
 ### Generator
 
-**Generator** is built in reposintory and entity class generator. With generator, it is possible to make easy use of the ORM. To use generator, you need to have pre-configured connection pool or one connection. To configure generator, see example below:
+**Generator** is built in repository and entity class generator. With generator, it is possible to make ORM easy to use. To use generator, you need to have pre-configured connection pool or one connection. To configure generator, see example below:
 ```php
-<?php
+<?php declare(strict_types=1);
 
 $directoryPersistent = \implode(
     '',
@@ -300,7 +300,7 @@ class TestTableOneRepository extends AbstractRepository
 
 To see full power of light-orm, please see test cases:
 - For connection handling, see [Connection Feature](tests/Behat/Features/Connection)
-- For generaotr handling(MySQL), see [MySQL Generator Feature](tests/Behat/Features/Dms/MySQL/Generator)
+- For generator handling(MySQL), see [MySQL Generator Feature](tests/Behat/Features/Dms/MySQL/Generator)
 - For repository handling(MySQL), see [MySQL Repository Feature](tests/Behat/Features/Dms/MySQL/Repository) and [generated repositories with respective entity classes](tests/Behat/Bootstrap/Generated/LightOrmMysql)
 
 ## Running tests
@@ -311,9 +311,9 @@ There are two ways to run tests:
     - Execute `make start_dev`
     - Execute `make test`
 2) By using your local php and mysql database environment:
-    - Ensure, that your php version is `5.6+`
+    - Ensure, that your php version is `7.1+`
     - Execute `composer install`
-    - Execute `vendor/bin/phpcs -p ./src -p ./tests --standard=PHPCompatibility,PSR2 --runtime-set testVersion 5.6-; vendor/bin/phpunit -c phpunit.xml; vendor/bin/behat;`
+    - Execute `vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests; vendor/bin/phpunit -c phpunit.xml; vendor/bin/behat;`
 
 ## TODO
 
