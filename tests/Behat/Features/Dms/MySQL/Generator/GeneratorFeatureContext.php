@@ -12,7 +12,6 @@ use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\WriterConfig as MySQLWriterConf
 use Janisbiz\LightOrm\Generator;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\AbstractFeatureContext;
-use Janisbiz\LightOrm\Tests\Behat\Features\Connection\ConnectionFeatureContext;
 
 class GeneratorFeatureContext extends AbstractFeatureContext
 {
@@ -91,7 +90,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      */
     public function iShouldGetTheseRowsInDatabaseFilteredByScopeId(TableNode $files)
     {
-        foreach ($files as $file) {
+        foreach ($this->normalizeTableNode($files) as $file) {
             $relativeFilePath = $file['path'];
             $absoluteFilePath = \implode(
                 '',

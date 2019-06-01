@@ -10,15 +10,15 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
 {
     use LimitOffsetTrait;
 
-    const LIMIT_EMPTY = null;
+    const LIMIT_INVALID = -1;
     const LIMIT_DEFAULT = 1;
     const LIMIT = 2;
-    const OFFSET_EMPTY = null;
+    const OFFSET_INVALID = -1;
     const OFFSET = 1;
 
     public function testOffset()
     {
-        $object = $this->limit(static::LIMIT_DEFAULT)->offset(static::OFFSET);
+        $object = $this->limit(static::LIMIT)->offset(static::OFFSET);
         $this->assertObjectUsesTrait(LimitOffsetTrait::class, $object);
         $this->assertEquals(static::OFFSET, $this->offset);
     }
@@ -28,7 +28,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $offset to offset method!');
 
-        $this->offset(static::OFFSET_EMPTY);
+        $this->offset(static::OFFSET_INVALID);
     }
 
     public function testOffsetWithEmptyLimit()
@@ -52,7 +52,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $limit to limit method!');
 
-        $this->limitWithOffset(static::LIMIT_EMPTY, static::OFFSET);
+        $this->limitWithOffset(static::LIMIT_INVALID, static::OFFSET);
     }
 
     public function testLimitWithOffsetWithEmptyOffset()
@@ -60,7 +60,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $offset to offset method!');
 
-        $this->limitWithOffset(static::LIMIT, static::OFFSET_EMPTY);
+        $this->limitWithOffset(static::LIMIT, static::OFFSET_INVALID);
     }
 
     public function testLimit()
@@ -75,7 +75,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $limit to limit method!');
 
-        $this->limit(static::LIMIT_EMPTY);
+        $this->limit(static::LIMIT_INVALID);
     }
 
     public function testBuildLimitQueryPart()

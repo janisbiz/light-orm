@@ -19,9 +19,9 @@ class AbstractRepositoryTest extends TestCase
     use QueryBuilderTrait;
     use ReflectionTrait;
 
-    const COLUMN_AUTO_INCREMENT = 'colAI';
+    const COLUMN_AUTO_INCREMENT = 'col_a_i';
     const COLUMN_AUTO_INCREMENT_VALUE = 1;
-    const COLUMN_ONE = 'col1';
+    const COLUMN_ONE = 'col_1';
     const COLUMN_ONE_UPDATE_VALUE = 'val1Update';
 
     const TABLE = 'table';
@@ -52,8 +52,8 @@ class AbstractRepositoryTest extends TestCase
     private $dataOriginal = [
         self::COLUMN_AUTO_INCREMENT => null,
         self::COLUMN_ONE => 'val1',
-        'col2' => 2,
-        'col3' => 3.3,
+        'col_2' => 2,
+        'col_3' => 3.3,
     ];
 
     /**

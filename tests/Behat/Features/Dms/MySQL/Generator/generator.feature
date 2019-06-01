@@ -7,7 +7,7 @@ Feature: Generator
     And I add writers to generator
     When I run generator
     Then Then I have following files generated:
-      | path                                                                                   |
+      | path:string                                                                            |
       | var/light-orm/Generated/LightOrmMysql/Base/BaseTestTableOne.php                        |
       | var/light-orm/Generated/LightOrmMysql/Base/BaseTestTableOneTwo.php                     |
       | var/light-orm/Generated/LightOrmMysql/Base/BaseTestTableTwo.php                        |
@@ -27,7 +27,7 @@ Feature: Generator
     And I remove directory "var/behat/generated"
     When I run generator
     Then Then I have following files generated:
-      | path                                                                       |
+      | path:string                                                                |
       | var/behat/generated/LightOrmMysql/Base/BaseTestTableOne.php                |
       | var/behat/generated/LightOrmMysql/Base/BaseTestTableOneTwo.php             |
       | var/behat/generated/LightOrmMysql/Base/BaseTestTableTwo.php                |

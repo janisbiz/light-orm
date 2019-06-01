@@ -160,12 +160,12 @@ class DmsColumnTest extends TestCase
             [
                 1,
                 'int',
-                'integer',
+                'int',
             ],
             [
                 1.1,
                 'float',
-                'double',
+                'float',
             ],
             [
                 '1',
@@ -291,13 +291,13 @@ class DmsColumnTest extends TestCase
                     'timestamp',
                     'tinyint',
                 ],
-                'integer'
+                'int'
             ],
             [
                 [
                     'float',
                 ],
-                'double',
+                'float',
             ],
             [
                 [

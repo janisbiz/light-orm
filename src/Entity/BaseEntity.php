@@ -88,7 +88,7 @@ class BaseEntity implements EntityInterface
                 if (\array_key_exists(\mb_strtolower(\implode('_', $results[0])), $this->data)) {
                     $variable = $this->data[\strtolower(\implode('_', $results[0]))];
 
-                    if ($arguments && $arguments[0] === true) {
+                    if ($arguments && $arguments[0] === true && \is_string($variable)) {
                         /** Stripping tags, output for user */
                         return \nl2br(\htmlspecialchars(\trim($variable), ENT_QUOTES, 'UTF-8'));
                     }

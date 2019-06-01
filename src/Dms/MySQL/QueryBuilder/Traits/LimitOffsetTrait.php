@@ -19,13 +19,19 @@ trait LimitOffsetTrait
 
     /**
      * @param int $limit
-     * @param int $offset
      *
      * @return $this
+     * @throws QueryBuilderException
      */
-    public function limitWithOffset($limit, $offset)
+    public function limit($limit)
     {
-        return $this->limit($limit)->offset($offset);
+        if (0 >= $limit) {
+            throw new QueryBuilderException('You must pass $limit to limit method!');
+        }
+
+        $this->limit = (int) $limit;
+
+        return $this;
     }
 
     /**
@@ -36,7 +42,7 @@ trait LimitOffsetTrait
      */
     public function offset($offset)
     {
-        if (0 !== $offset && empty($offset)) {
+        if (0 > $offset) {
             throw new QueryBuilderException('You must pass $offset to offset method!');
         }
 
@@ -51,19 +57,13 @@ trait LimitOffsetTrait
 
     /**
      * @param int $limit
+     * @param int $offset
      *
      * @return $this
-     * @throws QueryBuilderException
      */
-    public function limit($limit)
+    public function limitWithOffset($limit, $offset)
     {
-        if (empty($limit)) {
-            throw new QueryBuilderException('You must pass $limit to limit method!');
-        }
-
-        $this->limit = (int) $limit;
-
-        return $this;
+        return $this->limit($limit)->offset($offset);
     }
 
     /**

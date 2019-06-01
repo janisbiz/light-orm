@@ -43,7 +43,7 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
         $entitiesStorage = static::$entities;
         static::$entities = [];
 
-        foreach ($parameters as $i => $methodParameters) {
+        foreach ($this->normalizeTableNode($parameters) as $i => $methodParameters) {
             static::$entities[] = \call_user_func_array(
                 [
                     static::$repository,
