@@ -172,6 +172,11 @@ class DmsColumnTest extends TestCase
                 'varchar',
                 'string',
             ],
+            [
+                null,
+                'varchar',
+                'null',
+            ],
         ];
     }
 
