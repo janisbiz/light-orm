@@ -117,7 +117,7 @@ $repositoryClassWriter = new RepositoryClassWriter(
 ### Repository & Query Builder
 
 Repository is place where you can call query builder and then execute it against your configured DMS. Repository supports all basic CRUD actions against DMS, as well, it has built in paginator for result set pagination and result set count. To use query builder on repository, please see example below:
-```
+```php
 <?php declare(strict_types=1);
 
 namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
