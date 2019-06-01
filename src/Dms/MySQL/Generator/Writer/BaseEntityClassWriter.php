@@ -58,16 +58,37 @@ class BaseEntityClassWriter extends AbstractWriter
      */
     protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
     {
-        $phpDoc = $dmsTable->getDmsColumns();
-        $phpDoc = \implode("\n *\n", \array_map(function (DmsColumn $column) {
-            return \sprintf(
-                " * @method %s get%s(bool \$escapeHtml = false)\n * @method \$this set%s(%s \$val)",
-                \implode('|', \array_unique([$column->getPhpDefaultType(), $column->getPhpType()])),
-                $column->getPhpName(),
-                $column->getPhpName(),
-                \implode('|', \array_unique([$column->getPhpDefaultType(), $column->getPhpType()]))
-            );
-        }, $phpDoc));
+        $gettersAndSetters = $dmsTable->getDmsColumns();
+        $gettersAndSetters = \implode("\n\n", \array_map(
+            function (DmsColumn $column) use ($dmsTable) {
+                /** phpcs:disable */
+                return /** @lang PHP */
+                    <<<PHP
+
+    /**
+     * @return {$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? 'null|' : '')}{$column->getPhpType()}
+     */
+    public function get{$column->getPhpName()}()
+    {
+        return \$this->data['{$column->getName()}'];
+    }
+    
+    /**
+     * @param {$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? 'null|' : '')}{$column->getPhpType()} \${$this->heredoc(\lcfirst($column->getPhpName()))}
+     *
+     * @return \$this
+     */
+    public function set{$column->getPhpName()}(\${$this->heredoc(\lcfirst($column->getPhpName()))})
+    {
+        \$this->data['{$column->getName()}'] = \${$this->heredoc(\lcfirst($column->getPhpName()))};
+
+        return \$this;
+    }
+PHP;
+                /** phpcs:enable */
+            },
+            $gettersAndSetters
+        ));
 
         $columnsConstants = $dmsTable->getDmsColumns();
         $columnsConstants = \implode(
@@ -134,9 +155,6 @@ namespace {$this->generateNamespace($dmsDatabase)};
 
 use Janisbiz\LightOrm\Entity\BaseEntity;
 
-/**
-{$phpDoc}
-**/
 class {$this->generateClassName($dmsTable)} extends BaseEntity
 {
     const {$this->heredoc(WriterInterface::CLASS_CONSTANT_DATABASE_NAME)} = '{$dmsDatabase->getName()}';
@@ -164,6 +182,7 @@ class {$this->generateClassName($dmsTable)} extends BaseEntity
             \$this->isNew = true;
         }
     }
+    {$gettersAndSetters}
 }
 
 PHP;

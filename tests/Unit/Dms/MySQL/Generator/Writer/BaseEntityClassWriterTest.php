@@ -127,16 +127,6 @@ namespace None\Existent\Namespace\DatabaseNameSnakeCase\Base;
 
 use Janisbiz\LightOrm\Entity\BaseEntity;
 
-/**
- * @method string getNameSnakeCase1(bool \$escapeHtml = false)
- * @method \$this setNameSnakeCase1(string \$val)
- *
- * @method string getNameSnakeCase2(bool \$escapeHtml = false)
- * @method \$this setNameSnakeCase2(string \$val)
- *
- * @method string getNameSnakeCase3(bool \$escapeHtml = false)
- * @method \$this setNameSnakeCase3(string \$val)
-**/
 class BaseTableNameSnakeCase4 extends BaseEntity
 {
     const DATABASE_NAME = 'database_name_snake_case';
@@ -168,6 +158,68 @@ class BaseTableNameSnakeCase4 extends BaseEntity
         if (empty(\$this->data)) {
             \$this->isNew = true;
         }
+    }
+    
+    /**
+     * @return null|string
+     */
+    public function getNameSnakeCase1()
+    {
+        return \$this->data['name_snake_case_1'];
+    }
+    
+    /**
+     * @param null|string \$nameSnakeCase1
+     *
+     * @return \$this
+     */
+    public function setNameSnakeCase1(\$nameSnakeCase1)
+    {
+        \$this->data['name_snake_case_1'] = \$nameSnakeCase1;
+
+        return \$this;
+    }
+
+
+    /**
+     * @return null|string
+     */
+    public function getNameSnakeCase2()
+    {
+        return \$this->data['name_snake_case_2'];
+    }
+    
+    /**
+     * @param null|string \$nameSnakeCase2
+     *
+     * @return \$this
+     */
+    public function setNameSnakeCase2(\$nameSnakeCase2)
+    {
+        \$this->data['name_snake_case_2'] = \$nameSnakeCase2;
+
+        return \$this;
+    }
+
+
+    /**
+     * @return null|string
+     */
+    public function getNameSnakeCase3()
+    {
+        return \$this->data['name_snake_case_3'];
+    }
+    
+    /**
+     * @param null|string \$nameSnakeCase3
+     *
+     * @return \$this
+     */
+    public function setNameSnakeCase3(\$nameSnakeCase3)
+    {
+        \$this->data['name_snake_case_3'] = \$nameSnakeCase3;
+
+        return \$this;
     }
 }
 

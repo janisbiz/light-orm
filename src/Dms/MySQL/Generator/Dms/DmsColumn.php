@@ -21,9 +21,9 @@ class DmsColumn implements DmsColumnInterface
     const TYPE_VARCHAR = 'varchar';
 
     const PHP_TYPE_ARRAY = 'array';
-    const PHP_TYPE_BOOLEAN = 'boolean';
-    const PHP_TYPE_DOUBLE = 'double';
-    const PHP_TYPE_INTEGER = 'integer';
+    const PHP_TYPE_BOOLEAN = 'bool';
+    const PHP_TYPE_FLOAT = 'float';
+    const PHP_TYPE_INTEGER = 'int';
     const PHP_TYPE_NULL = 'null';
     const PHP_TYPE_OBJECT = 'object';
     const PHP_TYPE_RESOURCE = 'resource';
@@ -128,7 +128,7 @@ class DmsColumn implements DmsColumnInterface
                 return static::PHP_TYPE_INTEGER;
 
             case static::TYPE_FLOAT:
-                return static::PHP_TYPE_DOUBLE;
+                return static::PHP_TYPE_FLOAT;
 
             case static::TYPE_CHAR:
             case static::TYPE_DATE:
@@ -182,19 +182,13 @@ class DmsColumn implements DmsColumnInterface
         if (null !== $default) {
             switch ($this->getPhpType()) {
                 case static::PHP_TYPE_INTEGER:
-                    $default = (int) $default;
+                    return static::PHP_TYPE_INTEGER;
 
-                    break;
-
-                case static::PHP_TYPE_DOUBLE:
-                    $default = (double) $default;
-
-                    break;
+                case static::PHP_TYPE_FLOAT:
+                    return static::PHP_TYPE_FLOAT;
 
                 case static::PHP_TYPE_STRING:
-                    $default = (string) $default;
-
-                    break;
+                    return static::PHP_TYPE_STRING;
             }
         }
 
