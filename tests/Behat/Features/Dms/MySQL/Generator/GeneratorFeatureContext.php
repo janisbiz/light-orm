@@ -161,7 +161,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
                 case BaseEntityClassWriter::class:
                     $this->writers[BaseEntityClassWriter::class] = new BaseEntityClassWriter(
                         new MySQLWriterConfig(
-                            $directoryOverride ? : $writerConfig['directory'],
+                            $directoryOverride ?: $writerConfig['directory'],
                             $writerConfig['namespace'],
                             !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
                             !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
@@ -173,7 +173,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
                 case EntityClassWriter::class:
                     $this->writers[EntityClassWriter::class] = new EntityClassWriter(
                         new MySQLWriterConfig(
-                            $directoryOverride ? : $writerConfig['directory'],
+                            $directoryOverride ?: $writerConfig['directory'],
                             $writerConfig['namespace'],
                             !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
                             !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''
@@ -186,7 +186,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
                 case RepositoryClassWriter::class:
                     $this->writers[RepositoryClassWriter::class] = new RepositoryClassWriter(
                         new MySQLWriterConfig(
-                            $directoryOverride ? : $writerConfig['directory'],
+                            $directoryOverride ?: $writerConfig['directory'],
                             $writerConfig['namespace'],
                             !empty($writerConfig['classPrefix']) ? $writerConfig['classPrefix'] : '',
                             !empty($writerConfig['classSuffix']) ? $writerConfig['classSuffix'] : ''

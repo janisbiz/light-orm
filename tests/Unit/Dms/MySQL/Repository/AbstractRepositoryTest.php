@@ -894,7 +894,8 @@ class AbstractRepositoryTest extends TestCase
             [
                 AbstractRepositoryTest::COLUMN_AUTO_INCREMENT,
             ]
-        ) extends BaseEntity {
+        ) extends BaseEntity
+        {
             const TABLE_NAME = AbstractRepositoryTest::TABLE;
 
             /**
