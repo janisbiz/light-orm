@@ -177,7 +177,7 @@ class DmsColumn implements DmsColumnInterface
      */
     public function getPhpDefaultType(): string
     {
-        $default = $this->getDefault();
+        $default = empty($this->getDefault()) ? null : $this->getDefault();
 
         if (null !== $default) {
             switch ($this->getPhpType()) {
