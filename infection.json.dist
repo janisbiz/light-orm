@@ -1,5 +1,5 @@
 {
-  "timeout": 360,
+  "timeout": 10,
   "source": {
     "directories": [
       "src"
