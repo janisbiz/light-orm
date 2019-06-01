@@ -14,7 +14,8 @@ class CommandTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->commandTraitClass = new class () {
+        $this->commandTraitClass = new class ()
+        {
             use CommandTrait;
 
             /**

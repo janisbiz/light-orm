@@ -39,7 +39,8 @@ class JoinTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->joinTraitClass = new class (JoinTraitTest::JOIN_BIND_DEFAULT, JoinTraitTest::JOIN_DEFAULT) {
+        $this->joinTraitClass = new class (JoinTraitTest::JOIN_BIND_DEFAULT, JoinTraitTest::JOIN_DEFAULT)
+        {
             use BindTrait;
             use JoinTrait;
 

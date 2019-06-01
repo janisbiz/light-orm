@@ -9,7 +9,8 @@ class TraitsTest extends AbstractTraitTestCase
 {
     public function test()
     {
-        $traitsClass = new class () {
+        $traitsClass = new class ()
+        {
             use Traits;
         };
         

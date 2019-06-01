@@ -36,7 +36,8 @@ MySQL;
         $this->queryBuilder->method('bindData')->willReturn(static::QUERY_BUILDER_BIND_DATA);
         $this->queryBuilder->method('buildQuery')->willReturn(static::QUERY_BUILDER_QUERY);
 
-        $this->unionTraitClass = new class () {
+        $this->unionTraitClass = new class ()
+        {
             use BindTrait;
             use UnionTrait;
 

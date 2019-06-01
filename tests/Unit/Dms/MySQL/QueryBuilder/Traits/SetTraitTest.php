@@ -22,7 +22,8 @@ class SetTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->setTraitClass = new class (SetTraitTest::SET_BIND_DEFAULT, SetTraitTest::SET_DEFAULT) {
+        $this->setTraitClass = new class (SetTraitTest::SET_BIND_DEFAULT, SetTraitTest::SET_DEFAULT)
+        {
             use BindTrait;
             use SetTrait;
 

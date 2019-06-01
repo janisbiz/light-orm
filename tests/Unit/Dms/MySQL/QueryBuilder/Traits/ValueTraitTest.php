@@ -27,7 +27,8 @@ class ValueTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->valueTraitClass = new class (ValueTraitTest::VALUE_DEFAULT, ValueTraitTest::VALUE_BIND_DEFAULT) {
+        $this->valueTraitClass = new class (ValueTraitTest::VALUE_DEFAULT, ValueTraitTest::VALUE_BIND_DEFAULT)
+        {
             use ValueTrait;
 
             /**

@@ -25,7 +25,8 @@ class BindTraitTest extends AbstractTraitTestCase
 
     public function setUp()
     {
-        $this->bindTraitClass = new class (BindTraitTest::BIND_DEFAULT) {
+        $this->bindTraitClass = new class (BindTraitTest::BIND_DEFAULT)
+        {
             use BindTrait;
 
             /**

@@ -29,7 +29,8 @@ class OrderByTraitTest extends AbstractTraitTestCase
     public function setUp()
     {
         $this->orderBy = static::ORDER_BY_DEFAULT;
-        $this->orderByTraitClass = new class (OrderByTraitTest::ORDER_BY_DEFAULT) {
+        $this->orderByTraitClass = new class (OrderByTraitTest::ORDER_BY_DEFAULT)
+        {
             use OrderByTrait;
 
             /**
