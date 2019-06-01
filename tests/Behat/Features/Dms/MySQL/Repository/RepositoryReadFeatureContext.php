@@ -36,7 +36,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
             ));
         }
 
-        foreach ($rows as $i => $row) {
+        foreach ($this->normalizeTableNode($rows) as $i => $row) {
             $entity = static::$entities[$i];
 
             foreach ($row as $column => $value) {
@@ -72,7 +72,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
             ));
         }
 
-        foreach ($columns as $i => $row) {
+        foreach ($this->normalizeTableNode($columns) as $i => $row) {
             $entity = static::$entities[$i];
 
             foreach ($row as $column => $value) {
@@ -178,7 +178,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
             ));
         }
 
-        foreach ($expectedPageNumbers as $expectedPageNumberRow) {
+        foreach ($this->normalizeTableNode($expectedPageNumbers) as $expectedPageNumberRow) {
             foreach ($expectedPageNumberRow as $value) {
                 if (!isset($pageNumbers[$value]) || $value != ($pageNumber = $pageNumbers[$value])) {
                     throw new \Exception(\sprintf(

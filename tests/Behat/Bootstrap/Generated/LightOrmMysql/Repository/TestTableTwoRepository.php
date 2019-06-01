@@ -8,11 +8,11 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestT
 class TestTableTwoRepository extends AbstractRepository
 {
     /**
-     * @param int $id
+     * @param null|int $id
      *
      * @return TestTableTwoEntity
      */
-    public function create($id)
+    public function create(?int $id)
     {
         $testTableTwoEntity = (new TestTableTwoEntity())->setId($id);
 

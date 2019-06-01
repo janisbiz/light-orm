@@ -90,7 +90,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      */
     public function iShouldGetTheseRowsInDatabaseFilteredByScopeId(TableNode $files)
     {
-        foreach ($files as $file) {
+        foreach ($this->normalizeTableNode($files) as $file) {
             $relativeFilePath = $file['path'];
             $absoluteFilePath = \implode(
                 '',

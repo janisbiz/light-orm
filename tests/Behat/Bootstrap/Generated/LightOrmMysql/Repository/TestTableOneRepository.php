@@ -12,7 +12,7 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestT
 class TestTableOneRepository extends AbstractRepository
 {
     /**
-     * @param int $id
+     * @param null|int $id
      * @param int $intColNotNull
      * @param string $varcharColNotNull
      * @param float $floatColNotNull
@@ -25,15 +25,15 @@ class TestTableOneRepository extends AbstractRepository
      * @return TestTableOneEntity
      */
     public function create(
-        $id,
-        $intColNotNull,
-        $varcharColNotNull,
-        $floatColNotNull,
-        $intColNull = null,
-        $varcharColNull = null,
-        $floatColNull = null,
-        $createdAt = null,
-        $updatedAt = null
+        ?int $id,
+        int $intColNotNull,
+        string $varcharColNotNull,
+        float $floatColNotNull,
+        ?int $intColNull = null,
+        ?string $varcharColNull = null,
+        ?float $floatColNull = null,
+        ?string $createdAt = null,
+        ?string $updatedAt = null
     ) {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)
@@ -56,7 +56,7 @@ class TestTableOneRepository extends AbstractRepository
     }
 
     /**
-     * @param int $id
+     * @param null|int $id
      * @param int $intColNotNull
      * @param string $varcharColNotNull
      * @param float $floatColNotNull
@@ -69,15 +69,15 @@ class TestTableOneRepository extends AbstractRepository
      * @return TestTableOneEntity
      */
     public function createOnDuplicateKeyUpdate(
-        $id,
-        $intColNotNull,
-        $varcharColNotNull,
-        $floatColNotNull,
-        $intColNull = null,
-        $varcharColNull = null,
-        $floatColNull = null,
-        $createdAt = null,
-        $updatedAt = null
+        ?int $id,
+        int $intColNotNull,
+        string $varcharColNotNull,
+        float $floatColNotNull,
+        ?int $intColNull = null,
+        ?string $varcharColNull = null,
+        ?float $floatColNull = null,
+        ?string $createdAt = null,
+        ?string $updatedAt = null
     ) {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)
@@ -101,7 +101,7 @@ class TestTableOneRepository extends AbstractRepository
     }
 
     /**
-     * @param int $id
+     * @param null|int $id
      * @param int $intColNotNull
      * @param string $varcharColNotNull
      * @param float $floatColNotNull
@@ -114,15 +114,15 @@ class TestTableOneRepository extends AbstractRepository
      * @return TestTableOneEntity
      */
     public function createIgnore(
-        $id,
-        $intColNotNull,
-        $varcharColNotNull,
-        $floatColNotNull,
-        $intColNull = null,
-        $varcharColNull = null,
-        $floatColNull = null,
-        $createdAt = null,
-        $updatedAt = null
+        ?int $id,
+        int $intColNotNull,
+        string $varcharColNotNull,
+        float $floatColNotNull,
+        ?int $intColNull = null,
+        ?string $varcharColNull = null,
+        ?float $floatColNull = null,
+        ?string $createdAt = null,
+        ?string $updatedAt = null
     ) {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)
@@ -145,7 +145,7 @@ class TestTableOneRepository extends AbstractRepository
     }
 
     /**
-     * @param int $id
+     * @param null|int $id
      * @param int $intColNotNull
      * @param string $varcharColNotNull
      * @param float $floatColNotNull
@@ -158,15 +158,15 @@ class TestTableOneRepository extends AbstractRepository
      * @return TestTableOneEntity
      */
     public function createReplace(
-        $id,
-        $intColNotNull,
-        $varcharColNotNull,
-        $floatColNotNull,
-        $intColNull = null,
-        $varcharColNull = null,
-        $floatColNull = null,
-        $createdAt = null,
-        $updatedAt = null
+        ?int $id,
+        int $intColNotNull,
+        string $varcharColNotNull,
+        float $floatColNotNull,
+        ?int $intColNull = null,
+        ?string $varcharColNull = null,
+        ?float $floatColNull = null,
+        ?string $createdAt = null,
+        ?string $updatedAt = null
     ) {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)

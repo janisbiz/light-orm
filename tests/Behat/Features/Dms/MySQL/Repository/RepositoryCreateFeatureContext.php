@@ -52,7 +52,7 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
             ));
         }
 
-        foreach ($identifiers as $i => $identifier) {
+        foreach ($this->normalizeTableNode($identifiers) as $i => $identifier) {
             $entity = static::$entities[$i];
 
             foreach ($identifier as $identifierName => $identifierValue) {
@@ -79,7 +79,7 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
     {
         static::$entities = [];
 
-        foreach ($parameters as $methodParameters) {
+        foreach ($this->normalizeTableNode($parameters) as $methodParameters) {
             $methodResult = \call_user_func_array([static::$repository, $method], $methodParameters);
 
             if (\is_array($methodResult)) {
