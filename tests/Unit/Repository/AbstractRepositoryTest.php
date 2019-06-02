@@ -29,6 +29,8 @@ class AbstractRepositoryTest extends TestCase
     const QUERY_BUILDER_COUNT_RESULT = 5;
 
     const PAGINATOR_PAGE = 1;
+    const PAGINATOR_PAGE_INVALID = 0;
+    const PAGINATOR_PAGE_FIRST_PAGE = 1;
     const PAGINATOR_PAGE_SIZE = 2;
     const PAGINATOR_PAGE_SIZE_INVALID = 0;
     const PAGINATOR_PAGE_SIZE_FIRST_PAGE = 1;
@@ -248,6 +250,22 @@ class AbstractRepositoryTest extends TestCase
         $paginator->paginateFake();
 
         $this->assertEquals(static::PAGINATOR_PAGE_SIZE_FIRST_PAGE, $paginator->getPageSize());
+    }
+
+    public function testPaginatorWhenCurrentPageIsLessThanOne()
+    {
+        $paginator = $this->abstractRepositoryPaginatorMethod->invoke(
+            $this->abstractRepository,
+            $this->queryBuilder,
+            static::PAGINATOR_PAGE_SIZE,
+            static::PAGINATOR_PAGE_INVALID
+        );
+
+        $this->assertTrue($paginator instanceof PaginatorInterface);
+
+        $paginator->paginateFake();
+
+        $this->assertEquals(static::PAGINATOR_PAGE_FIRST_PAGE, $paginator->getCurrentPageNumber());
     }
 
     public function testLog()

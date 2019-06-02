@@ -243,9 +243,6 @@ abstract class AbstractRepository extends BaseAbstractRepository
             ));
         }
 
-        /** Flush all columns and use "true" as a value to avoid column conflicts and get actual result count */
-        $queryBuilder->column(true, true);
-
         $queryBuilderCount = $this
             ->createQueryBuilder()
             ->command($queryBuilder->commandData())
