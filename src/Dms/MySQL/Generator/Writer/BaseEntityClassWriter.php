@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
@@ -45,7 +45,7 @@ class BaseEntityClassWriter extends AbstractWriter
     /**
      * @return WriterConfigInterface
      */
-    protected function getWriterConfig(): WriterConfigInterface
+    protected function getWriterConfig()
     {
         return $this->writerConfig;
     }
@@ -56,7 +56,7 @@ class BaseEntityClassWriter extends AbstractWriter
      *
      * @return string
      */
-    protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
+    protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable)
     {
         $gettersAndSetters = $dmsTable->getDmsColumns();
         $gettersAndSetters = \implode("\n\n", \array_map(
@@ -149,7 +149,7 @@ PHP;
         /** phpcs:disable */
         return /** @lang PHP */
             <<<PHP
-<?php declare(strict_types=1);
+<?php
 
 namespace {$this->generateNamespace($dmsDatabase)};
 

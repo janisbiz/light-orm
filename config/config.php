@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 \defined('JANISBIZ_LIGHT_ORM_ROOT_DIR') || \define(
     'JANISBIZ_LIGHT_ORM_ROOT_DIR',

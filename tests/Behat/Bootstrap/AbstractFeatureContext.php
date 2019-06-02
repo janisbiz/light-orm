@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap;
 
@@ -49,7 +49,7 @@ abstract class AbstractFeatureContext implements Context
      * @return array
      * @throws \Exception
      */
-    protected function getConnectionConfig(?string $connectionName = null): array
+    protected function getConnectionConfig($connectionName = null)
     {
         if (null !== $connectionName) {
             if (!isset($this->getConfig()['connections'][$connectionName])) {
@@ -68,7 +68,7 @@ abstract class AbstractFeatureContext implements Context
      * @return array
      * @throws \Exception
      */
-    protected function getWritersConfig(string $connectionName): array
+    protected function getWritersConfig($connectionName)
     {
         if (!isset($this->getConfig()['generator'][$connectionName]['writers'])) {
             throw new \Exception(\sprintf('Could not get writer config for connection "%s"', $connectionName));
@@ -82,11 +82,11 @@ abstract class AbstractFeatureContext implements Context
      *
      * @return TableNode
      */
-    protected function normalizeTableNode(TableNode $tableNode): TableNode
+    protected function normalizeTableNode(TableNode $tableNode)
     {
         $tableNodeParsedArray = [
             0 => \array_map(
-                function (string $column): string {
+                function ($column) {
                     return \explode(':', $column)[0];
                 },
                 $tableNode->getRow(0)
@@ -97,7 +97,7 @@ abstract class AbstractFeatureContext implements Context
             $nodeRowParsed = [];
             foreach ($nodeRow as $cellNameWithDataType => $cellValue) {
                 $cellNameWithDataType = \explode(':', $cellNameWithDataType);
-                $cellDataType = $cellNameWithDataType[1] ?? false;
+                $cellDataType = isset($cellNameWithDataType[1]) ? $cellNameWithDataType[1] : false;
 
                 if (false !== $cellDataType) {
                     if (0 === \strpos($cellDataType, '?')) {
@@ -124,7 +124,7 @@ abstract class AbstractFeatureContext implements Context
          */
         try {
             new TableNode($tableNodeParsedArray);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             if (70 !== $e->getLine() || 'Table is not two-dimensional.' !== $e->getMessage()) {
                 throw $e;
             }
@@ -142,7 +142,7 @@ abstract class AbstractFeatureContext implements Context
     /**
      * @return array
      */
-    private function getConfig(): array
+    private function getConfig()
     {
         if (null === $this->config) {
             $this->config = (new Parser())

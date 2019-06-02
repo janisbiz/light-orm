@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -8,69 +8,27 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
 
 class LimitOffsetTraitTest extends AbstractTraitTestCase
 {
+    use LimitOffsetTrait;
+
     const LIMIT_INVALID = -1;
     const LIMIT_DEFAULT = 1;
     const LIMIT = 2;
     const OFFSET_INVALID = -1;
     const OFFSET = 1;
 
-    /**
-     * @var LimitOffsetTrait
-     */
-    private $limitOffsetTraitClass;
-    
-    public function setUp()
-    {
-        $this->limitOffsetTraitClass = new class () {
-            use LimitOffsetTrait;
-
-            /**
-             * @return null|int
-             */
-            public function limitData(): ?int
-            {
-                return $this->limit;
-            }
-
-            /**
-             * @return null|int
-             */
-            public function offsetData(): ?int
-            {
-                return $this->offset;
-            }
-
-            /**
-             * @return null|string
-             */
-            public function buildLimitQueryPartPublic(): ?string
-            {
-                return $this->buildLimitQueryPart();
-            }
-
-            /**
-             * @return null|string
-             */
-            public function buildOffsetQueryPartPublic(): ?string
-            {
-                return $this->buildOffsetQueryPart();
-            }
-        };
-    }
-
     public function testOffset()
     {
-        $object = $this->limitOffsetTraitClass->limit(static::LIMIT)->offset(static::OFFSET);
+        $object = $this->limit(static::LIMIT)->offset(static::OFFSET);
         $this->assertObjectUsesTrait(LimitOffsetTrait::class, $object);
-        $this->assertEquals(static::OFFSET, $this->limitOffsetTraitClass->offsetData());
+        $this->assertEquals(static::OFFSET, $this->offset);
     }
 
-    public function testOffsetInvalid()
+    public function testOffsetEmpty()
     {
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $offset to offset method!');
 
-        $this->limitOffsetTraitClass->offset(static::OFFSET_INVALID);
+        $this->offset(static::OFFSET_INVALID);
     }
 
     public function testOffsetWithEmptyLimit()
@@ -78,15 +36,15 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must set LIMIT before calling offset method!');
 
-        $this->limitOffsetTraitClass->offset(static::OFFSET);
+        $this->offset(static::OFFSET);
     }
 
     public function testLimitWithOffset()
     {
-        $object = $this->limitOffsetTraitClass->limitWithOffset(static::LIMIT, static::OFFSET);
+        $object = $this->limitWithOffset(static::LIMIT, static::OFFSET);
         $this->assertObjectUsesTrait(LimitOffsetTrait::class, $object);
-        $this->assertEquals(static::LIMIT, $this->limitOffsetTraitClass->limitData());
-        $this->assertEquals(static::OFFSET, $this->limitOffsetTraitClass->offsetData());
+        $this->assertEquals(static::LIMIT, $this->limit);
+        $this->assertEquals(static::OFFSET, $this->offset);
     }
 
     public function testLimitWithOffsetWithEmptyLimit()
@@ -94,7 +52,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $limit to limit method!');
 
-        $this->limitOffsetTraitClass->limitWithOffset(static::LIMIT_INVALID, static::OFFSET);
+        $this->limitWithOffset(static::LIMIT_INVALID, static::OFFSET);
     }
 
     public function testLimitWithOffsetWithEmptyOffset()
@@ -102,14 +60,14 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $offset to offset method!');
 
-        $this->limitOffsetTraitClass->limitWithOffset(static::LIMIT, static::OFFSET_INVALID);
+        $this->limitWithOffset(static::LIMIT, static::OFFSET_INVALID);
     }
 
     public function testLimit()
     {
-        $object = $this->limitOffsetTraitClass->limit(static::LIMIT);
+        $object = $this->limit(static::LIMIT);
         $this->assertObjectUsesTrait(LimitOffsetTrait::class, $object);
-        $this->assertEquals(static::LIMIT, $this->limitOffsetTraitClass->limitData());
+        $this->assertEquals(static::LIMIT, $this->limit);
     }
 
     public function testLimitEmpty()
@@ -117,36 +75,36 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $limit to limit method!');
 
-        $this->limitOffsetTraitClass->limit(static::LIMIT_INVALID);
+        $this->limit(static::LIMIT_INVALID);
     }
 
     public function testBuildLimitQueryPart()
     {
-        $this->limitOffsetTraitClass->limit(static::LIMIT);
+        $this->limit(static::LIMIT);
 
         $this->assertEquals(
-            \sprintf('%s %d', ConditionEnum::LIMIT, $this->limitOffsetTraitClass->limitData()),
-            $this->limitOffsetTraitClass->buildLimitQueryPartPublic()
+            \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit),
+            $this->buildLimitQueryPart()
         );
     }
 
     public function testBuildLimitQueryPartWhenEmpty()
     {
-        $this->assertEquals(null, $this->limitOffsetTraitClass->buildLimitQueryPartPublic());
+        $this->assertEquals(null, $this->buildLimitQueryPart());
     }
 
     public function testBuildOffsetQueryPart()
     {
-        $this->limitOffsetTraitClass->limitWithOffset(static::LIMIT, static::OFFSET);
+        $this->limitWithOffset(static::LIMIT, static::OFFSET);
 
         $this->assertEquals(
-            \sprintf('%s %d', ConditionEnum::OFFSET, $this->limitOffsetTraitClass->offsetData()),
-            $this->limitOffsetTraitClass->buildOffsetQueryPartPublic()
+            \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset),
+            $this->buildOffsetQueryPart()
         );
     }
 
     public function testBuildOffsetQueryPartWhenEmpty()
     {
-        $this->assertEquals(null, $this->limitOffsetTraitClass->buildOffsetQueryPartPublic());
+        $this->assertEquals(null, $this->buildOffsetQueryPart());
     }
 }

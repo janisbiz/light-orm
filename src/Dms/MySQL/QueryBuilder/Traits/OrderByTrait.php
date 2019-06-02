@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -20,7 +20,7 @@ trait OrderByTrait
      * @throws QueryBuilderException
      * @return $this
      */
-    public function orderBy($orderBy, string $keyword = KeywordEnum::ASC)
+    public function orderBy($orderBy, $keyword = KeywordEnum::ASC)
     {
         if (empty($orderBy)) {
             throw new QueryBuilderException('You must pass $orderBy to orderBy method!');
@@ -44,7 +44,7 @@ trait OrderByTrait
     /**
      * @return null|string
      */
-    protected function buildOrderByQueryPart(): ?string
+    protected function buildOrderByQueryPart()
     {
         return empty($this->orderBy)
             ? null

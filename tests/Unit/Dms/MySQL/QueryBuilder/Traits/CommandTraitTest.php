@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -7,25 +7,7 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\CommandTrait;
 
 class CommandTraitTest extends AbstractTraitTestCase
 {
-    /**
-     * @var CommandTrait
-     */
-    private $commandTraitClass;
-
-    public function setUp()
-    {
-        $this->commandTraitClass = new class () {
-            use CommandTrait;
-
-            /**
-             * @return string
-             */
-            public function buildCommandQueryPartPublic(): string
-            {
-                return $this->buildCommandQueryPart();
-            }
-        };
-    }
+    use CommandTrait;
 
     /**
      * @dataProvider setCommandData
@@ -35,9 +17,9 @@ class CommandTraitTest extends AbstractTraitTestCase
      */
     public function testSetCommand($command, $expected)
     {
-        $object = $this->commandTraitClass->command($command);
+        $object = $this->command($command);
         $this->assertObjectUsesTrait(CommandTrait::class, $object);
-        $this->assertEquals($expected, $this->commandTraitClass->commandData());
+        $this->assertEquals($expected, $this->command);
     }
 
     /**
@@ -48,9 +30,9 @@ class CommandTraitTest extends AbstractTraitTestCase
      */
     public function testSetCommandData($command, $expected)
     {
-        $object = $this->commandTraitClass->command($command);
+        $object = $this->command($command);
         $this->assertObjectUsesTrait(CommandTrait::class, $object);
-        $this->assertEquals($expected, $this->commandTraitClass->commandData());
+        $this->assertEquals($expected, $this->commandData());
     }
 
     /**
@@ -77,12 +59,9 @@ class CommandTraitTest extends AbstractTraitTestCase
      */
     public function testBuildCommandQueryPart($command)
     {
-        $this->commandTraitClass->command($command);
+        $this->command($command);
 
-        $this->assertEquals(
-            $this->commandTraitClass->commandData(),
-            $this->commandTraitClass->buildCommandQueryPartPublic()
-        );
+        $this->assertEquals($this->command, $this->buildCommandQueryPart());
     }
 
     /**

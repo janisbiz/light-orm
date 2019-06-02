@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -8,6 +8,8 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupByTrait;
 
 class GroupByTraitTest extends AbstractTraitTestCase
 {
+    use GroupByTrait;
+    
     const GROUP_BY_DEFAULT = [
         'group_by1',
         'group_by2',
@@ -19,63 +21,27 @@ class GroupByTraitTest extends AbstractTraitTestCase
     const GROUP_BY_EMPTY = '';
     const GROUP_BY = 'group_by5';
 
-    /**
-     * @var GroupByTrait
-     */
-    private $groupByTraitClass;
-
     public function setUp()
     {
-        $this->groupByTraitClass = new class (GroupByTraitTest::GROUP_BY_DEFAULT) {
-            use GroupByTrait;
-
-            /**
-             * @param array $groupByDefault
-             */
-            public function __construct(array $groupByDefault)
-            {
-                $this->groupBy = $groupByDefault;
-            }
-
-            /**
-             * @return array
-             */
-            public function groupByData(): array
-            {
-                return $this->groupBy;
-            }
-
-            public function clearGroupByData()
-            {
-                $this->groupBy = [];
-            }
-
-            /**
-             * @return null|string
-             */
-            public function buildGroupByQueryPartPublic(): ?string
-            {
-                return $this->buildGroupByQueryPart();
-            }
-        };
+        $this->groupBy = static::GROUP_BY_DEFAULT;
     }
 
     public function testGroupBy()
     {
-        $this->assertEquals(static::GROUP_BY_DEFAULT, $this->groupByTraitClass->groupByData());
+        $this->assertEquals(static::GROUP_BY_DEFAULT, $this->groupBy);
 
-        $object = $this->groupByTraitClass->groupBy(static::GROUP_BY_ARRAY);
+        $object = $this->groupBy(static::GROUP_BY_ARRAY);
         $this->assertObjectUsesTrait(GroupByTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY),
-            $this->groupByTraitClass->groupByData()
+            $this->groupBy
         );
 
-        $object = $this->groupByTraitClass->groupBy(static::GROUP_BY);
+        $object = $this->groupBy(static::GROUP_BY);
         $this->assertObjectUsesTrait(GroupByTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY, [static::GROUP_BY]),
-            $this->groupByTraitClass->groupByData()
+            $this->groupBy
         );
     }
 
@@ -84,27 +50,26 @@ class GroupByTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $groupBy to groupBy method!');
 
-        $this->groupByTraitClass->groupBy(static::GROUP_BY_EMPTY);
+        $this->groupBy(static::GROUP_BY_EMPTY);
     }
 
     public function testBuildGroupByQueryPart()
     {
         $this
-            ->groupByTraitClass
             ->groupBy(static::GROUP_BY_ARRAY)
             ->groupBy(static::GROUP_BY)
         ;
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::GROUP_BY, \implode(', ', $this->groupByTraitClass->groupByData())),
-            $this->groupByTraitClass->buildGroupByQueryPartPublic()
+            \sprintf('%s %s', ConditionEnum::GROUP_BY, \implode(', ', $this->groupBy)),
+            $this->buildGroupByQueryPart()
         );
     }
 
     public function testBuildGroupByQueryPartWhenEmpty()
     {
-        $this->groupByTraitClass->clearGroupByData();
+        $this->groupBy = [];
 
-        $this->assertEquals(null, $this->groupByTraitClass->buildGroupByQueryPartPublic());
+        $this->assertEquals(null, $this->buildGroupByQueryPart());
     }
 }

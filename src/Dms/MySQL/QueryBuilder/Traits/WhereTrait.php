@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -19,7 +19,7 @@ trait WhereTrait
      * @return $this
      * @throws QueryBuilderException
      */
-    public function where(string $condition, array $bind = [])
+    public function where($condition, array $bind = [])
     {
         if (empty($condition)) {
             throw new QueryBuilderException('You must pass $condition name to where method!');
@@ -40,7 +40,7 @@ trait WhereTrait
      *
      * @return $this
      */
-    public function whereIn(string $column, array $params = [])
+    public function whereIn($column, array $params = [])
     {
         if (!empty($params)) {
             $bind = [];
@@ -67,7 +67,7 @@ trait WhereTrait
      *
      * @return $this
      */
-    public function whereNotIn(string $column, array $params = [])
+    public function whereNotIn($column, array $params = [])
     {
         if (!empty($params)) {
             $bind = [];
@@ -91,7 +91,7 @@ trait WhereTrait
     /**
      * @return null|string
      */
-    protected function buildWhereQueryPart(): ?string
+    protected function buildWhereQueryPart()
     {
         return empty($this->where)
             ? null

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Writer;
 
@@ -80,7 +80,7 @@ class RepositoryClassWriterTest extends EntityClassWriterTest
         $this->assertEquals(
             /** @lang PHP */
             <<<PHP
-<?php declare(strict_types=1);
+<?php
 
 namespace None\Existent\Namespace\DatabaseNameSnakeCase\Repository;
 
@@ -92,7 +92,7 @@ class TableNameSnakeCase4Repository extends AbstractRepository
     /**
     * @return string
     */
-    protected function getModelClass(): string
+    protected function getModelClass()
     {
         return TableNameSnakeCase4Repository::class;
     }

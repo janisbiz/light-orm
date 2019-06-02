@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -7,6 +7,8 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ValueTrait;
 
 class ValueTraitTest extends AbstractTraitTestCase
 {
+    use ValueTrait;
+
     const VALUE_DEFAULT = [
         'column1' => ':Column1_Value',
     ];
@@ -20,47 +22,10 @@ class ValueTraitTest extends AbstractTraitTestCase
         'Column2_Value' => 'value2',
     ];
 
-    /**
-     * @var ValueTrait
-     */
-    private $valueTraitClass;
-
     public function setUp()
     {
-        $this->valueTraitClass = new class (ValueTraitTest::VALUE_DEFAULT, ValueTraitTest::VALUE_BIND_DEFAULT) {
-            use ValueTrait;
-
-            /**
-             * @param array $valueDataDefault
-             * @param array $bindValueDataDefault
-             */
-            public function __construct(array $valueDataDefault, array $bindValueDataDefault)
-            {
-                $this->value = $valueDataDefault;
-                $this->bindValue = $bindValueDataDefault;
-            }
-
-            /**
-             * @return array
-             */
-            public function valueData(): array
-            {
-                return $this->value;
-            }
-
-            public function clearValueData()
-            {
-                $this->value = [];
-            }
-
-            /**
-             * @return null|string
-             */
-            public function buildValueQueryPartPublic(): ?string
-            {
-                return $this->buildValueQueryPart();
-            }
-        };
+        $this->value = static::VALUE_DEFAULT;
+        $this->bindValue = static::VALUE_BIND_DEFAULT;
     }
 
     /**
@@ -71,7 +36,7 @@ class ValueTraitTest extends AbstractTraitTestCase
      */
     public function testValue($column, $value)
     {
-        $object = $this->valueTraitClass->value($column, $value);
+        $object = $this->value($column, $value);
         $this->assertObjectUsesTrait(ValueTrait::class, $object);
 
         $this->assertEquals(
@@ -103,7 +68,7 @@ class ValueTraitTest extends AbstractTraitTestCase
                     []
                 )
             ),
-            $this->valueTraitClass->valueData()
+            $this->value
         );
         $this->assertEquals(
             \array_merge(
@@ -137,7 +102,7 @@ class ValueTraitTest extends AbstractTraitTestCase
                     []
                 )
             ),
-            $this->valueTraitClass->bindValueData()
+            $this->bindValue
         );
     }
 
@@ -149,24 +114,24 @@ class ValueTraitTest extends AbstractTraitTestCase
      */
     public function testBuildValueQueryPart($column, $value)
     {
-        $this->valueTraitClass->value($column, $value);
+        $this->value($column, $value);
 
         $this->assertEquals(
             \sprintf(
                 '(%s) %s (%s)',
-                \implode(', ', \array_keys($this->valueTraitClass->valueData())),
+                \implode(', ', \array_keys($this->value)),
                 ConditionEnum::VALUES,
-                \implode(', ', $this->valueTraitClass->valueData())
+                \implode(', ', $this->value)
             ),
-            $this->valueTraitClass->buildValueQueryPartPublic()
+            $this->buildValueQueryPart()
         );
     }
 
     public function testBuildValueQueryPartWhenEmpty()
     {
-        $this->valueTraitClass->clearValueData();
+        $this->value = [];
 
-        $this->assertEquals(null, $this->valueTraitClass->buildValueQueryPartPublic());
+        $this->assertEquals(null, $this->buildValueQueryPart());
     }
 
     /**
@@ -213,25 +178,22 @@ class ValueTraitTest extends AbstractTraitTestCase
 
     public function testBindValue()
     {
-        $this->assertEquals(static::VALUE_BIND_DEFAULT, $this->valueTraitClass->bindValueData());
+        $this->assertEquals(static::VALUE_BIND_DEFAULT, $this->bindValue);
 
-        $object = $this->valueTraitClass->bindValue(static::VALUE_BIND);
+        $object = $this->bindValue(static::VALUE_BIND);
         $this->assertObjectUsesTrait(ValueTrait::class, $object);
-        $this->assertEquals(
-            \array_merge(static::VALUE_BIND_DEFAULT, static::VALUE_BIND),
-            $this->valueTraitClass->bindValueData()
-        );
+        $this->assertEquals(\array_merge(static::VALUE_BIND_DEFAULT, static::VALUE_BIND), $this->bindValue);
 
-        $object = $this->valueTraitClass->bindValue(static::VALUE_BIND_OVERRIDE);
+        $object = $this->bindValue(static::VALUE_BIND_OVERRIDE);
         $this->assertObjectUsesTrait(ValueTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::VALUE_BIND_DEFAULT, static::VALUE_BIND, static::VALUE_BIND_OVERRIDE),
-            $this->valueTraitClass->bindValueData()
+            $this->bindValue
         );
     }
 
     public function testBindValueData()
     {
-        $this->assertEquals(static::VALUE_BIND_DEFAULT, $this->valueTraitClass->bindValueData());
+        $this->assertEquals(static::VALUE_BIND_DEFAULT, $this->bindValueData());
     }
 }

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -14,12 +14,12 @@ trait TableTrait
 
     /**
      * @param string[]|string $table
-     * @param bool $clearAll
+     * @param boolean $clearAll
      *
      * @return $this
      * @throws QueryBuilderException
      */
-    public function table($table, bool $clearAll = false)
+    public function table($table, $clearAll = false)
     {
         if (empty($table)) {
             throw new QueryBuilderException('You must pass $table to table method!');
@@ -39,17 +39,17 @@ trait TableTrait
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    protected function buildTableQueryPart(): ?string
+    protected function buildTableQueryPart()
     {
-        return \reset($this->table) ?: null;
+        return \reset($this->table);
     }
 
     /**
      * @return null|string
      */
-    protected function buildFromQueryPart(): ?string
+    protected function buildFromQueryPart()
     {
         return empty($this->table)
             ? null

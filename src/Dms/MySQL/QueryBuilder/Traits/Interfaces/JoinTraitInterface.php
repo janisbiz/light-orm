@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -12,7 +12,7 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function join(string $join, string $tableName, string $onCondition, array $bind = []);
+    public function join($join, $tableName, $onCondition, array $bind = []);
 
     /**
      * @param string $join
@@ -23,7 +23,7 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function joinAs(string $join, string $tableName, string $alias, string $onCondition, array $bind = []);
+    public function joinAs($join, $tableName, $alias, $onCondition, array $bind = []);
 
     /**
      * @param string $tableName
@@ -32,26 +32,7 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function innerJoin(string $tableName, string $onCondition, array $bind = []);
-
-    /**
-     * @param string $tableName
-     * @param string $onCondition
-     * @param string $alias
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function innerJoinAs(string $tableName, string $alias, string $onCondition, array $bind = []);
-
-    /**
-     * @param string $tableName
-     * @param string $onCondition
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function leftJoin(string $tableName, string $onCondition, array $bind = []);
+    public function innerJoin($tableName, $onCondition, array $bind = []);
 
     /**
      * @param string $tableName
@@ -61,7 +42,7 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function leftJoinAs(string $tableName, string $alias, string $onCondition, array $bind = []);
+    public function innerJoinAs($tableName, $alias, $onCondition, array $bind = []);
 
     /**
      * @param string $tableName
@@ -70,26 +51,7 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function rightJoin(string $tableName, string $onCondition, array $bind = []);
-
-    /**
-     * @param string $tableName
-     * @param string $alias
-     * @param string $onCondition
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function rightJoinAs(string $tableName, string $alias, string $onCondition, array $bind = []);
-
-    /**
-     * @param string $tableName
-     * @param string $onCondition
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function crossJoin(string $tableName, string $onCondition, array $bind = []);
+    public function leftJoin($tableName, $onCondition, array $bind = []);
 
     /**
      * @param string $tableName
@@ -99,7 +61,7 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function crossJoinAs(string $tableName, string $alias, string $onCondition, array $bind = []);
+    public function leftJoinAs($tableName, $alias, $onCondition, array $bind = []);
 
     /**
      * @param string $tableName
@@ -108,7 +70,7 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function fullOuterJoin(string $tableName, string $onCondition, array $bind = []);
+    public function rightJoin($tableName, $onCondition, array $bind = []);
 
     /**
      * @param string $tableName
@@ -118,5 +80,43 @@ interface JoinTraitInterface
      *
      * @return $this
      */
-    public function fullOuterJoinAs(string $tableName, string $alias, string $onCondition, array $bind = []);
+    public function rightJoinAs($tableName, $alias, $onCondition, array $bind = []);
+
+    /**
+     * @param string $tableName
+     * @param string $onCondition
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function crossJoin($tableName, $onCondition, array $bind = []);
+
+    /**
+     * @param string $tableName
+     * @param string $onCondition
+     * @param string $alias
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function crossJoinAs($tableName, $alias, $onCondition, array $bind = []);
+
+    /**
+     * @param string $tableName
+     * @param string $onCondition
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function fullOuterJoin($tableName, $onCondition, array $bind = []);
+
+    /**
+     * @param string $tableName
+     * @param string $alias
+     * @param string $onCondition
+     * @param array $bind
+     *
+     * @return $this
+     */
+    public function fullOuterJoinAs($tableName, $alias, $onCondition, array $bind = []);
 }

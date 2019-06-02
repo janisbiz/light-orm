@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -23,7 +23,7 @@ trait LimitOffsetTrait
      * @return $this
      * @throws QueryBuilderException
      */
-    public function limit(int $limit)
+    public function limit($limit)
     {
         if (0 >= $limit) {
             throw new QueryBuilderException('You must pass $limit to limit method!');
@@ -40,7 +40,7 @@ trait LimitOffsetTrait
      * @return $this
      * @throws QueryBuilderException
      */
-    public function offset(int $offset)
+    public function offset($offset)
     {
         if (0 > $offset) {
             throw new QueryBuilderException('You must pass $offset to offset method!');
@@ -61,7 +61,7 @@ trait LimitOffsetTrait
      *
      * @return $this
      */
-    public function limitWithOffset(int $limit, int $offset)
+    public function limitWithOffset($limit, $offset)
     {
         return $this->limit($limit)->offset($offset);
     }
@@ -69,7 +69,7 @@ trait LimitOffsetTrait
     /**
      * @return null|string
      */
-    protected function buildLimitQueryPart(): ?string
+    protected function buildLimitQueryPart()
     {
         return empty($this->limit) ? null : \sprintf('%s %d', ConditionEnum::LIMIT, $this->limit);
     }
@@ -77,7 +77,7 @@ trait LimitOffsetTrait
     /**
      * @return null|string
      */
-    protected function buildOffsetQueryPart(): ?string
+    protected function buildOffsetQueryPart()
     {
         return empty($this->offset) ? null : \sprintf('%s %d', ConditionEnum::OFFSET, $this->offset);
     }

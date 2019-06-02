@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -19,7 +19,7 @@ trait HavingTrait
      * @return $this
      * @throws QueryBuilderException
      */
-    public function having(string $condition, array $bind = [])
+    public function having($condition, array $bind = [])
     {
         if (!$condition) {
             throw new QueryBuilderException('You must pass $condition to having function!');
@@ -37,7 +37,7 @@ trait HavingTrait
     /**
      * @return null|string
      */
-    protected function buildHavingQueryPart(): ?string
+    protected function buildHavingQueryPart()
     {
         return empty($this->having)
             ? null

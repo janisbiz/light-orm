@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Connection;
 
@@ -15,7 +15,7 @@ class ConnectionConfig extends AbstractConnectionConfig
      * @param string $dbname
      * @param int $port
      */
-    public function __construct(string $host, string $username, string $password, string $dbname, int $port = 3306)
+    public function __construct($host, $username, $password, $dbname, $port = 3306)
     {
         parent::__construct($host, $username, $password, $dbname, static::ADAPTER, $port);
     }
@@ -23,7 +23,7 @@ class ConnectionConfig extends AbstractConnectionConfig
     /**
      * @return string
      */
-    public function generateDsn(): string
+    public function generateDsn()
     {
         return \sprintf(
             '%s:host=%s;dbname=%s;charset=utf8mb4;port=%d',
@@ -37,7 +37,7 @@ class ConnectionConfig extends AbstractConnectionConfig
     /**
      * @return string
      */
-    public function getAdapterConnectionClass(): string
+    public function getAdapterConnectionClass()
     {
         return Connection::class;
     }

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -18,7 +18,7 @@ trait OnDuplicateKeyUpdateTrait
      * @throws QueryBuilderException
      * @return $this
      */
-    public function onDuplicateKeyUpdate(string $column, $value)
+    public function onDuplicateKeyUpdate($column, $value)
     {
         if (empty($column)) {
             throw new QueryBuilderException('You must pass $column to onDuplicateKeyUpdate function!');
@@ -54,7 +54,7 @@ trait OnDuplicateKeyUpdateTrait
     /**
      * @return null|string
      */
-    protected function buildOnDuplicateKeyUpdateQueryPart(): ?string
+    protected function buildOnDuplicateKeyUpdateQueryPart()
     {
         return empty($this->onDuplicateKeyUpdate)
             ? null

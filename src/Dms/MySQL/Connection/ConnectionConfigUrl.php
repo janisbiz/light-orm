@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Connection;
 
@@ -7,7 +7,7 @@ class ConnectionConfigUrl extends ConnectionConfig
     /**
      * @param string $url
      */
-    public function __construct(string $url)
+    public function __construct($url)
     {
         $urlParts = \parse_url($url);
 

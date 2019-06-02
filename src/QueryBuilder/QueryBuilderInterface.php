@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\QueryBuilder;
 
@@ -9,22 +9,22 @@ interface QueryBuilderInterface
     /**
      * @return string
      */
-    public function buildQuery(): string;
+    public function buildQuery();
 
     /**
      * @return null|EntityInterface
      */
-    public function getEntity(): ?EntityInterface;
+    public function getEntity();
 
     /**
      * @return string
      */
-    public function toString(): string;
+    public function toString();
 
     /**
      * @param bool $toString
      *
      * @return int
      */
-    public function count(bool $toString = false);
+    public function count($toString = false);
 }

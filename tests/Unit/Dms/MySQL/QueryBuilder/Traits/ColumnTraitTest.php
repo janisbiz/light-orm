@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -7,6 +7,8 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ColumnTrait;
 
 class ColumnTraitTest extends AbstractTraitTestCase
 {
+    use ColumnTrait;
+
     const COLUMN_DEFAULT = [
         'column1',
         'column2',
@@ -18,70 +20,34 @@ class ColumnTraitTest extends AbstractTraitTestCase
     const COLUMN_EMPTY = '';
     const COLUMN = 'column5';
 
-    /**
-     * @var ColumnTrait
-     */
-    private $columnTraitClass;
-
     public function setUp()
     {
-        $this->columnTraitClass = new class (ColumnTraitTest::COLUMN_DEFAULT) {
-            use ColumnTrait;
-
-            /**
-             * @param array $columnDefault
-             */
-            public function __construct(array $columnDefault)
-            {
-                $this->column = $columnDefault;
-            }
-
-            /**
-             * @return array
-             */
-            public function columnData(): array
-            {
-                return $this->column;
-            }
-
-            public function clearColumnData()
-            {
-                $this->column = [];
-            }
-
-            /**
-             * @return string
-             */
-            public function buildColumnQueryPartPublic(): string
-            {
-                return $this->buildColumnQueryPart();
-            }
-        };
+        $this->column = static::COLUMN_DEFAULT;
     }
 
     public function testColumn()
     {
-        $this->assertEquals(static::COLUMN_DEFAULT, $this->columnTraitClass->columnData());
+        $this->assertEquals(static::COLUMN_DEFAULT, $this->column);
 
-        $object = $this->columnTraitClass->column(static::COLUMN_ARRAY);
+        $object = $this->column(static::COLUMN_ARRAY);
         $this->assertObjectUsesTrait(ColumnTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY),
-            $this->columnTraitClass->columnData()
+            $this->column
         );
 
-        $object = $this->columnTraitClass->column(static::COLUMN);
+        $object = $this->column(static::COLUMN);
         $this->assertObjectUsesTrait(ColumnTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY, [static::COLUMN]),
-            $this->columnTraitClass->columnData()
+            $this->column
         );
     }
 
     public function testColumnClearAll()
     {
-        $this->columnTraitClass->column(static::COLUMN, true);
-        $this->assertEquals([static::COLUMN], $this->columnTraitClass->columnData());
+        $this->column(static::COLUMN, true);
+        $this->assertEquals([static::COLUMN], $this->column);
     }
 
     public function testColumnWhenEmpty()
@@ -89,23 +55,20 @@ class ColumnTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $column to column method!');
 
-        $this->columnTraitClass->column(static::COLUMN_EMPTY);
+        $this->column(static::COLUMN_EMPTY);
     }
 
     public function testBuildColumnQueryPart()
     {
-        $this->columnTraitClass->column(static::COLUMN);
+        $this->column(static::COLUMN);
 
-        $this->assertEquals(
-            \implode(', ', $this->columnTraitClass->columnData()),
-            $this->columnTraitClass->buildColumnQueryPartPublic()
-        );
+        $this->assertEquals(\implode(', ', $this->column), $this->buildColumnQueryPart());
     }
 
     public function testBuildColumnQueryPartWhenEmpty()
     {
-        $this->columnTraitClass->clearColumnData();
+        $this->column = null;
 
-        $this->assertEquals('*', $this->columnTraitClass->buildColumnQueryPartPublic());
+        $this->assertEquals('*', $this->buildColumnQueryPart());
     }
 }

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit;
 
@@ -10,8 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 class ConnectionPoolTest extends TestCase
 {
-    use ReflectionTrait;
-
     const CONNECTION_CONFIG_HOST = 'host';
     const CONNECTION_CONFIG_USERNAME = 'username';
     const CONNECTION_CONFIG_PASSWORD = 'password';
@@ -80,21 +78,6 @@ class ConnectionPoolTest extends TestCase
             $this->connectionPoolMock->getConnection(static::CONNECTION_CONFIG_DBNAME_TWO)
             instanceof ConnectionInterface
         );
-    }
-
-    public function testGetConnectionExceptionWhenConnectionConfigIsEmpty()
-    {
-        $this
-            ->createAccessibleProperty($this->connectionPoolMock, 'connectionConfig')
-            ->setValue($this->connectionPoolMock, [])
-        ;
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp(
-            '/Could not find connection by name "(.*)"\!/'
-        );
-
-        $this->connectionPoolMock->getConnection(static::CONNECTION_CONFIG_DBNAME_NON_EXISTENT);
     }
 
     public function testGetConnectionException()

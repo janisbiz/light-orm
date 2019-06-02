@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Paginator;
 
@@ -11,7 +11,7 @@ interface PaginatorInterface
      *
      * @return EntityInterface[]|string
      */
-    public function paginate(bool $toString = false);
+    public function paginate($toString = false);
 
     /**
      * Same behavior as paginate method, except executing count to get the total result count!
@@ -20,40 +20,40 @@ interface PaginatorInterface
      *
      * @return EntityInterface[]|string
      */
-    public function paginateFake(bool $toString = false);
+    public function paginateFake($toString = false);
 
     /**
      * @return array
      */
-    public function getPageNumbers(): array;
+    public function getPageNumbers();
 
     /**
      * @return int
      */
-    public function getTotalPages(): int;
+    public function getTotalPages();
 
     /**
      * @return int
      */
-    public function getCurrentPageNumber(): int;
+    public function getCurrentPageNumber();
 
     /**
      * @return null|int
      */
-    public function getNextPageNumber(): ?int;
+    public function getNextPageNumber();
 
     /**
      * @return null|int
      */
-    public function getPreviousPageNumber(): ?int;
+    public function getPreviousPageNumber();
 
     /**
      * @return int
      */
-    public function getResultTotalCount(): int;
+    public function getResultTotalCount();
 
     /**
      * @return int
      */
-    public function getPageSize(): int;
+    public function getPageSize();
 }

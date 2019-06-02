@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Generator\Writer;
 
@@ -50,7 +50,7 @@ class RepositoryClassWriter extends AbstractWriter
     /**
      * @return WriterConfigInterface
      */
-    protected function getWriterConfig(): WriterConfigInterface
+    protected function getWriterConfig()
     {
         return $this->writerConfig;
     }
@@ -61,11 +61,11 @@ class RepositoryClassWriter extends AbstractWriter
      *
      * @return string
      */
-    protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
+    protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable)
     {
         return /** @lang PHP */
             <<<PHP
-<?php declare(strict_types=1);
+<?php
 
 namespace {$this->generateNamespace($dmsDatabase)};
 
@@ -77,7 +77,7 @@ class {$this->generateClassName($dmsTable)} extends AbstractRepository
     /**
     * @return string
     */
-    protected function getModelClass(): string
+    protected function getModelClass()
     {
         return {$this->entityClassWriter->generateClassName($dmsTable)}::class;
     }

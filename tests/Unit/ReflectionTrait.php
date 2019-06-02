@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit;
 
@@ -10,7 +10,7 @@ trait ReflectionTrait
      *
      * @return \ReflectionMethod
      */
-    protected function createAccessibleMethod($class, string $method)
+    protected function createAccessibleMethod($class, $method)
     {
         $reflectionMethod = new \ReflectionMethod($class, $method);
         $reflectionMethod->setAccessible(true);
@@ -24,7 +24,7 @@ trait ReflectionTrait
      *
      * @return \ReflectionProperty
      */
-    protected function createAccessibleProperty($class, string $property)
+    protected function createAccessibleProperty($class, $property)
     {
         $reflectionProperty = new \ReflectionProperty($class, $property);
         $reflectionProperty->setAccessible(true);

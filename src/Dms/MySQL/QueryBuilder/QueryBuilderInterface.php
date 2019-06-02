@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 
@@ -12,59 +12,59 @@ interface QueryBuilderInterface extends BaseQueryBuilderInterface, TraitsInterfa
      *
      * @return string|EntityInterface
      */
-    public function insert(bool $toString = false);
+    public function insert($toString = false);
     /**
      * @param bool $toString
      *
      * @return string|EntityInterface
      */
-    public function insertIgnore(bool $toString = false);
+    public function insertIgnore($toString = false);
     /**
      * @param bool $toString
      *
      * @return string|EntityInterface
      */
-    public function replace(bool $toString = false);
+    public function replace($toString = false);
 
     /**
      * @param bool $toString
      *
      * @return string|EntityInterface[]
      */
-    public function find(bool $toString = false);
+    public function find($toString = false);
 
     /**
      * @param bool $toString
      *
      * @return null|string|EntityInterface
      */
-    public function findOne(bool $toString = false);
+    public function findOne($toString = false);
 
     /**
      * @param bool $toString
      *
      * @return bool|string|EntityInterface
      */
-    public function update(bool $toString = false);
+    public function update($toString = false);
 
     /**
      * @param bool $toString
      *
      * @return bool|string|EntityInterface
      */
-    public function updateIgnore(bool $toString = false);
+    public function updateIgnore($toString = false);
 
     /**
      * @param bool $toString
      *
      * @return string|bool
      */
-    public function delete(bool $toString = false);
+    public function delete($toString = false);
 
     /**
      * @param bool $toString
      *
      * @return int
      */
-    public function count(bool $toString = false);
+    public function count($toString = false);
 }

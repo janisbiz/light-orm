@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -9,10 +9,10 @@ interface CommandTraitInterface
      *
      * @return $this
      */
-    public function command(string $command);
+    public function command($command);
 
     /**
      * @return string
      */
-    public function commandData(): string;
+    public function commandData();
 }

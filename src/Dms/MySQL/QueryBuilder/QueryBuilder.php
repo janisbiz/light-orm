@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 
@@ -34,7 +34,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return string|EntityInterface
      */
-    public function insert(bool $toString = false)
+    public function insert($toString = false)
     {
         $this->command(CommandEnum::INSERT_INTO);
 
@@ -46,7 +46,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return string|EntityInterface
      */
-    public function insertIgnore(bool $toString = false)
+    public function insertIgnore($toString = false)
     {
         $this->command(CommandEnum::INSERT_IGNORE_INTO);
 
@@ -58,7 +58,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return string|EntityInterface
      */
-    public function replace(bool $toString = false)
+    public function replace($toString = false)
     {
         $this->command(CommandEnum::REPLACE_INTO);
 
@@ -70,7 +70,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return string|EntityInterface[]
      */
-    public function find(bool $toString = false)
+    public function find($toString = false)
     {
         $this->command(CommandEnum::SELECT);
 
@@ -82,7 +82,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return null|string|EntityInterface
      */
-    public function findOne(bool $toString = false)
+    public function findOne($toString = false)
     {
         $this->command(CommandEnum::SELECT);
 
@@ -94,7 +94,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return null|string|bool|EntityInterface
      */
-    public function update(bool $toString = false)
+    public function update($toString = false)
     {
         $this->command(CommandEnum::UPDATE);
 
@@ -106,7 +106,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return null|string|bool|EntityInterface
      */
-    public function updateIgnore(bool $toString = false)
+    public function updateIgnore($toString = false)
     {
         $this->command(CommandEnum::UPDATE_IGNORE);
 
@@ -118,7 +118,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return string|bool
      */
-    public function delete(bool $toString = false)
+    public function delete($toString = false)
     {
         $this->command(CommandEnum::DELETE);
 
@@ -130,7 +130,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return int
      */
-    public function count(bool $toString = false)
+    public function count($toString = false)
     {
         $this->command(CommandEnum::SELECT);
 
@@ -141,7 +141,7 @@ class QueryBuilder implements QueryBuilderInterface
      * @return string
      * @throws QueryBuilderException
      */
-    public function buildQuery(): string
+    public function buildQuery()
     {
         if (empty($this->command)) {
             throw new QueryBuilderException('Could not build query, as there is no command provided!');
@@ -239,7 +239,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @return null|EntityInterface
      */
-    public function getEntity(): ?EntityInterface
+    public function getEntity()
     {
         return $this->entity;
     }
@@ -247,7 +247,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * @return string
      */
-    public function toString(): string
+    public function toString()
     {
         return $this->generateSqlExecuteString($this->buildQuery());
     }
@@ -257,7 +257,7 @@ class QueryBuilder implements QueryBuilderInterface
      *
      * @return string
      */
-    protected function generateSqlExecuteString($query): string
+    protected function generateSqlExecuteString($query)
     {
         foreach ($this->bind as $bindName => $bindValue) {
             $query = \preg_replace(

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
@@ -36,7 +36,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @return string
      */
-    public function generateClassName(DmsTableInterface $dmsTable): string
+    public function generateClassName(DmsTableInterface $dmsTable)
     {
         return \implode(
             '',
@@ -54,7 +54,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @return string
      */
-    public function generateFQDN(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
+    public function generateFQDN(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable)
     {
         return \sprintf('%s\\%s', $this->generateNamespace($dmsDatabase), $this->generateClassName($dmsTable));
     }
@@ -62,9 +62,9 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * @param DmsDatabaseInterface $dmsDatabase
      *
-     * @return string[]
+     * @return array|string[]
      */
-    public function read(DmsDatabaseInterface $dmsDatabase): array
+    public function read(DmsDatabaseInterface $dmsDatabase)
     {
         $fileDirectory = $this->generateFileDirectory($dmsDatabase);
         $handle = @\opendir($fileDirectory);
@@ -100,14 +100,14 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * @return WriterConfigInterface
      */
-    abstract protected function getWriterConfig(): WriterConfigInterface;
+    abstract protected function getWriterConfig();
 
     /**
      * @param DmsDatabaseInterface $dmsDatabase
      *
      * @return string
      */
-    protected function generateFileDirectory(DmsDatabaseInterface $dmsDatabase): string
+    protected function generateFileDirectory(DmsDatabaseInterface $dmsDatabase)
     {
         return \rtrim(
             \implode(
@@ -131,7 +131,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @return string
      */
-    protected function generateFileName(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
+    protected function generateFileName(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable)
     {
         return \sprintf(
             '%s.php',
@@ -155,7 +155,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @return $this
      */
-    protected function writeFile(string $fileName, string $fileContent, $skipIfExists = false): AbstractWriter
+    protected function writeFile($fileName, $fileContent, $skipIfExists = false)
     {
         if (true === $skipIfExists && \file_exists($fileName)) {
             return $this;
@@ -175,11 +175,11 @@ abstract class AbstractWriter implements WriterInterface
 
     /**
      * @param string $fileName
-     * @param string[] $existingFiles
+     * @param array $existingFiles
      *
      * @return $this
      */
-    protected function removeFileFromExistingFiles(string $fileName, array &$existingFiles): AbstractWriter
+    protected function removeFileFromExistingFiles($fileName, array &$existingFiles)
     {
         foreach ($existingFiles as $i => $existingFile) {
             if (\basename($fileName) === \basename($existingFile)) {

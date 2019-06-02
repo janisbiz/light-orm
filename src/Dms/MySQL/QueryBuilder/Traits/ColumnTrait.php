@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
@@ -18,7 +18,7 @@ trait ColumnTrait
      * @return $this
      * @throws QueryBuilderException
      */
-    public function column($column, bool $clearAll = false)
+    public function column($column, $clearAll = false)
     {
         if (empty($column)) {
             throw new QueryBuilderException('You must pass $column to column method!');
@@ -40,7 +40,7 @@ trait ColumnTrait
     /**
      * @return string
      */
-    protected function buildColumnQueryPart(): string
+    protected function buildColumnQueryPart()
     {
         return empty($this->column) ? '*' : \implode(', ', $this->column);
     }

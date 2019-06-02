@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -20,47 +20,19 @@ MySQL;
         'col1' => 'val1',
     ];
 
+    use UnionTrait;
+    use BindTrait;
+
     /**
      * @var QueryBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $queryBuilder;
-
-    /**
-     * @var BindTrait|UnionTrait
-     */
-    private $unionTraitClass;
 
     public function setUp()
     {
         $this->queryBuilder = $this->createMock(QueryBuilderInterface::class);
         $this->queryBuilder->method('bindData')->willReturn(static::QUERY_BUILDER_BIND_DATA);
         $this->queryBuilder->method('buildQuery')->willReturn(static::QUERY_BUILDER_QUERY);
-
-        $this->unionTraitClass = new class () {
-            use BindTrait;
-            use UnionTrait;
-
-            /**
-             * @return array
-             */
-            public function unionAllData(): array
-            {
-                return $this->unionAll;
-            }
-
-            public function clearUnionAllData()
-            {
-                $this->unionAll = [];
-            }
-
-            /**
-             * @return null|string
-             */
-            public function buildUnionAllQueryPartPublic(): ?string
-            {
-                return $this->buildUnionAllQueryPart();
-            }
-        };
     }
 
     public function testUnionAll()
@@ -74,10 +46,10 @@ MySQL;
         ];
 
         foreach ($unionAllQueries as $unionAllQuery) {
-            $this->unionTraitClass->unionAll($unionAllQuery);
+            $this->unionAll($unionAllQuery);
         }
 
-        $this->assertCount(\count($unionAllQueries), $this->unionTraitClass->unionAllData());
+        $this->assertCount(\count($unionAllQueries), $this->unionAll);
         $this->assertEquals(
             \array_map(
                 function (QueryBuilderInterface $unionAllQuery) {
@@ -85,10 +57,10 @@ MySQL;
                 },
                 $unionAllQueries
             ),
-            $this->unionTraitClass->unionAllData()
+            $this->unionAll
         );
-        $this->assertCount(\count(self::QUERY_BUILDER_BIND_DATA), $this->unionTraitClass->bindData());
-        $this->assertEquals(self::QUERY_BUILDER_BIND_DATA, $this->unionTraitClass->bindData());
+        $this->assertCount(\count(self::QUERY_BUILDER_BIND_DATA), $this->bindData());
+        $this->assertEquals(self::QUERY_BUILDER_BIND_DATA, $this->bindData());
     }
 
     public function testUnionAllWhenInvalidQueryBuilderPassed()
@@ -96,7 +68,7 @@ MySQL;
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('$queryBuilder should be with valid command! Valid command: "SELECT"');
 
-        $this->unionTraitClass->unionAll($this->queryBuilder);
+        $this->unionAll($this->queryBuilder);
     }
 
     public function testBuildUnionAllQueryPart()
@@ -110,7 +82,7 @@ MySQL;
         ];
 
         foreach ($unionAllQueries as $unionAllQuery) {
-            $this->unionTraitClass->unionAll($unionAllQuery);
+            $this->unionAll($unionAllQuery);
         }
 
         $this->assertEquals(
@@ -123,14 +95,14 @@ MySQL;
                     $unionAllQueries
                 )
             ),
-            $this->unionTraitClass->buildUnionAllQueryPartPublic()
+            $this->buildUnionAllQueryPart()
         );
     }
 
     public function testBuildUnionAllQueryPartWhenEmpty()
     {
-        $this->unionTraitClass->clearUnionAllData();
+        $this->unionAll = [];
 
-        $this->assertEquals(null, $this->unionTraitClass->buildUnionAllQueryPartPublic());
+        $this->assertEquals(null, $this->buildUnionAllQueryPart());
     }
 }

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -12,5 +12,5 @@ interface OrderByTraitInterface
      *
      * @return $this
      */
-    public function orderBy($orderBy, string $keyword = KeywordEnum::ASC);
+    public function orderBy($orderBy, $keyword = KeywordEnum::ASC);
 }

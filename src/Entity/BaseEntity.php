@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Entity;
 
@@ -46,7 +46,7 @@ class BaseEntity implements EntityInterface
      *
      * @return string|int|bool
      */
-    public function __get(string $name)
+    public function __get($name)
     {
         if (\array_key_exists($name, $this->data)) {
             return $this->data[$name];
@@ -61,7 +61,7 @@ class BaseEntity implements EntityInterface
      * @param string $name
      * @param string|int|bool $value
      */
-    public function __set(string $name, $value)
+    public function __set($name, $value)
     {
         $this->data[$name] = $value;
 
@@ -78,7 +78,7 @@ class BaseEntity implements EntityInterface
      * @throws EntityException
      * @return bool|null|string|$this
      */
-    public function __call(string $name, ?array $arguments)
+    public function __call($name, $arguments)
     {
         $methodName = \substr($name, 0, 3);
         \preg_match_all('/[A-Z0-9][^A-Z0-9]*/', $name, $results);
@@ -118,7 +118,7 @@ class BaseEntity implements EntityInterface
      * @return null|array|string|int|double
      * @throws EntityException
      */
-    public function &data(?string $key = null)
+    public function &data($key = null)
     {
         if (null !== $key && \is_string($key)) {
             if (!\array_key_exists($key, $this->data)) {
@@ -137,7 +137,7 @@ class BaseEntity implements EntityInterface
      * @return null|array|string|int|double
      * @throws EntityException
      */
-    public function &dataOriginal(?string $key = null)
+    public function &dataOriginal($key = null)
     {
         if (null !== $key && \is_string($key)) {
             if (!\array_key_exists($key, $this->data)) {
@@ -153,7 +153,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return bool
      */
-    public function isNew(): bool
+    public function isNew()
     {
         return $this->isNew;
     }
@@ -161,7 +161,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return bool
      */
-    public function isSaved(): bool
+    public function isSaved()
     {
         return $this->isSaved;
     }
@@ -169,7 +169,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return string[]
      */
-    public function primaryKeys(): array
+    public function primaryKeys()
     {
         return $this->primaryKeys;
     }
@@ -177,7 +177,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return string[]
      */
-    public function primaryKeysAutoIncrement(): array
+    public function primaryKeysAutoIncrement()
     {
         return $this->primaryKeysAutoIncrement;
     }
@@ -185,7 +185,7 @@ class BaseEntity implements EntityInterface
     /**
      * @return string[]
      */
-    public function columns(): array
+    public function columns()
     {
         return $this->columns;
     }

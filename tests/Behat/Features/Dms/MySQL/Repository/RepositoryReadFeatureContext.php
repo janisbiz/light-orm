@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
@@ -12,7 +12,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
      * @param string $method
      * @param TableNode $rows
      */
-    public function iCallMethodOnRepositoryWhichWillReturnFollowingRows(string $method, TableNode $rows)
+    public function iCallMethodOnRepositoryWhichWillReturnFollowingRows($method, TableNode $rows)
     {
         static::$entities = static::$repository->$method();
 
@@ -98,7 +98,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @throws \Exception
      */
-    public function iCallMethodOnRepositoryWhichWillReturnFollowingInteger(string $method, int $integer)
+    public function iCallMethodOnRepositoryWhichWillReturnFollowingInteger($method, $integer)
     {
         $returnedInteger = static::$repository->$method();
 
@@ -120,11 +120,8 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
      * @param int $pageSize
      * @param int $currentPage
      */
-    public function iCallPaginatorMethodOnRepositoryWithPageSizeOfAndCurrentPage(
-        string $method,
-        int $pageSize,
-        int $currentPage
-    ) {
+    public function iCallPaginatorMethodOnRepositoryWithPageSizeOfAndCurrentPage($method, $pageSize, $currentPage)
+    {
         static::$paginator = static::$repository->$method($pageSize, $currentPage);
     }
 
@@ -133,7 +130,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $method
      */
-    public function iCallMethodOnPaginatorWhichWillReturnEntities(string $method)
+    public function iCallMethodOnPaginatorWhichWillReturnEntities($method)
     {
         static::$entities = static::$paginator->$method();
     }
@@ -146,7 +143,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @throws \Exception
      */
-    public function iCallMethodOnPaginatorWhichWillReturnFollowingInteger(string $method, int $integer)
+    public function iCallMethodOnPaginatorWhichWillReturnFollowingInteger($method, $integer)
     {
         $returnedInteger = static::$paginator->$method();
 

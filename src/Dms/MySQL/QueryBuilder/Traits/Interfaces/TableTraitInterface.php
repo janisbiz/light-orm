@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
@@ -6,9 +6,9 @@ interface TableTraitInterface
 {
     /**
      * @param array|string $table
-     * @param bool $clearAll
+     * @param boolean $clearAll
      *
      * @return $this
      */
-    public function table($table, bool $clearAll = false);
+    public function table($table, $clearAll = false);
 }

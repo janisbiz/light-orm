@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
@@ -8,6 +8,8 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\TableTrait;
 
 class TableTraitTest extends AbstractTraitTestCase
 {
+    use TableTrait;
+
     const TABLE_DEFAULT = [
         'table1',
         'table2',
@@ -19,78 +21,34 @@ class TableTraitTest extends AbstractTraitTestCase
     const TABLE_EMPTY = '';
     const TABLE = 'table5';
 
-    /**
-     * @var TableTrait
-     */
-    private $tableTraitClass;
-
     public function setUp()
     {
-        $this->tableTraitClass = new class (TableTraitTest::TABLE_DEFAULT) {
-            use TableTrait;
-
-            /**
-             * @param array $tableDataDefault
-             */
-            public function __construct(array $tableDataDefault)
-            {
-                $this->table = $tableDataDefault;
-            }
-
-            /**
-             * @return array
-             */
-            public function &tableData(): array
-            {
-                return $this->table;
-            }
-            
-            public function clearTableData()
-            {
-                $this->table = [];
-            }
-
-            /**
-             * @return null|string
-             */
-            public function buildTableQueryPartPublic(): ?string
-            {
-                return $this->buildTableQueryPart();
-            }
-
-            /**
-             * @return null|string
-             */
-            public function buildFromQueryPartPublic(): ?string
-            {
-                return $this->buildFromQueryPart();
-            }
-        };
+        $this->table = static::TABLE_DEFAULT;
     }
 
     public function testTable()
     {
-        $this->assertEquals(static::TABLE_DEFAULT, $this->tableTraitClass->tableData());
+        $this->assertEquals(static::TABLE_DEFAULT, $this->table);
 
-        $object = $this->tableTraitClass->table(static::TABLE_ARRAY);
+        $object = $this->table(static::TABLE_ARRAY);
         $this->assertObjectUsesTrait(TableTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY),
-            $this->tableTraitClass->tableData()
+            $this->table
         );
 
-        $object = $this->tableTraitClass->table(static::TABLE);
+        $object = $this->table(static::TABLE);
         $this->assertObjectUsesTrait(TableTrait::class, $object);
         $this->assertEquals(
             \array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY, [static::TABLE]),
-            $this->tableTraitClass->tableData()
+            $this->table
         );
     }
 
     public function testTableClearAll()
     {
-        $this->tableTraitClass->table(static::TABLE, true);
-        $this->assertEquals([static::TABLE], $this->tableTraitClass->tableData());
+        $this->table(static::TABLE, true);
+        $this->assertEquals([static::TABLE], $this->table);
     }
 
     public function testTableWhenEmpty()
@@ -98,40 +56,37 @@ class TableTraitTest extends AbstractTraitTestCase
         $this->expectException(QueryBuilderException::class);
         $this->expectExceptionMessage('You must pass $table to table method!');
 
-        $this->tableTraitClass->table(static::TABLE_EMPTY);
+        $this->table(static::TABLE_EMPTY);
     }
 
     public function testBuildTableQueryPart()
     {
-        $this->tableTraitClass->table(static::TABLE);
+        $this->table(static::TABLE);
 
-        $this->assertEquals(
-            \reset($this->tableTraitClass->tableData()),
-            $this->tableTraitClass->buildTableQueryPartPublic()
-        );
+        $this->assertEquals(\reset($this->table), $this->buildTableQueryPart());
     }
 
     public function testBuildTableQueryPartWhenEmpty()
     {
-        $this->tableTraitClass->clearTableData();
+        $this->table = [];
 
-        $this->assertEquals(null, $this->tableTraitClass->buildTableQueryPartPublic());
+        $this->assertEquals(null, $this->buildTableQueryPart());
     }
 
     public function testBuildFromQueryPart()
     {
-        $this->tableTraitClass->table(static::TABLE);
+        $this->table(static::TABLE);
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::FROM, \implode(', ', $this->tableTraitClass->tableData())),
-            $this->tableTraitClass->buildFromQueryPartPublic()
+            \sprintf('%s %s', ConditionEnum::FROM, \implode(', ', $this->table)),
+            $this->buildFromQueryPart()
         );
     }
 
     public function testBuildFromQueryPartWhenEmpty()
     {
-        $this->tableTraitClass->clearTableData();
+        $this->table = [];
 
-        $this->assertEquals(null, $this->tableTraitClass->buildFromQueryPartPublic());
+        $this->assertEquals(null, $this->buildFromQueryPart());
     }
 }

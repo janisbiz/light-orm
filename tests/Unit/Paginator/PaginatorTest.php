@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Unit\Paginator;
 
@@ -300,7 +300,7 @@ class PaginatorTest extends TestCase
      * @param int $resultCount
      * @param int $expectedTotalPages
      */
-    public function testGetTotalPages(int $resultCount, int $expectedTotalPages)
+    public function testGetTotalPages($resultCount, $expectedTotalPages)
     {
         $this->queryBuilder->method('count')->willReturn($resultCount);
 

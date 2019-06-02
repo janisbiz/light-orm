@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Generator;
 
@@ -37,7 +37,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @throws \Exception
      */
-    public function iCreateGeneratorForConnection(string $connectionName)
+    public function iCreateGeneratorForConnection($connectionName)
     {
         $this->connectionName = $connectionName;
 
@@ -66,7 +66,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @param null|string $directoryOverride
      */
-    public function iAddWritersToGeneratorWithDirectoryOverride(string $directoryOverride)
+    public function iAddWritersToGeneratorWithDirectoryOverride($directoryOverride)
     {
         $directoryOverride = \preg_replace('/\/\\\/', DIRECTORY_SEPARATOR, $directoryOverride);
 
@@ -112,7 +112,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @param string $directory
      */
-    public function iRemoveDirectory(string $directory)
+    public function iRemoveDirectory($directory)
     {
         if (\is_dir($directory)) {
             $recursiveDirectoryIterator = new \RecursiveDirectoryIterator(
@@ -137,7 +137,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
     /**
      * @param null|string $directoryOverride
      */
-    private function addWritersToGenerator(string $directoryOverride = null)
+    private function addWritersToGenerator($directoryOverride = null)
     {
         switch ($this->getConnectionConfig($this->connectionName)['adapter']) {
             case MySQLConnectionConfig::ADAPTER:
@@ -154,7 +154,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
      *
      * @throws \Exception
      */
-    private function addMySQLWriters(?string $directoryOverride)
+    private function addMySQLWriters($directoryOverride)
     {
         foreach ($this->getWritersConfig($this->connectionName) as $writerClass => $writerConfig) {
             switch ($writerClass) {

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
@@ -28,7 +28,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @throws \Exception
      */
-    public function iFlushAllTablesForConnection(string $connectionName)
+    public function iFlushAllTablesForConnection($connectionName)
     {
         $connection = $this->connectionPool->getConnection($connectionName);
 
@@ -55,7 +55,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      * @param string $connectionName
      * @param TableNode $tables
      */
-    public function iFlushFollowingTablesForConnection(string $connectionName, TableNode $tables)
+    public function iFlushFollowingTablesForConnection($connectionName, TableNode $tables)
     {
         $tablesArray = [];
         foreach ($tables->getTable() as $table) {
@@ -70,7 +70,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $connectionName
      */
-    public function iResetDatabaseForConnection(string $connectionName)
+    public function iResetDatabaseForConnection($connectionName)
     {
         $connection = $this->connectionPool->getConnection($connectionName);
         switch (\get_class($connection)) {
@@ -100,7 +100,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @throws \Exception
      */
-    public function iCreateRepository(string $repositoryClass)
+    public function iCreateRepository($repositoryClass)
     {
         if (\array_key_exists($repositoryClass, static::$repositories)) {
             return;
@@ -142,7 +142,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @throws \Exception
      */
-    public function iMakeRepositoryAsActiveRepository(string $repositoryClass)
+    public function iMakeRepositoryAsActiveRepository($repositoryClass)
     {
         if (!\array_key_exists($repositoryClass, static::$repositories)) {
             throw new \Exception(\sprintf(
@@ -161,7 +161,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @throws \Exception
      */
-    public function iHaveExceptionWithMessage(string $message)
+    public function iHaveExceptionWithMessage($message)
     {
         if (null === static::$exception) {
             throw new \Exception('There is no expected exception!');
@@ -181,7 +181,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $connectionName
      */
-    public function iBeginTransactionOnConnection(string $connectionName)
+    public function iBeginTransactionOnConnection($connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->beginTransaction();
     }
@@ -191,7 +191,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $connectionName
      */
-    public function iCommitTransactionOnConnection(string $connectionName)
+    public function iCommitTransactionOnConnection($connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->commit();
     }
@@ -201,7 +201,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @param string $connectionName
      */
-    public function iRollbackTransactionOnConnection(string $connectionName)
+    public function iRollbackTransactionOnConnection($connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->rollBack();
     }
@@ -213,7 +213,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      *
      * @throws \Exception
      */
-    private function flushTables(ConnectionInterface $connection, string $connectionName, array $tables)
+    private function flushTables(ConnectionInterface $connection, $connectionName, array $tables)
     {
         switch (\get_class($connection)) {
             case MySQLConnection::class:

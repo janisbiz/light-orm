@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Connection;
 
@@ -13,7 +13,7 @@ class Connection extends \PDO implements ConnectionInterface
      * @param string $passwd
      * @param array $options
      */
-    public function __construct(string $dsn, string $username, string $passwd, array $options = [])
+    public function __construct($dsn, $username, $passwd, array $options = [])
     {
         $options = \array_merge(
             $options,
@@ -33,7 +33,7 @@ class Connection extends \PDO implements ConnectionInterface
      * @return $this
      * @throws ConnectionPDOException
      */
-    public function beginTransaction(): Connection
+    public function beginTransaction()
     {
         if (false === $this->inTransaction()) {
             if (false === $this->parentBeginTransaction()) {
@@ -47,7 +47,7 @@ class Connection extends \PDO implements ConnectionInterface
     /**
      * @return $this
      */
-    public function setSqlSafeUpdates(): Connection
+    public function setSqlSafeUpdates()
     {
         $this->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
 
@@ -57,7 +57,7 @@ class Connection extends \PDO implements ConnectionInterface
     /**
      * @return $this
      */
-    public function unsetSqlSafeUpdates(): Connection
+    public function unsetSqlSafeUpdates()
     {
         $this->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
 
@@ -71,7 +71,7 @@ class Connection extends \PDO implements ConnectionInterface
      *
      * @return bool
      */
-    protected function parentBeginTransaction(): bool
+    protected function parentBeginTransaction()
     {
         return parent::beginTransaction();
     }

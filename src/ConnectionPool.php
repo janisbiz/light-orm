@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm;
 
@@ -23,7 +23,7 @@ class ConnectionPool
      *
      * @return $this
      */
-    public function addConnectionConfig(ConnectionConfigInterface $connectionConfig): ConnectionPool
+    public function addConnectionConfig(ConnectionConfigInterface $connectionConfig)
     {
         static::$connectionConfig[$connectionConfig->getDbname()] = $connectionConfig;
 
@@ -33,24 +33,20 @@ class ConnectionPool
     /**
      * @param string $dbName
      *
-     * @return ConnectionInterface
-     * @throws ConnectionInvalidArgumentException
+     * @return null|ConnectionInterface
      */
-    public function getConnection($dbName): ConnectionInterface
+    public function getConnection($dbName)
     {
-        if (!\array_key_exists($dbName, static::$connectionConfig)) {
-            if (empty(static::$connectionConfig)) {
-                throw new ConnectionInvalidArgumentException(\sprintf(
-                    'Could not find connection by name "%s"!',
-                    $dbName
-                ));
-            } else {
-                throw new ConnectionInvalidArgumentException(\sprintf(
-                    'Could not find connection by name "%s"! Available connections: "%s".',
-                    $dbName,
-                    \implode('", "', \array_keys(static::$connectionConfig))
-                ));
-            }
+        if (empty(static::$connectionConfig[$dbName])) {
+            throw new ConnectionInvalidArgumentException(
+                empty(static::$connectionConfig)
+                    ? \sprintf('Could not find connection by name "%s"!', $dbName)
+                    : \sprintf(
+                        'Could not find connection by name "%s"! Available connections: "%s".',
+                        $dbName,
+                        \implode('", "', \array_keys(static::$connectionConfig))
+                    )
+            );
         }
 
         $connectionConfig = static::$connectionConfig[$dbName];
@@ -67,7 +63,7 @@ class ConnectionPool
      *
      * @return ConnectionInterface
      */
-    public static function getConnectionStatic($dbName): ConnectionInterface
+    public static function getConnectionStatic($dbName)
     {
         return (new static())->getConnection($dbName);
     }
@@ -80,7 +76,7 @@ class ConnectionPool
      *
      * @return ConnectionInterface
      */
-    protected function createConnection(ConnectionConfigInterface $connectionConfig): ConnectionInterface
+    protected function createConnection(ConnectionConfigInterface $connectionConfig)
     {
         $adapterConnectionClass = $connectionConfig->getAdapterConnectionClass();
 

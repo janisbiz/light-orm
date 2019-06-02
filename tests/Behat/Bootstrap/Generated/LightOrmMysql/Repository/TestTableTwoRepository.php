@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Repository;
 
@@ -8,11 +8,11 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestT
 class TestTableTwoRepository extends AbstractRepository
 {
     /**
-     * @param null|int $id
+     * @param int $id
      *
      * @return TestTableTwoEntity
      */
-    public function create(?int $id)
+    public function create($id)
     {
         $testTableTwoEntity = (new TestTableTwoEntity())->setId($id);
 
@@ -51,7 +51,7 @@ class TestTableTwoRepository extends AbstractRepository
     /**
     * @return string
     */
-    protected function getModelClass(): string
+    protected function getModelClass()
     {
         return TestTableTwoEntity::class;
     }

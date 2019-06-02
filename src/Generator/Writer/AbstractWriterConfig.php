@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace Janisbiz\LightOrm\Generator\Writer;
 
@@ -10,48 +10,48 @@ abstract class AbstractWriterConfig implements WriterConfigInterface
     protected $directory;
 
     /**
-     * @var null|string
+     * @var string
      */
     protected $namespace = '';
 
     /**
-     * @var null|string
+     * @var string
      */
     protected $classPrefix = '';
 
     /**
-     * @var null|string
+     * @var string
      */
     protected $classSuffix = '';
 
     /**
      * @return string
      */
-    public function getDirectory(): string
+    public function getDirectory()
     {
         return \rtrim($this->directory, DIRECTORY_SEPARATOR);
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getNamespace(): ?string
+    public function getNamespace()
     {
         return \trim($this->namespace, '\\');
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getClassPrefix(): ?string
+    public function getClassPrefix()
     {
         return \mb_convert_case(\trim($this->classPrefix), MB_CASE_TITLE);
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getClassSuffix(): ?string
+    public function getClassSuffix()
     {
         return \mb_convert_case(\trim($this->classSuffix), MB_CASE_TITLE);
     }
