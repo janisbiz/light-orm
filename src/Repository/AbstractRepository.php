@@ -81,6 +81,10 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
             $pageSize = 1;
         }
 
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
         return new Paginator(
             $queryBuilder,
             function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage) {
