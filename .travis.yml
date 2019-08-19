@@ -11,10 +11,10 @@ addons:
     - mysql
 
 before_script:
+  - mysql -u root -e "USE mysql; UPDATE user SET password=PASSWORD('password') WHERE user='root'; FLUSH PRIVILEGES;"
+  - mysql -u root -ppassword < .docker/config/mysql/light_orm_mysql.sql
   - travis_retry composer self-update
   - travis_retry composer update $PREFER_LOWEST
-  - echo "USE mysql; UPDATE user SET password=PASSWORD('password') WHERE user='root'; FLUSH PRIVILEGES;" | mysql -u root
-  - mysql -u root -ppassword < .docker/config/mysql/light_orm_mysql.sql
   - composer install
 
 script:
