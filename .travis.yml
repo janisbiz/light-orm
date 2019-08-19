@@ -12,6 +12,7 @@ addons:
 
 before_script:
   - mysql -u root -e "USE mysql; UPDATE user SET authentication_string=PASSWORD('password') WHERE user='root'; FLUSH PRIVILEGES;"
+  - mysql -u root -e "SELECT @@sql_mode;"
   - mysql -u root -ppassword < .docker/config/mysql/light_orm_mysql.sql
   - travis_retry composer self-update
   - travis_retry composer update $PREFER_LOWEST
