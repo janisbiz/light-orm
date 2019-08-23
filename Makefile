@@ -2,6 +2,7 @@ SHELL=/bin/bash
 DOCKER_COMPOSE ?= docker-compose
 DOCKER_COMPOSE_EXEC_PHP = $(DOCKER_COMPOSE) exec php-cli
 PHPUNIT_COVERATE_REPORT_FILE=file://$(shell pwd)/var/phpunit/coverage-html/index.html
+BEHAT_COVERATE_REPORT_FILE=file://$(shell pwd)/var/behat/coverage-html/index.html
 
 include .env
 
@@ -29,6 +30,8 @@ test-infection: ## Run INFECTION tests
 
 test-behat: ## Run BEHAT tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/behat
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcov merge --html=var/behat/coverage-html var/behat/coverage-cov
+	@echo -e "Test coverage can be found here: $(BEHAT_COVERATE_REPORT_FILE)"
 
 .PHONY: start_dev
 start_dev: ## Start DEV in Docker
