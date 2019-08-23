@@ -28,5 +28,5 @@ script:
   - vendor/bin/phpcov merge --clover=behat.xml var/behat/coverage-cov
 
 after_success:
-  bash <(curl -s https://codecov.io/bash) -cF phpunit
-  bash <(curl -s https://codecov.io/bash) -cF behat
+  bash <(curl -s https://codecov.io/bash) -cF phpunit -f phpunit.xml
+  bash <(curl -s https://codecov.io/bash) -cF behat -f behat.xml
