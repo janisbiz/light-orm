@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait ValueTrait
 {
@@ -20,7 +21,7 @@ trait ValueTrait
      * @param string $column
      * @param null|int|string|double $value
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function value($column, $value)
     {
@@ -48,7 +49,7 @@ trait ValueTrait
     /**
      * @param array $bindValue
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function bindValue(array $bindValue = [])
     {

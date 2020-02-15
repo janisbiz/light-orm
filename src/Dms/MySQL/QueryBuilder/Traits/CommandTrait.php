@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
+
 trait CommandTrait
 {
     /**
@@ -12,7 +14,7 @@ trait CommandTrait
     /**
      * @param string $command
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function command($command)
     {

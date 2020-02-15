@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait WhereTrait
 {
@@ -16,7 +17,7 @@ trait WhereTrait
      * @param string $condition
      * @param array $bind
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function where($condition, array $bind = [])
@@ -38,7 +39,7 @@ trait WhereTrait
      * @param string $column
      * @param array $params
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function whereIn($column, array $params = [])
     {
@@ -65,7 +66,7 @@ trait WhereTrait
      * @param string $column
      * @param array $params
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function whereNotIn($column, array $params = [])
     {

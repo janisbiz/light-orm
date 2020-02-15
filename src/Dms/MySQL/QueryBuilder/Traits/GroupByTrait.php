@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait GroupByTrait
 {
@@ -15,7 +16,7 @@ trait GroupByTrait
     /**
      * @param array|string $groupBy
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function groupBy($groupBy)

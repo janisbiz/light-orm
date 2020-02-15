@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
+
 trait BindTrait
 {
     /**
@@ -12,7 +14,7 @@ trait BindTrait
     /**
      * @param array $bind
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function bind(array $bind = [])
     {

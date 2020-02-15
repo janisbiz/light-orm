@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait TableTrait
 {
@@ -16,7 +17,7 @@ trait TableTrait
      * @param string[]|string $table
      * @param boolean $clearAll
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function table($table, $clearAll = false)

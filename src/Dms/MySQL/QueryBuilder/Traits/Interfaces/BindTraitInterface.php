@@ -2,12 +2,14 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
+
 interface BindTraitInterface
 {
     /**
      * @param array $bind
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function bind(array $bind = []);
 
