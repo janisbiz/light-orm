@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait HavingTrait
 {
@@ -16,7 +17,7 @@ trait HavingTrait
      * @param string $condition
      * @param array $bind
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function having(string $condition, array $bind = [])

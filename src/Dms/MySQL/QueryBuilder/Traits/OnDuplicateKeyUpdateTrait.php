@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait OnDuplicateKeyUpdateTrait
 {
@@ -16,7 +17,7 @@ trait OnDuplicateKeyUpdateTrait
      * @param null|int|string|double $value
      *
      * @throws QueryBuilderException
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function onDuplicateKeyUpdate(string $column, $value)
     {

@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait ColumnTrait
 {
@@ -15,7 +16,7 @@ trait ColumnTrait
      * @param array|string $column
      * @param boolean $clearAll
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function column($column, bool $clearAll = false)

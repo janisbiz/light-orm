@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait LimitOffsetTrait
 {
@@ -20,7 +21,7 @@ trait LimitOffsetTrait
     /**
      * @param int $limit
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function limit(int $limit)
@@ -37,7 +38,7 @@ trait LimitOffsetTrait
     /**
      * @param int $offset
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function offset(int $offset)
@@ -59,7 +60,7 @@ trait LimitOffsetTrait
      * @param int $limit
      * @param int $offset
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function limitWithOffset(int $limit, int $offset)
     {

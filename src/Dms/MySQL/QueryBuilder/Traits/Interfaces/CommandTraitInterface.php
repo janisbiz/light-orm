@@ -2,12 +2,14 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
+
 interface CommandTraitInterface
 {
     /**
      * @param string $command
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function command(string $command);
 

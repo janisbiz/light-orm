@@ -5,6 +5,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait OrderByTrait
 {
@@ -18,7 +19,7 @@ trait OrderByTrait
      * @param string $keyword
      *
      * @throws QueryBuilderException
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function orderBy($orderBy, string $keyword = KeywordEnum::ASC)
     {

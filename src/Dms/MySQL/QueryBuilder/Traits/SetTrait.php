@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait SetTrait
 {
@@ -15,7 +16,7 @@ trait SetTrait
      * @param string $column
      * @param null|int|string $value
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function set(string $column, $value)
     {

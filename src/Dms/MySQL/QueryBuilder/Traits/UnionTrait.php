@@ -5,6 +5,7 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
 
 trait UnionTrait
 {
@@ -16,7 +17,7 @@ trait UnionTrait
     /**
      * @param QueryBuilderInterface $queryBuilder
      *
-     * @return $this
+     * @return $this|TraitsInterface
      * @throws QueryBuilderException
      */
     public function unionAll(QueryBuilderInterface $queryBuilder)

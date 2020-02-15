@@ -2,20 +2,22 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
+use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\TraitsInterface;
+
 interface ValueTraitInterface
 {
     /**
      * @param string $column
      * @param null|int|string|double $value
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function value(string $column, $value);
 
     /**
      * @param array $bindValue
      *
-     * @return $this
+     * @return $this|TraitsInterface
      */
     public function bindValue(array $bindValue = []);
 
