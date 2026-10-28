@@ -19,7 +19,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
      */
     private $limitOffsetTraitClass;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->limitOffsetTraitClass = new class ()
         {

@@ -7,7 +7,9 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\UnionTrait;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class UnionTraitTest extends AbstractTraitTestCase
 {
     const COMMAND_INVALID = 'INVALID';
@@ -30,7 +32,7 @@ MySQL;
      */
     private $unionTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->queryBuilder = $this->createMock(QueryBuilderInterface::class);
         $this->queryBuilder->method('bindData')->willReturn(static::QUERY_BUILDER_BIND_DATA);
@@ -81,9 +83,7 @@ MySQL;
         $this->assertCount(\count($unionAllQueries), $this->unionTraitClass->unionAllData());
         $this->assertEquals(
             \array_map(
-                function (QueryBuilderInterface $unionAllQuery) {
-                    return \sprintf('(%s)', $unionAllQuery->buildQuery());
-                },
+                fn(QueryBuilderInterface $unionAllQuery) => \sprintf('(%s)', $unionAllQuery->buildQuery()),
                 $unionAllQueries
             ),
             $this->unionTraitClass->unionAllData()
@@ -118,9 +118,7 @@ MySQL;
             \implode(
                 ' UNION ALL ',
                 \array_map(
-                    function (QueryBuilderInterface $unionAllQuery) {
-                        return \sprintf('(%s)', $unionAllQuery->buildQuery());
-                    },
+                    fn(QueryBuilderInterface $unionAllQuery) => \sprintf('(%s)', $unionAllQuery->buildQuery()),
                     $unionAllQueries
                 )
             ),

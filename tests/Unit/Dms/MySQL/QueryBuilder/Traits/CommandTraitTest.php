@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\CommandTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class CommandTraitTest extends AbstractTraitTestCase
 {
@@ -12,7 +13,7 @@ class CommandTraitTest extends AbstractTraitTestCase
      */
     private $commandTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->commandTraitClass = new class ()
         {
@@ -29,11 +30,10 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider setCommandData
-     *
      * @param string $command
      * @param string $expected
      */
+    #[DataProvider('setCommandData')]
     public function testSetCommand($command, $expected)
     {
         $object = $this->commandTraitClass->command($command);
@@ -42,11 +42,10 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider setCommandData
-     *
      * @param string $command
      * @param string $expected
      */
+    #[DataProvider('setCommandData')]
     public function testSetCommandData($command, $expected)
     {
         $object = $this->commandTraitClass->command($command);
@@ -55,27 +54,23 @@ class CommandTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     *
      * @return array
      */
-    public function setCommandData()
+    public static function setCommandData()
     {
         return \array_map(
-            function ($val) {
-                return [
-                    $val,
-                    $val
-                ];
-            },
+            fn($val) => [
+                $val,
+                $val
+            ],
             CommandEnum::COMMANDS
         );
     }
 
     /**
-     * @dataProvider buildCommandQueryPartData
-     *
      * @param string $command
      */
+    #[DataProvider('buildCommandQueryPartData')]
     public function testBuildCommandQueryPart($command)
     {
         $this->commandTraitClass->command($command);
@@ -90,14 +85,12 @@ class CommandTraitTest extends AbstractTraitTestCase
      *
      * @return array
      */
-    public function buildCommandQueryPartData()
+    public static function buildCommandQueryPartData()
     {
         return \array_map(
-            function ($val) {
-                return [
-                    $val
-                ];
-            },
+            fn($val) => [
+                $val
+            ],
             CommandEnum::COMMANDS
         );
     }

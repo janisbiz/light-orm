@@ -51,7 +51,7 @@ Feature: Repository Update
     When I call method "updateRow" on repository with parameters and expecting exception:
       | testTableOneIdCurrent:int | testTableTwoIdCurrent:int | testTableOneId:int | testTableTwoId:int |
       | 1                         | 1                         | 0                  | 0                  |
-    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`light_orm_mysql`.`test_table_one_two`, CONSTRAINT `fk_test_table_one_two_test_table_on_id` FOREIGN KEY (`test_table_one_id`) REFERENCES `test_table_one` (`id`) ON DELETE NO ACTION ON UPDATE N)"
+    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`light_orm_mysql`.`test_table_one_two`, CONSTRAINT `fk_test_table_one_two_test_table_on_id` FOREIGN KEY (`test_table_one_id`) REFERENCES `test_table_one` (`id`))"
 
   Scenario: Update rows in table "test_table_one_two" with existing entities
     Given I have existing connection config "light_orm_mysql"
@@ -81,7 +81,7 @@ Feature: Repository Update
     When I call method "updateEntity" on repository with existing entities and parameters and expecting exception:
       | testTableOneId:int | testTableTwoId:int |
       | 0                  | 0                  |
-    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`light_orm_mysql`.`test_table_one_two`, CONSTRAINT `fk_test_table_one_two_test_table_on_id` FOREIGN KEY (`test_table_one_id`) REFERENCES `test_table_one` (`id`) ON DELETE NO ACTION ON UPDATE N)"
+    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`light_orm_mysql`.`test_table_one_two`, CONSTRAINT `fk_test_table_one_two_test_table_on_id` FOREIGN KEY (`test_table_one_id`) REFERENCES `test_table_one` (`id`))"
 
   Scenario: Insert and update rows in tables "test_table_one", "test_table_one_two" when in transaction with rollback
     Given I have existing connection config "light_orm_mysql"

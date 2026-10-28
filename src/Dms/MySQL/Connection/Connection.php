@@ -2,8 +2,15 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\Connection;
 
-class Connection extends \PDO implements ConnectionInterface
+use PDO;
+
+class Connection extends PDO implements ConnectionInterface
 {
+    private const DEFAULT_OPTIONS = [
+        PDO\Mysql::ATTR_INIT_COMMAND => 'SET NAMES "utf8mb4"',
+        PDO::ATTR_PERSISTENT => true,
+    ];
+
     /**
      * Ignoring for code coverage, as this requires to have a real connection to be tested.
      * @codeCoverageIgnore
@@ -15,13 +22,7 @@ class Connection extends \PDO implements ConnectionInterface
      */
     public function __construct(string $dsn, string $username, string $passwd, array $options = [])
     {
-        $options = \array_merge(
-            $options,
-            [
-                static::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8mb4"',
-                static::ATTR_PERSISTENT => true,
-            ]
-        );
+        $options = $options + self::DEFAULT_OPTIONS;
 
         parent::__construct($dsn, $username, $passwd, $options);
 
@@ -33,6 +34,7 @@ class Connection extends \PDO implements ConnectionInterface
      * @return $this
      * @throws ConnectionPDOException
      */
+    #[\ReturnTypeWillChange]
     public function beginTransaction(): Connection
     {
         if (false === $this->inTransaction()) {

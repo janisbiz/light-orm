@@ -2,29 +2,34 @@
 
 namespace Janisbiz\LightOrm\Connection;
 
-/**
- * phpcs:disable
- *
- * @method \PDOStatement|bool prepare($statement, array $driver_options = array())
- * @method bool commit()
- * @method bool rollBack()
- * @method bool inTransaction()
- * @method bool setAttribute($attribute, $value)
- * @method int exec($statement)
- * @method \PDOStatement|false query($statement, $mode = \PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
- * @method string lastInsertId($name = null)
- * @method mixed errorCode()
- * @method array errorInfo()
- * @method mixed getAttribute($attribute)
- * @method string quote($string, $parameter_type = \PDO::PARAM_STR)
- *
- * phpcs:enable
- *
- */
+use PDO;
+use PDOStatement;
+
 interface ConnectionInterface
 {
-    /**
-     * @return $this
-     */
-    public function beginTransaction();
+    public function prepare(string $query, array $options = []): PDOStatement|false;
+
+    public function commit(): bool;
+
+    public function rollBack(): bool;
+
+    public function inTransaction(): bool;
+
+    public function setAttribute(int $attribute, mixed $value): bool;
+
+    public function exec(string $statement): int|false;
+
+    public function query(string $query, ?int $fetchMode, mixed ...$fetchModeArgs);
+
+    public function lastInsertId(?string $name): string|false;
+
+    public function errorCode(): ?string;
+
+    public function errorInfo(): array;
+
+    public function getAttribute(int $attribute): mixed;
+
+    public function quote(string $string, int $type = PDO::PARAM_STR): string|false;
+
+    public function beginTransaction(): self;
 }

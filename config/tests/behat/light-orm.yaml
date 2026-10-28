@@ -7,6 +7,7 @@ light-orm:
       password: password
       dbname: light_orm_mysql
       adapter: mysql
+      port: 3306
 
   generator:
     light_orm_mysql:

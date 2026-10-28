@@ -14,12 +14,11 @@ class ConnectionFeatureContext extends AbstractFeatureContext
     private $connectionConfig;
 
     /**
-     * @Given /^I have existing connection config "(\w+)"$/
      *
      * @param string $connectionName
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Given('/^I have existing connection config "(\w+)"$/')]
     public function iHaveExistingConnectionConfig(string $connectionName)
     {
         $connectionConfigArray = $this->getConnectionConfig($connectionName);
@@ -30,26 +29,24 @@ class ConnectionFeatureContext extends AbstractFeatureContext
                     $connectionConfigArray['host'],
                     $connectionConfigArray['username'],
                     $connectionConfigArray['password'],
-                    $connectionConfigArray['dbname']
+                    $connectionConfigArray['dbname'],
+                    $connectionConfigArray['port']
                 );
 
                 break;
         }
     }
 
-    /**
-     * @When I add connection config to connection pool
-     */
+    #[\Behat\Step\When('I add connection config to connection pool')]
     public function iAddConnectionConfigToConnectionPool()
     {
         $this->connectionPool->addConnectionConfig($this->connectionConfig);
     }
 
     /**
-     * @Then /^I should have connection "(\w+)"$/
-     *
      * @param string $connectionName
      */
+    #[\Behat\Step\Then('/^I should have connection "(\w+)"$/')]
     public function iShouldHaveConnection(string $connectionName)
     {
         $this->connectionPool->getConnection($connectionName);

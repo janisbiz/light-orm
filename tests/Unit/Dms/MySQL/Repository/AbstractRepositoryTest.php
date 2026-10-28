@@ -2,7 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Repository;
 
-use Janisbiz\LightOrm\Connection\ConnectionInterface;
+use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\RepositoryException;
@@ -13,15 +13,17 @@ use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsTableTest;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\QueryBuilderTrait;
 use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class AbstractRepositoryTest extends TestCase
 {
     use QueryBuilderTrait;
     use ReflectionTrait;
 
     const COLUMN_AUTO_INCREMENT = 'col_a_i';
-    const COLUMN_AUTO_INCREMENT_VALUE = 1;
+    const COLUMN_AUTO_INCREMENT_VALUE = '1';
     const COLUMN_ONE = 'col_1';
     const COLUMN_ONE_UPDATE_VALUE = 'val1Update';
 
@@ -67,34 +69,36 @@ class AbstractRepositoryTest extends TestCase
      */
     private $abstractRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->statement = $this->createMock(\PDOStatement::class);
 
         $this->connection = $this->createPartialMock(
             ConnectionInterface::class,
             [
-                'beginTransaction',
-                'commit',
-                'inTransaction',
-                'lastInsertId',
-                'prepare',
-                'rollBack',
                 'setSqlSafeUpdates',
                 'unsetSqlSafeUpdates',
+                'prepare',
+                'commit',
+                'rollBack',
+                'inTransaction',
+                'setAttribute',
+                'exec',
+                'query',
+                'lastInsertId',
+                'errorCode',
+                'errorInfo',
+                'getAttribute',
+                'quote',
+                'beginTransaction',
             ]
         );
         $this->connection->method('prepare')->willReturn($this->statement);
 
         $this->entity = $this->createEntity();
 
-        $this->abstractRepository = $this->getMockForAbstractClass(
+        $this->abstractRepository = $this->createPartialMock(
             AbstractRepository::class,
-            [],
-            '',
-            true,
-            true,
-            true,
             [
                 'beginTransaction',
                 'commit',
@@ -102,10 +106,10 @@ class AbstractRepositoryTest extends TestCase
                 'getEntityClassConstant',
                 'prepareAndExecute',
                 'rollBack',
+                'getEntityClass',
             ]
         );
         $this->abstractRepository
-            ->expects($this->any())
             ->method('getConnection')
             ->willReturn($this->connection)
         ;
@@ -275,7 +279,7 @@ class AbstractRepositoryTest extends TestCase
             ->method('setFetchMode')
             ->with(
                 \PDO::FETCH_CLASS,
-                \get_class($this->entity),
+                $this->entity::class,
                 [
                     false,
                 ]
@@ -351,7 +355,7 @@ class AbstractRepositoryTest extends TestCase
             ->method('setFetchMode')
             ->with(
                 \PDO::FETCH_CLASS,
-                \get_class($this->entity),
+                $this->entity::class,
                 [
                     false,
                 ]
@@ -801,13 +805,11 @@ class AbstractRepositoryTest extends TestCase
     public function testCreateQueryBuilder()
     {
         $createQueryBuilderMethod = new \ReflectionMethod($this->abstractRepository, 'createQueryBuilder');
-        $createQueryBuilderMethod->setAccessible(true);
-
 
         $this->abstractRepository
-            ->expects($this->any())
+            ->expects($this->exactly(2))
             ->method('getEntityClassConstant')
-            ->withConsecutive([WriterInterface::CLASS_CONSTANT_TABLE_NAME])
+            ->with(WriterInterface::CLASS_CONSTANT_TABLE_NAME)
             ->willReturn(DmsTableTest::TABLE_NAME)
         ;
 
@@ -860,7 +862,7 @@ class AbstractRepositoryTest extends TestCase
             ->method('setFetchMode')
             ->with(
                 \PDO::FETCH_CLASS,
-                \get_class($this->entity),
+                $this->entity::class,
                 [
                     false,
                 ]

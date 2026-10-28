@@ -13,18 +13,12 @@ class RepositoryClassWriter extends AbstractWriter
     use HeredocTrait;
 
     /**
-     * @var EntityClassWriter
-     */
-    private $entityClassWriter;
-
-    /**
      * @param WriterConfigInterface $writerConfig
      * @param EntityClassWriter $entityClassWriter
      */
-    public function __construct(WriterConfigInterface $writerConfig, EntityClassWriter $entityClassWriter)
+    public function __construct(WriterConfigInterface $writerConfig, private EntityClassWriter $entityClassWriter)
     {
         $this->writerConfig = $writerConfig;
-        $this->entityClassWriter = $entityClassWriter;
     }
 
     /**

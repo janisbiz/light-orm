@@ -31,12 +31,11 @@ class GeneratorFeatureContext extends AbstractFeatureContext
     private $writers = [];
 
     /**
-     * @Given /^I create generator for connection "(\w+)"$/
      *
      * @param string $connectionName
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Given('/^I create generator for connection "(\w+)"$/')]
     public function iCreateGeneratorForConnection(string $connectionName)
     {
         $this->connectionName = $connectionName;
@@ -52,20 +51,18 @@ class GeneratorFeatureContext extends AbstractFeatureContext
     }
 
     /**
-     * @Given I add writers to generator
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Given('I add writers to generator')]
     public function iAddWritersToGenerator()
     {
         $this->addWritersToGenerator();
     }
 
     /**
-     * @Given /^I add writers to generator with directory override "(.*)"$/
-     *
      * @param null|string $directoryOverride
      */
+    #[\Behat\Step\Given('/^I add writers to generator with directory override "(.*)"$/')]
     public function iAddWritersToGeneratorWithDirectoryOverride(string $directoryOverride)
     {
         $directoryOverride = \preg_replace('/\/\\\/', DIRECTORY_SEPARATOR, $directoryOverride);
@@ -73,21 +70,18 @@ class GeneratorFeatureContext extends AbstractFeatureContext
         $this->addWritersToGenerator($directoryOverride);
     }
 
-    /**
-     * @When I run generator
-     */
+    #[\Behat\Step\When('I run generator')]
     public function iRunGenerator()
     {
         $this->generator->generate($this->connectionPool->getConnection($this->connectionName), $this->connectionName);
     }
 
     /**
-     * @Then /^Then I have following files generated:$/
      *
      * @param TableNode $files
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Then('/^Then I have following files generated:$/')]
     public function iShouldGetTheseRowsInDatabaseFilteredByScopeId(TableNode $files)
     {
         foreach ($this->normalizeTableNode($files) as $file) {
@@ -108,10 +102,9 @@ class GeneratorFeatureContext extends AbstractFeatureContext
     }
 
     /**
-     * @Given /^I remove directory "(.*)"$/
-     *
      * @param string $directory
      */
+    #[\Behat\Step\Given('/^I remove directory "(.*)"$/')]
     public function iRemoveDirectory(string $directory)
     {
         if (\is_dir($directory)) {
@@ -137,7 +130,7 @@ class GeneratorFeatureContext extends AbstractFeatureContext
     /**
      * @param null|string $directoryOverride
      */
-    private function addWritersToGenerator(string $directoryOverride = null)
+    private function addWritersToGenerator(?string $directoryOverride = null)
     {
         switch ($this->getConnectionConfig($this->connectionName)['adapter']) {
             case MySQLConnectionConfig::ADAPTER:

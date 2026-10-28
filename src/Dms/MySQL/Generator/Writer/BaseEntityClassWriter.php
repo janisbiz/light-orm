@@ -94,13 +94,11 @@ PHP;
         $columnsConstants = \implode(
             "\n    ",
             \array_map(
-                function (DmsColumn $column) {
-                    return \sprintf(
-                        'const COLUMN_%s = \'%s\';',
-                        \mb_strtoupper($column->getName()),
-                        $column->getName()
-                    );
-                },
+                fn(DmsColumn $column) => \sprintf(
+                    'const COLUMN_%s = \'%s\';',
+                    \mb_strtoupper($column->getName()),
+                    $column->getName()
+                ),
                 $columnsConstants
             )
         );
@@ -139,9 +137,7 @@ PHP;
         $columns = \implode(
             "\n            ",
             \array_map(
-                function (DmsColumn $column) {
-                    return \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName()));
-                },
+                fn(DmsColumn $column) => \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName())),
                 $columns
             )
         );

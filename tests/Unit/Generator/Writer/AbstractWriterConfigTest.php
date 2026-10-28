@@ -3,8 +3,10 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Generator\Writer;
 
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriterConfig;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class AbstractWriterConfigTest extends TestCase
 {
     const DIRECTORY_VALUE = JANISBIZ_LIGHT_ORM_ROOT_DIR
@@ -37,25 +39,21 @@ class AbstractWriterConfigTest extends TestCase
      */
     private $abstractWriterConfig;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->abstractWriterConfig = $this->getMockForAbstractClass(AbstractWriterConfig::class);
+        $this->abstractWriterConfig = $this->createPartialMock(AbstractWriterConfig::class, []);
         $abstractWriterConfigReflection = new \ReflectionClass($this->abstractWriterConfig);
 
         $directoryProperty = $abstractWriterConfigReflection->getProperty('directory');
-        $directoryProperty->setAccessible(true);
         $directoryProperty->setValue($this->abstractWriterConfig, static::DIRECTORY_VALUE);
 
         $namespaceProperty = $abstractWriterConfigReflection->getProperty('namespace');
-        $namespaceProperty->setAccessible(true);
         $namespaceProperty->setValue($this->abstractWriterConfig, static::NAMESPACE_VALUE);
 
         $classPrefixProperty = $abstractWriterConfigReflection->getProperty('classPrefix');
-        $classPrefixProperty->setAccessible(true);
         $classPrefixProperty->setValue($this->abstractWriterConfig, static::CLASS_PREFIX_VALUE);
 
         $classSuffixProperty = $abstractWriterConfigReflection->getProperty('classSuffix');
-        $classSuffixProperty->setAccessible(true);
         $classSuffixProperty->setValue($this->abstractWriterConfig, static::CLASS_SUFFIX_VALUE);
     }
 

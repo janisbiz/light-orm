@@ -5,6 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\SetTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class SetTraitTest extends AbstractTraitTestCase
 {
@@ -20,7 +21,7 @@ class SetTraitTest extends AbstractTraitTestCase
      */
     private $setTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->setTraitClass = new class (SetTraitTest::SET_BIND_DEFAULT, SetTraitTest::SET_DEFAULT)
         {
@@ -58,11 +59,10 @@ class SetTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider setData
-     *
      * @param string $column
      * @param string|int|double|null $value
      */
+    #[DataProvider('setTestData')]
     public function testSet($column, $value)
     {
         $object = $this->setTraitClass->set($column, $value);
@@ -73,28 +73,24 @@ class SetTraitTest extends AbstractTraitTestCase
                 static::SET_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($column) {
-                            return [
-                                $column => \sprintf(
-                                    '%s = :%s_Update',
-                                    $column,
-                                    \implode(
-                                        '_',
-                                        \array_map(
-                                            function ($columnPart) {
-                                                return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                                            },
-                                            \explode('.', $column)
-                                        )
+                        fn($column) => [
+                            $column => \sprintf(
+                                '%s = :%s_Update',
+                                $column,
+                                \implode(
+                                    '_',
+                                    \array_map(
+                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        \explode('.', $column)
                                     )
-                                ),
-                            ];
-                        },
+                                )
+                            ),
+                        ],
                         [
                             $column
                         ]
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),
@@ -105,22 +101,18 @@ class SetTraitTest extends AbstractTraitTestCase
                 static::SET_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($column, $value) {
-                            return [
-                                \sprintf(
-                                    '%s_Update',
-                                    \implode(
-                                        '_',
-                                        \array_map(
-                                            function ($columnPart) {
-                                                return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                                            },
-                                            \explode('.', $column)
-                                        )
+                        fn($column, $value) => [
+                            \sprintf(
+                                '%s_Update',
+                                \implode(
+                                    '_',
+                                    \array_map(
+                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        \explode('.', $column)
                                     )
-                                ) => $value,
-                            ];
-                        },
+                                )
+                            ) => $value,
+                        ],
                         [
                             $column
                         ],
@@ -128,7 +120,7 @@ class SetTraitTest extends AbstractTraitTestCase
                             $value
                         ]
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),
@@ -137,11 +129,10 @@ class SetTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider setData
-     *
      * @param string $column
      * @param string|int|double|null $value
      */
+    #[DataProvider('setTestData')]
     public function testBuildSetQueryPart($column, $value)
     {
         $this->setTraitClass->set($column, $value);
@@ -160,10 +151,9 @@ class SetTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     *
      * @return array
      */
-    public function setData()
+    public static function setTestData()
     {
         return [
             [

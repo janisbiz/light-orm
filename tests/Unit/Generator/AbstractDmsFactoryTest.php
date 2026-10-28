@@ -5,8 +5,10 @@ namespace Janisbiz\LightOrm\Tests\Unit\Generator;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Generator\AbstractDmsFactory;
 use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class AbstractDmsFactoryTest extends TestCase
 {
     /**
@@ -14,11 +16,18 @@ class AbstractDmsFactoryTest extends TestCase
      */
     private $abstractDmsFactory;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->abstractDmsFactory = $this->getMockForAbstractClass(AbstractDmsFactory::class);
+        $this->abstractDmsFactory = $this->createPartialMock(
+            AbstractDmsFactory::class,
+            [
+                'createDmsTable',
+                'createDmsColumn',
+                'createDmsDatabase',
+            ],
+        );
         $this->abstractDmsFactory
-            ->expects($this->any())
+            ->expects($this->once())
             ->method('createDmsDatabase')
             ->willReturn($this->createMock(DmsDatabaseInterface::class))
         ;

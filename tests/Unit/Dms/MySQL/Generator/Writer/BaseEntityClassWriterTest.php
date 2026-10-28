@@ -52,7 +52,7 @@ class BaseEntityClassWriterTest extends TestCase
      */
     protected $dmsGeneratedDirectory;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->writerConfig = new WriterConfig(
             static::WRITER_CONFIG_DIRECTORY_VALUE,
@@ -97,7 +97,6 @@ class BaseEntityClassWriterTest extends TestCase
     public function testConstruct()
     {
         $getWriterConfigMethod = new \ReflectionMethod($this->baseEntityClassWriter, 'getWriterConfig');
-        $getWriterConfigMethod->setAccessible(true);
 
         $this->assertTrue($getWriterConfigMethod->invoke($this->baseEntityClassWriter) instanceof $this->writerConfig);
     }
@@ -242,7 +241,7 @@ PHP
         $this->assertCount(0, $files);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeDirectoryRecursive(\implode(
             '',

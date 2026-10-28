@@ -48,7 +48,7 @@ Feature: Repository Delete
     When I call method "deleteRow" on repository with parameters and expecting exception:
       | id:int |
       | 1      |
-    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`light_orm_mysql`.`test_table_one_two`, CONSTRAINT `fk_test_table_one_two_test_table_on_id` FOREIGN KEY (`test_table_one_id`) REFERENCES `test_table_one` (`id`) ON DELETE NO ACTION ON UPDATE N)"
+    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`light_orm_mysql`.`test_table_one_two`, CONSTRAINT `fk_test_table_one_two_test_table_on_id` FOREIGN KEY (`test_table_one_id`) REFERENCES `test_table_one` (`id`))"
 
   Scenario: Delete rows in tables "test_table_one_two", "test_table_one", "test_table_two" when in transaction with rollback
     Given I have existing connection config "light_orm_mysql"

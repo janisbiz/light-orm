@@ -42,9 +42,7 @@ class DmsDatabase implements DmsDatabaseInterface
     {
         return \ucfirst(\preg_replace_callback(
             '/[^a-z0-9]+(?<name>\w{1})/i',
-            function ($matches) {
-                return \strtoupper($matches['name']);
-            },
+            fn($matches) => \strtoupper($matches['name']),
             $this->getName()
         ));
     }

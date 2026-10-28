@@ -19,9 +19,20 @@ class DmsFactoryTest extends TestCase
         $connection = $this->createPartialMock(
             ConnectionInterface::class,
             [
-                'query',
                 'setSqlSafeUpdates',
                 'unsetSqlSafeUpdates',
+                'prepare',
+                'commit',
+                'rollBack',
+                'inTransaction',
+                'setAttribute',
+                'exec',
+                'query',
+                'lastInsertId',
+                'errorCode',
+                'errorInfo',
+                'getAttribute',
+                'quote',
                 'beginTransaction',
             ]
         );

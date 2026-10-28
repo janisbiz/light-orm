@@ -26,7 +26,7 @@ class HavingTraitTest extends AbstractTraitTestCase
      */
     private $havingTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->havingTraitClass = new class (
             HavingTraitTest::HAVING_CONDITION_BIND_DEFAULT,

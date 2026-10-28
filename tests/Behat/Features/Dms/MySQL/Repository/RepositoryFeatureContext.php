@@ -13,27 +13,24 @@ use Psr\Log\LoggerAwareInterface;
 
 class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
 {
-    /**
-     * @BeforeScenario
-     */
+    #[\Behat\Hook\BeforeScenario]
     public function beforeScenario()
     {
         static::$repositories = [];
     }
 
     /**
-     * @Given /^I flush all tables for connection "(.*)"$/
      *
      * @param string $connectionName
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Given('/^I flush all tables for connection "(.*)"$/')]
     public function iFlushAllTablesForConnection(string $connectionName)
     {
         $connection = $this->connectionPool->getConnection($connectionName);
 
         $tables = [];
-        switch (\get_class($connection)) {
+        switch ($connection::class) {
             case MySQLConnection::class:
                 $dmsDatabase = (new DmsFactory())->createDmsDatabase($connectionName, $connection);
                 foreach ($dmsDatabase->getDmsTables() as $dmsTable) {
@@ -50,11 +47,11 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Given /^I flush following tables for connection "(.*)":$/
      *
      * @param string $connectionName
      * @param TableNode $tables
      */
+    #[\Behat\Step\Given('/^I flush following tables for connection "(.*)":$/')]
     public function iFlushFollowingTablesForConnection(string $connectionName, TableNode $tables)
     {
         $tablesArray = [];
@@ -66,14 +63,13 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Given /^I reset database for connection "(.*)"$/
-     *
      * @param string $connectionName
      */
+    #[\Behat\Step\Given('/^I reset database for connection "(.*)"$/')]
     public function iResetDatabaseForConnection(string $connectionName)
     {
         $connection = $this->connectionPool->getConnection($connectionName);
-        switch (\get_class($connection)) {
+        switch ($connection::class) {
             case MySQLConnection::class:
                 $connection->exec(\file_get_contents(\implode(
                     '',
@@ -94,12 +90,11 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
     
     /**
-     * @Given /^I create repository "(.*)"$/
      *
      * @param $repositoryClass
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Given('/^I create repository "(.*)"$/')]
     public function iCreateRepository(string $repositoryClass)
     {
         if (\array_key_exists($repositoryClass, static::$repositories)) {
@@ -111,7 +106,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
         if (!$repository instanceof RepositoryInterface) {
             throw new \Exception(\sprintf(
                 'Class "%s" must implement "%s"',
-                \get_class($repository),
+                $repository::class,
                 RepositoryInterface::class
             ));
         }
@@ -136,12 +131,11 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Given /^I make repository "(.*)" as active repository$/
      *
      * @param string $repositoryClass
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Given('/^I make repository "(.*)" as active repository$/')]
     public function iMakeRepositoryAsActiveRepository(string $repositoryClass)
     {
         if (!\array_key_exists($repositoryClass, static::$repositories)) {
@@ -155,12 +149,11 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Then /^I have exception with message "(.*)"$/
      *
      * @param string $message
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Then('/^I have exception with message "(.*)"$/')]
     public function iHaveExceptionWithMessage(string $message)
     {
         if (null === static::$exception) {
@@ -177,30 +170,27 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Given /^I begin transaction on connection "(.*)"$/
-     *
      * @param string $connectionName
      */
+    #[\Behat\Step\Given('/^I begin transaction on connection "(.*)"$/')]
     public function iBeginTransactionOnConnection(string $connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->beginTransaction();
     }
 
     /**
-     * @Given /^I commit transaction on connection "(.*)"$/
-     *
      * @param string $connectionName
      */
+    #[\Behat\Step\Given('/^I commit transaction on connection "(.*)"$/')]
     public function iCommitTransactionOnConnection(string $connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->commit();
     }
 
     /**
-     * @Given /^I rollback transaction on connection "(.*)"$/
-     *
      * @param string $connectionName
      */
+    #[\Behat\Step\Given('/^I rollback transaction on connection "(.*)"$/')]
     public function iRollbackTransactionOnConnection(string $connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->rollBack();
@@ -215,7 +205,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
      */
     private function flushTables(ConnectionInterface $connection, string $connectionName, array $tables)
     {
-        switch (\get_class($connection)) {
+        switch ($connection::class) {
             case MySQLConnection::class:
                 $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 0');
                 foreach ($tables as $table) {

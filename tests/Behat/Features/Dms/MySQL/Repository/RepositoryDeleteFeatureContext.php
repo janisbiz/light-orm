@@ -5,20 +5,18 @@ namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 class RepositoryDeleteFeatureContext extends AbstractRepositoryFeatureContext
 {
     /**
-     * @When /^I call method "(.*)" on repository with existing entities$/
-     *
      * @param string $method
      */
+    #[\Behat\Step\When('/^I call method "(.*)" on repository with existing entities$/')]
     public function iCallMethodOnRepositoryWithExistingEntities(string $method)
     {
         $this->callMethodOnRepositoryWithExistingEntities($method);
     }
 
     /**
-     * @When /^I call method "(.*)" on repository with existing entities and expecting exception:$/
-     *
      * @param string $method
      */
+    #[\Behat\Step\When('/^I call method "(.*)" on repository with existing entities and expecting exception:$/')]
     public function iCallMethodOnRepositoryWithExistingEntitiesAndExpectingException(string $method)
     {
         try {
@@ -40,7 +38,7 @@ class RepositoryDeleteFeatureContext extends AbstractRepositoryFeatureContext
                     $method,
                 ],
                 [
-                    'entity' => $entity,
+                    $entity,
                 ]
             );
         }

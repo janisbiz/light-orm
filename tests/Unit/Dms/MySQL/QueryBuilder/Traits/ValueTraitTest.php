@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ValueTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ValueTraitTest extends AbstractTraitTestCase
 {
@@ -25,7 +26,7 @@ class ValueTraitTest extends AbstractTraitTestCase
      */
     private $valueTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->valueTraitClass = new class (ValueTraitTest::VALUE_DEFAULT, ValueTraitTest::VALUE_BIND_DEFAULT)
         {
@@ -65,11 +66,11 @@ class ValueTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider valueData
      *
      * @param string $column
      * @param null|int|string|double $value
      */
+    #[DataProvider('valueData')]
     public function testValue($column, $value)
     {
         $object = $this->valueTraitClass->value($column, $value);
@@ -80,27 +81,23 @@ class ValueTraitTest extends AbstractTraitTestCase
                 static::VALUE_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($column) {
-                            return [
-                                $column => \sprintf(
-                                    ':%s_Value',
-                                    \implode(
-                                        '_',
-                                        \array_map(
-                                            function ($columnPart) {
-                                                return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                                            },
-                                            \explode('.', $column)
-                                        )
+                        fn($column) => [
+                            $column => \sprintf(
+                                ':%s_Value',
+                                \implode(
+                                    '_',
+                                    \array_map(
+                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        \explode('.', $column)
                                     )
-                                ),
-                            ];
-                        },
+                                )
+                            ),
+                        ],
                         [
                             $column
                         ]
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),
@@ -111,22 +108,18 @@ class ValueTraitTest extends AbstractTraitTestCase
                 static::VALUE_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($column, $value) {
-                            return [
-                                \sprintf(
-                                    '%s_Value',
-                                    \implode(
-                                        '_',
-                                        \array_map(
-                                            function ($columnPart) {
-                                                return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                                            },
-                                            \explode('.', $column)
-                                        )
+                        fn($column, $value) => [
+                            \sprintf(
+                                '%s_Value',
+                                \implode(
+                                    '_',
+                                    \array_map(
+                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        \explode('.', $column)
                                     )
-                                ) => $value,
-                            ];
-                        },
+                                )
+                            ) => $value,
+                        ],
                         [
                             $column
                         ],
@@ -134,7 +127,7 @@ class ValueTraitTest extends AbstractTraitTestCase
                             $value
                         ]
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),
@@ -143,11 +136,10 @@ class ValueTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider valueData
-     *
      * @param string $column
      * @param null|int|string|double $value
      */
+    #[DataProvider('valueData')]
     public function testBuildValueQueryPart($column, $value)
     {
         $this->valueTraitClass->value($column, $value);
@@ -174,7 +166,7 @@ class ValueTraitTest extends AbstractTraitTestCase
      *
      * @return array
      */
-    public function valueData()
+    public static function valueData()
     {
         return [
             [

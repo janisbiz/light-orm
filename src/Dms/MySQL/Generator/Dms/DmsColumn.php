@@ -29,6 +29,9 @@ class DmsColumn implements DmsColumnInterface
     const PHP_TYPE_RESOURCE = 'resource';
     const PHP_TYPE_STRING = 'string';
 
+    const REGEX_PHP_NAME = '/[^a-z0-9]+(?<name>\w{1})/i';
+    const REGEX_PHP_TYPE = '/^(?<type>\w+)/';
+
     /**
      * @var string
      */
@@ -97,10 +100,8 @@ class DmsColumn implements DmsColumnInterface
     public function getPhpName(): string
     {
         return \ucfirst(\preg_replace_callback(
-            '/[^a-z0-9]+(?<name>\w{1})/i',
-            function ($matches) {
-                return \strtoupper($matches['name']);
-            },
+            static::REGEX_PHP_NAME,
+            fn($matches) => \strtoupper($matches['name']),
             $this->getName()
         ));
     }
@@ -119,33 +120,19 @@ class DmsColumn implements DmsColumnInterface
      */
     public function getPhpType(): string
     {
-        \preg_match('/^(?<type>\w+)/', $this->getType(), $matches);
-        switch ($matches['type']) {
-            case static::TYPE_BIGINT:
-            case static::TYPE_INT:
-            case static::TYPE_TIMESTAMP:
-            case static::TYPE_TINYINT:
-                return static::PHP_TYPE_INTEGER;
-
-            case static::TYPE_FLOAT:
-                return static::PHP_TYPE_FLOAT;
-
-            case static::TYPE_CHAR:
-            case static::TYPE_DATE:
-            case static::TYPE_DATETIME:
-            case static::TYPE_JSON:
-            case static::TYPE_LONGTEXT:
-            case static::TYPE_MEDIUMTEXT:
-            case static::TYPE_TEXT:
-            case static::TYPE_VARCHAR:
-                return static::PHP_TYPE_STRING;
-        }
-
-        throw new DmsException(\sprintf(
-            'Could not determine type for column "%s" with type "%s"',
-            $this->getName(),
-            $this->getType()
-        ));
+        \preg_match(static::REGEX_PHP_TYPE, $this->getType(), $matches);
+        return match ($matches['type']) {
+            static::TYPE_BIGINT, static::TYPE_INT, static::TYPE_TIMESTAMP, static::TYPE_TINYINT
+                => static::PHP_TYPE_INTEGER,
+            static::TYPE_FLOAT => static::PHP_TYPE_FLOAT,
+            static::TYPE_CHAR, static::TYPE_DATE, static::TYPE_DATETIME, static::TYPE_JSON, static::TYPE_LONGTEXT,
+            static::TYPE_MEDIUMTEXT, static::TYPE_TEXT, static::TYPE_VARCHAR => static::PHP_TYPE_STRING,
+            default => throw new DmsException(\sprintf(
+                'Could not determine type for column "%s" with type "%s"',
+                $this->getName(),
+                $this->getType()
+            )),
+        };
     }
 
     /**

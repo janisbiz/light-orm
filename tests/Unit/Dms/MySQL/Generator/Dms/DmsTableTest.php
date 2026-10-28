@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsTable;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class DmsTableTest extends TestCase
@@ -20,7 +21,7 @@ class DmsTableTest extends TestCase
      */
     private $dmsTable;
 
-    public function setUp()
+    public function setUp(): void
     {
         for ($i = 1; $i <= 3; $i++) {
             $this->dmsColumns[] = new DmsColumn(
@@ -42,11 +43,10 @@ class DmsTableTest extends TestCase
     }
 
     /**
-     * @dataProvider getPhpNameData
-     *
      * @param string $name
      * @param string $phpName
      */
+    #[DataProvider('getPhpNameData')]
     public function testGetPhpName(string $name, string $phpName)
     {
         $dmsTable = new DmsTable(
@@ -58,10 +58,9 @@ class DmsTableTest extends TestCase
     }
 
     /**
-     *
      * @return array
      */
-    public function getPhpNameData()
+    public static function getPhpNameData()
     {
         return [
             [

@@ -87,12 +87,9 @@ class Paginator implements PaginatorInterface
         $this->getPaginateResult = $getPaginateResult;
         $this->pageSize = $pageSize;
         $this->currentPage = (int) $currentPage;
-        $this->options = \array_merge(
-            [
-                static::OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE => 2,
-            ],
-            $options
-        );
+        $this->options = $options + [
+            static::OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE => 2,
+        ];
     }
 
     /**

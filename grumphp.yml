@@ -48,7 +48,6 @@ parameters:
       ignore_patterns: []
       sniffs: []
       triggered_by: ['php']
-    phplint: ~
     phpmd:
       exclude:
         - 'vendor/'

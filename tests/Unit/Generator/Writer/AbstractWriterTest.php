@@ -6,8 +6,10 @@ use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
 use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriterConfig;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class AbstractWriterTest extends TestCase
 {
     use FileTrait;
@@ -32,27 +34,23 @@ class AbstractWriterTest extends TestCase
      */
     private $dmsTable;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->abstractWriter = $this->getMockForAbstractClass(AbstractWriter::class);
+        $this->abstractWriter = $this->createPartialMock(AbstractWriter::class, ['getWriterConfig', 'write']);
 
-        $this->abstractWriterConfig = $this->getMockForAbstractClass(AbstractWriterConfig::class);
+        $this->abstractWriterConfig = $this->createPartialMock(AbstractWriterConfig::class, []);
         $abstractWriterConfigReflection = new \ReflectionClass($this->abstractWriterConfig);
 
         $directoryProperty = $abstractWriterConfigReflection->getProperty('directory');
-        $directoryProperty->setAccessible(true);
         $directoryProperty->setValue($this->abstractWriterConfig, AbstractWriterConfigTest::DIRECTORY_VALUE);
 
         $namespaceProperty = $abstractWriterConfigReflection->getProperty('namespace');
-        $namespaceProperty->setAccessible(true);
         $namespaceProperty->setValue($this->abstractWriterConfig, AbstractWriterConfigTest::NAMESPACE_VALUE);
 
         $classPrefixProperty = $abstractWriterConfigReflection->getProperty('classPrefix');
-        $classPrefixProperty->setAccessible(true);
         $classPrefixProperty->setValue($this->abstractWriterConfig, AbstractWriterConfigTest::CLASS_PREFIX_VALUE);
 
         $classSuffixProperty = $abstractWriterConfigReflection->getProperty('classSuffix');
-        $classSuffixProperty->setAccessible(true);
         $classSuffixProperty->setValue($this->abstractWriterConfig, AbstractWriterConfigTest::CLASS_SUFFIX_VALUE);
         
         $this->abstractWriter->method('getWriterConfig')->willReturn($this->abstractWriterConfig);
@@ -141,7 +139,7 @@ class AbstractWriterTest extends TestCase
         $this->assertCount(0, $files);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeDirectoryRecursive(\implode(
             '',

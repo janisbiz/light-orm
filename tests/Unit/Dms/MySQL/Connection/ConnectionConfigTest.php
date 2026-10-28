@@ -21,7 +21,7 @@ class ConnectionConfigTest extends TestCase
      */
     private $connectionConfig;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->connectionConfig = new ConnectionConfig(
             static::CONFIG_HOST,

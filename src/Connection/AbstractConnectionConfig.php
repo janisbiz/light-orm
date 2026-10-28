@@ -48,7 +48,7 @@ abstract class AbstractConnectionConfig implements ConnectionConfigInterface
         string $password,
         string $dbname,
         string $adapter,
-        int $port = 3306
+        int $port
     ) {
         $this->host = $host;
         $this->username = $username;

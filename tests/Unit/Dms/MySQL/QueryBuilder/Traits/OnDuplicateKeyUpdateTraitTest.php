@@ -5,6 +5,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OnDuplicateKeyUpdateTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ValueTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
 {
@@ -26,7 +27,7 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
      */
     private $onDuplicateKeyUpdateTraitClass;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->onDuplicateKeyUpdateTraitClass = new class (
             OnDuplicateKeyUpdateTraitTest::ON_DUPLICATE_KEY_UPDATE_BIND_VALUE_DEFAULT,
@@ -69,11 +70,10 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider onDuplicateKeyUpdateData
-     *
      * @param string $column
      * @param null|int|string|double $value
      */
+    #[DataProvider('onDuplicateKeyUpdateData')]
     public function testOnDuplicateKeyUpdate(string $column, $value)
     {
         $object = $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdate($column, $value);
@@ -85,28 +85,24 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
                 static::ON_DUPLICATE_KEY_UPDATE_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($column) {
-                            return [
-                                $column => \sprintf(
-                                    '%s = :%s_OnDuplicateKeyUpdate',
-                                    $column,
-                                    \implode(
-                                        '_',
-                                        \array_map(
-                                            function ($columnPart) {
-                                                return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                                            },
-                                            \explode('.', $column)
-                                        )
+                        fn($column) => [
+                            $column => \sprintf(
+                                '%s = :%s_OnDuplicateKeyUpdate',
+                                $column,
+                                \implode(
+                                    '_',
+                                    \array_map(
+                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        \explode('.', $column)
                                     )
-                                ),
-                            ];
-                        },
+                                )
+                            ),
+                        ],
                         [
                             $column
                         ]
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),
@@ -117,22 +113,18 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
                 static::ON_DUPLICATE_KEY_UPDATE_BIND_VALUE_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($column, $value) {
-                            return [
-                                \sprintf(
-                                    '%s_OnDuplicateKeyUpdate',
-                                    \implode(
-                                        '_',
-                                        \array_map(
-                                            function ($columnPart) {
-                                                return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                                            },
-                                            \explode('.', $column)
-                                        )
+                        fn($column, $value) => [
+                            \sprintf(
+                                '%s_OnDuplicateKeyUpdate',
+                                \implode(
+                                    '_',
+                                    \array_map(
+                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        \explode('.', $column)
                                     )
-                                ) => $value,
-                            ];
-                        },
+                                )
+                            ) => $value,
+                        ],
                         [
                             $column
                         ],
@@ -140,7 +132,7 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
                             $value
                         ]
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),
@@ -157,11 +149,10 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider onDuplicateKeyUpdateData
-     *
      * @param string $column
      * @param null|int|string|double $value
      */
+    #[DataProvider('onDuplicateKeyUpdateData')]
     public function testBuildOnDuplicateKeyUpdateQueryPart(string $column, $value)
     {
         $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdate($column, $value);
@@ -186,7 +177,7 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
      *
      * @return array
      */
-    public function onDuplicateKeyUpdateData()
+    public static function onDuplicateKeyUpdateData()
     {
         return [
             [

@@ -66,9 +66,7 @@ class BaseEntity implements EntityInterface
         $this->data[$name] = $value;
 
         /** Construct values, for update queries */
-        if (!isset($this->dataOriginal[$name])) {
-            $this->dataOriginal[$name] = $this->data[$name];
-        }
+        $this->dataOriginal[$name] ??= $this->data[$name];
     }
 
     /**
@@ -109,7 +107,7 @@ class BaseEntity implements EntityInterface
                 return $this;
         }
 
-        throw new EntityException(\sprintf('Call to undefined method %s::%s()', __CLASS__, $name));
+        throw new EntityException(\sprintf('Call to undefined method %s::%s()', self::class, $name));
     }
 
     /**

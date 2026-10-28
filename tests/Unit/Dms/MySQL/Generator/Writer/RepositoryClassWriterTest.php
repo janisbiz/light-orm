@@ -21,7 +21,7 @@ class RepositoryClassWriterTest extends EntityClassWriterTest
      */
     private $repositoryClassWriter;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -49,10 +49,8 @@ class RepositoryClassWriterTest extends EntityClassWriterTest
     public function testConstruct()
     {
         $getWriterConfigMethod = new \ReflectionMethod($this->repositoryClassWriter, 'getWriterConfig');
-        $getWriterConfigMethod->setAccessible(true);
 
         $baseEntityClassWriterProperty = new \ReflectionProperty($this->repositoryClassWriter, 'entityClassWriter');
-        $baseEntityClassWriterProperty->setAccessible(true);
 
         $this->assertTrue($getWriterConfigMethod->invoke($this->repositoryClassWriter) instanceof $this->writerConfig);
         $this->assertTrue(

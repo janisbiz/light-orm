@@ -31,7 +31,7 @@ class WhereTraitTest extends AbstractTraitTestCase
      */
     private $whereTraitClass;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->whereTraitClass = new class (
             WhereTraitTest::WHERE_CONDITION_BIND_DEFAULT,
@@ -115,9 +115,7 @@ class WhereTraitTest extends AbstractTraitTestCase
                         '%s IN (%s)',
                         static::WHERE_IN_OR_NOT_IN_COLUMN,
                         \implode(', ', \array_map(
-                            function ($i) {
-                                return \sprintf(':%d_%s_In', $i, static::WHERE_IN_OR_NOT_IN_COLUMN);
-                            },
+                            fn($i) => \sprintf(':%d_%s_In', $i, static::WHERE_IN_OR_NOT_IN_COLUMN),
                             \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                         ))
                     ),
@@ -130,15 +128,13 @@ class WhereTraitTest extends AbstractTraitTestCase
                 static::WHERE_CONDITION_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($value, $i) {
-                            return [
-                                \sprintf('%d_%s_In', $i, static::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
-                            ];
-                        },
+                        fn($value, $i) => [
+                            \sprintf('%d_%s_In', $i, static::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
+                        ],
                         static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES,
                         \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),
@@ -165,9 +161,7 @@ class WhereTraitTest extends AbstractTraitTestCase
                         '%s NOT IN (%s)',
                         static::WHERE_IN_OR_NOT_IN_COLUMN,
                         \implode(', ', \array_map(
-                            function ($i) {
-                                return \sprintf(':%d_%s_NotIn', $i, static::WHERE_IN_OR_NOT_IN_COLUMN);
-                            },
+                            fn($i) => \sprintf(':%d_%s_NotIn', $i, static::WHERE_IN_OR_NOT_IN_COLUMN),
                             \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                         ))
                     ),
@@ -180,15 +174,13 @@ class WhereTraitTest extends AbstractTraitTestCase
                 static::WHERE_CONDITION_BIND_DEFAULT,
                 \array_reduce(
                     \array_map(
-                        function ($value, $i) {
-                            return [
-                                \sprintf('%d_%s_NotIn', $i, static::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
-                            ];
-                        },
+                        fn($value, $i) => [
+                            \sprintf('%d_%s_NotIn', $i, static::WHERE_IN_OR_NOT_IN_COLUMN) => $value,
+                        ],
                         static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES,
                         \array_keys(static::WHERE_IN_OR_NOT_IN_COLUMN_VALUES)
                     ),
-                    'array_merge',
+                    array_merge(...),
                     []
                 )
             ),

@@ -1,4 +1,4 @@
-FROM php:7.1-cli-alpine
+FROM php:8.5-cli-alpine
 
 # Setup the Composer installer
 RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
@@ -7,18 +7,18 @@ RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
 
 # Install Composer
 RUN php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --snapshot && rm -rf /tmp/composer-setup.php
-RUN composer global require hirak/prestissimo
 
 RUN docker-php-ext-install \
     mysqli \
     pdo \
     pdo_mysql
 
-RUN apk add --no-cache $PHPIZE_DEPS \
-    && pecl install xdebug-2.5.0 \
+RUN apk add --no-cache $PHPIZE_DEPS linux-headers \
+    && pecl install xdebug-3.5.3 \
     && docker-php-ext-enable xdebug
 
 RUN printf '[php]\ndate.timezone = "UTC"\n' > /usr/local/etc/php/conf.d/tzone.ini
+RUN printf '[xdebug]\nxdebug.mode = "coverage"\n' > /usr/local/etc/php/conf.d/xdebug.ini
 
 WORKDIR "/var/www"
 

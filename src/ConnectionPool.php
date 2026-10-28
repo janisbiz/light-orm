@@ -36,7 +36,7 @@ class ConnectionPool
      * @return ConnectionInterface
      * @throws ConnectionInvalidArgumentException
      */
-    public function getConnection($dbName): ConnectionInterface
+    public function getConnection(string $dbName): ConnectionInterface
     {
         if (!\array_key_exists($dbName, static::$connectionConfig)) {
             if (empty(static::$connectionConfig)) {
@@ -55,9 +55,7 @@ class ConnectionPool
 
         $connectionConfig = static::$connectionConfig[$dbName];
 
-        if (!isset(static::$connections[$dbName])) {
-            static::$connections[$dbName] = $this->createConnection($connectionConfig);
-        }
+        static::$connections[$dbName] ??= $this->createConnection($connectionConfig);
 
         return static::$connections[$dbName];
     }
@@ -69,7 +67,7 @@ class ConnectionPool
      */
     public static function getConnectionStatic($dbName): ConnectionInterface
     {
-        return (new static())->getConnection($dbName);
+        return (new self())->getConnection($dbName);
     }
 
     /**

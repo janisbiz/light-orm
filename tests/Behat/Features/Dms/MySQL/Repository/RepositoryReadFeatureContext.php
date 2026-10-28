@@ -7,11 +7,11 @@ use Behat\Gherkin\Node\TableNode;
 class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
 {
     /**
-     * @Then /^I call method "(.*)" on repository which will return following rows:$/
      *
      * @param string $method
      * @param TableNode $rows
      */
+    #[\Behat\Step\Then('/^I call method "(.*)" on repository which will return following rows:$/')]
     public function iCallMethodOnRepositoryWhichWillReturnFollowingRows(string $method, TableNode $rows)
     {
         static::$entities = static::$repository->$method();
@@ -20,12 +20,11 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Then /^I have following rows:$/
      *
      * @param TableNode $rows
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Then('/^I have following rows:$/')]
     public function iHaveFollowingRows(TableNode $rows)
     {
         if (($entitiesCount = \count(static::$entities)) !== ($expectedRowsCount = \count($rows->getRows()) - 1)) {
@@ -44,7 +43,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
                 if ($value !== $entity->$getterMethod()) {
                     throw new \Exception(\sprintf(
                         'Data mismatch, when reading stored row data! %s::%s => %s != %s => %s',
-                        \get_class($entity),
+                        $entity::class,
                         $getterMethod,
                         $entity->$getterMethod(),
                         $column,
@@ -56,12 +55,11 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Then /^I have following data columns on entities:$/
      *
      * @param TableNode $columns
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Then('/^I have following data columns on entities:$/')]
     public function iHaveFollowingRowsOfDataColumnsOnEntities(TableNode $columns)
     {
         if (($entitiesCount = \count(static::$entities)) !== ($expectedRowsCount = \count($columns->getRows()) - 1)) {
@@ -79,7 +77,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
                 if ($value !== $entity->data($column)) {
                     throw new \Exception(\sprintf(
                         'Data mismatch, when reading stored row data! %s::data(%s) => %s != %s => %s',
-                        \get_class($entity),
+                        $entity::class,
                         $column,
                         $entity->data($column),
                         $column,
@@ -91,13 +89,12 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Then /^I call method "(.*)" on repository which will return following integer (\d+)$/
      *
      * @param string $method
      * @param int $integer
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Then('/^I call method "(.*)" on repository which will return following integer (\d+)$/')]
     public function iCallMethodOnRepositoryWhichWillReturnFollowingInteger(string $method, int $integer)
     {
         $returnedInteger = static::$repository->$method();
@@ -113,13 +110,13 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
 
     /**
      * @codingStandardsIgnoreStart
-     * @Then /^I call method "(.*)" on repository which will return paginator with page size of (\d+) and current page (\d+)$/
      * @codingStandardsIgnoreEnd
      *
      * @param string $method
      * @param int $pageSize
      * @param int $currentPage
      */
+    #[\Behat\Step\Then('/^I call method "(.*)" on repository which will return paginator with page size of (\d+) and current page (\d+)$/')] // phpcs:ignore
     public function iCallPaginatorMethodOnRepositoryWithPageSizeOfAndCurrentPage(
         string $method,
         int $pageSize,
@@ -129,23 +126,21 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Then /^I call method "(.*)" on paginator which will return entities$/
-     *
      * @param string $method
      */
+    #[\Behat\Step\Then('/^I call method "(.*)" on paginator which will return entities$/')]
     public function iCallMethodOnPaginatorWhichWillReturnEntities(string $method)
     {
         static::$entities = static::$paginator->$method();
     }
 
     /**
-     * @Then /^I call method "(.*)" on paginator which will return following integer (\d+)$/
      *
      * @param string $method
      * @param int $integer
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Then('/^I call method "(.*)" on paginator which will return following integer (\d+)$/')]
     public function iCallMethodOnPaginatorWhichWillReturnFollowingInteger(string $method, int $integer)
     {
         $returnedInteger = static::$paginator->$method();
@@ -160,10 +155,9 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Then /^I get following page numbers from paginator:$/
-     *
      * @param TableNode $expectedPageNumbers
      */
+    #[\Behat\Step\Then('/^I get following page numbers from paginator:$/')]
     public function iGetFollowingPageNumbersFromPaginator(TableNode $expectedPageNumbers)
     {
         $pageNumbers = self::$paginator->getPageNumbers();
@@ -184,7 +178,7 @@ class RepositoryReadFeatureContext extends AbstractRepositoryFeatureContext
                     throw new \Exception(\sprintf(
                         'Data mismatch, when reading page numbers! %s != %s',
                         $value,
-                        isset($pageNumber) ? $pageNumber : null
+                        $pageNumber ?? null
                     ));
                 }
             }

@@ -8,12 +8,14 @@ use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Paginator\PaginatorInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository;
-use Janisbiz\LightOrm\Repository\RepositoryException;
 use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
+use PDOStatement;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
+#[AllowMockObjectsWithoutExpectations]
 class AbstractRepositoryTest extends TestCase
 {
     use ReflectionTrait;
@@ -58,11 +60,6 @@ class AbstractRepositoryTest extends TestCase
     /**
      * @var \ReflectionMethod
      */
-    private $abstractRepositoryQuoteMethod;
-
-    /**
-     * @var \ReflectionMethod
-     */
     private $abstractRepositoryPaginatorMethod;
 
     /**
@@ -98,7 +95,7 @@ class AbstractRepositoryTest extends TestCase
     /**
      * @var \ReflectionMethod
      */
-    private $abstractRepositoryGetModelConstantMethod;
+    private $abstractRepositoryGetEntityClassConstantMethod;
 
     /**
      * @var ConnectionPool|\PHPUnit_Framework_MockObject_MockObject
@@ -110,41 +107,21 @@ class AbstractRepositoryTest extends TestCase
      */
     private $abstractRepositoryConnectionPoolProperty;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->connection = $this
-            ->createPartialMock(
-                ConnectionInterface::class,
-                [
-                    'beginTransaction',
-                    'inTransaction',
-                    'quote',
-                    'commit',
-                    'rollBack',
-                    'prepare',
-                    'execute',
-                ]
-            )
-        ;
+        $this->connection = $this->createMock(ConnectionInterface::class);
 
-        $this->pdoStatement = $this->createMock(\PDOStatement::class);
+        $this->pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->queryBuilder = $this->createMock(QueryBuilderInterface::class);
 
-        $this->abstractRepository = $this->getMockForAbstractClass(
+        $this->abstractRepository = $this->createPartialMock(
             AbstractRepository::class,
-            [],
-            '',
-            true,
-            true,
-            true,
-            [
-                'getEntityClass',
-            ]
+            ['getEntityClass', 'addPaginateQuery', 'createQueryBuilder', 'getPaginateResult'],
         );
+            
         $this->abstractRepository->method('getEntityClass')->willReturn(static::class);
 
-        $this->abstractRepositoryQuoteMethod = $this->createAccessibleMethod($this->abstractRepository, 'quote');
         $this->abstractRepositoryPaginatorMethod = $this
             ->createAccessibleMethod($this->abstractRepository, 'paginator')
         ;
@@ -160,61 +137,17 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepositoryGetConnectionMethod = $this
             ->createAccessibleMethod($this->abstractRepository, 'getConnection')
         ;
-        $this->abstractRepositoryGetModelConstantMethod = $this
+        $this->abstractRepositoryGetEntityClassConstantMethod = $this
             ->createAccessibleMethod($this->abstractRepository, 'getEntityClassConstant')
         ;
 
-        $this->connectionPool = $this->createMock(ConnectionPool::class);
+        $this->connectionPool = $this->createStub(ConnectionPool::class);
         $this->connectionPool->method('getConnection')->willReturn($this->connection);
 
         $this->abstractRepositoryConnectionPoolProperty = $this
             ->createAccessibleProperty($this->abstractRepository, 'connectionPool')
         ;
         $this->abstractRepositoryConnectionPoolProperty->setValue($this->abstractRepository, $this->connectionPool);
-    }
-
-    /**
-     * @dataProvider quoteData
-     *
-     * @param null|int|string|double|bool $value
-     */
-    public function testQuote($value)
-    {
-        $this->connection->expects($this->once())->method('quote');
-
-        $this->abstractRepositoryQuoteMethod->invoke($this->abstractRepository, $value);
-    }
-
-    /**
-     * @return array
-     */
-    public function quoteData()
-    {
-        return [
-            [
-                null,
-            ],
-            [
-                0,
-            ],
-            [
-                'string',
-            ],
-            [
-                0.0,
-            ],
-            [
-                true,
-            ],
-        ];
-    }
-
-    public function testQuoteWithInvalidValue()
-    {
-        $this->expectException(RepositoryException::class);
-        $this->expectExceptionMessage('Parameter type "array" could not be quoted for SQL execution!');
-
-        $this->abstractRepositoryQuoteMethod->invoke($this->abstractRepository, static::VALUE_INVALID);
     }
 
     public function testPaginator()
@@ -327,7 +260,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $abstractRepository = $this
             ->abstractRepositoryBeginTransactionMethod
-            ->invoke($this->abstractRepository)
+            ->invoke($this->abstractRepository, $this->connection)
         ;
 
         $this->assertTrue($abstractRepository instanceof $this->abstractRepository);
@@ -373,7 +306,7 @@ class AbstractRepositoryTest extends TestCase
 
         $this->connection->expects($this->once())->method('commit')->willReturn(true);
 
-        $this->assertTrue($this->abstractRepositoryCommitMethod->invoke($this->abstractRepository));
+        $this->assertTrue($this->abstractRepositoryCommitMethod->invoke($this->abstractRepository, $this->connection));
     }
 
     public function testRollBack()
@@ -406,7 +339,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $abstractRepository = $this
             ->abstractRepositoryRollBackMethod
-            ->invoke($this->abstractRepository)
+            ->invoke($this->abstractRepository, $this->connection)
         ;
 
         $this->assertTrue($abstractRepository instanceof $this->abstractRepository);
@@ -434,7 +367,7 @@ class AbstractRepositoryTest extends TestCase
 
         $pdoStatement = $this
             ->abstractRepositoryPrepareAndExecuteMethod
-            ->invoke($this->abstractRepository, $this->queryBuilder, [])
+            ->invoke($this->abstractRepository, $this->queryBuilder, [], $this->connection)
         ;
 
         $this->assertTrue($pdoStatement instanceof $this->pdoStatement);
@@ -452,7 +385,7 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepositoryConnectionPoolProperty->setValue($this->abstractRepository, null);
 
         $this->expectException(ConnectionInvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp('/Could not find connection by name "(.*)"\!/');
+        $this->expectExceptionMessageMatches('/Could not find connection by name "(.*)"\!/');
 
         $this->abstractRepositoryGetConnectionMethod->invoke($this->abstractRepository);
     }
@@ -460,7 +393,7 @@ class AbstractRepositoryTest extends TestCase
     public function testGetModelClassConstant()
     {
         $constantValue = $this
-            ->abstractRepositoryGetModelConstantMethod
+            ->abstractRepositoryGetEntityClassConstantMethod
             ->invoke($this->abstractRepository, static::CONSTANT_NAME)
         ;
 

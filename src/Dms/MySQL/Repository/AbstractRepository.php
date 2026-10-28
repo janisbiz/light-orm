@@ -100,7 +100,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData());
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
-                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getEntityClass(),
+                ($entity = $queryBuilder->getEntity()) ? $entity::class : $this->getEntityClass(),
                 [
                     false,
                 ]
@@ -128,16 +128,16 @@ abstract class AbstractRepository extends BaseAbstractRepository
         }
 
         try {
-            $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData());
+            $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData(), null);
             $statement->setFetchMode(
                 \PDO::FETCH_CLASS,
-                ($entity = $queryBuilder->getEntity()) ? \get_class($entity) : $this->getEntityClass(),
+                ($entity = $queryBuilder->getEntity()) ? $entity::class : $this->getEntityClass(),
                 [
                     false,
                 ]
             );
         } catch (\Exception $e) {
-            $this->rollback();
+            $this->rollback(null);
 
             throw $e;
         }
@@ -378,9 +378,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
                     \implode(
                         '',
                         \array_map(
-                            function ($columnPart) {
-                                return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                            },
+                            fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
                             \array_merge(
                                 \explode('.', $entity::TABLE_NAME),
                                 [

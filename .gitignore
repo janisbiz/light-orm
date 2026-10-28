@@ -17,6 +17,8 @@
 
 # Phpunit
 /var/phpunit
+.phpunit.cache
+.phpunit.result.cache
 
 # Logging
 /var/log

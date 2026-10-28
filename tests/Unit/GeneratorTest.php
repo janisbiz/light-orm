@@ -10,8 +10,10 @@ use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\Tests\Unit\Generator\Writer\AbstractWriterConfigTest;
 use Janisbiz\LightOrm\Tests\Unit\Generator\Writer\FileTrait;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class GeneratorTest extends TestCase
 {
     use FileTrait;
@@ -41,7 +43,7 @@ class GeneratorTest extends TestCase
      */
     private $generator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->writer = $this->createMock(WriterInterface::class);
 
@@ -63,7 +65,6 @@ class GeneratorTest extends TestCase
     public function testConstruct()
     {
         $dmsFactoryProperty = new \ReflectionProperty($this->generator, 'dmsFactory');
-        $dmsFactoryProperty->setAccessible(true);
 
         $this->assertTrue($dmsFactoryProperty->getValue($this->generator) instanceof $this->dmsFactory);
     }
@@ -81,14 +82,13 @@ class GeneratorTest extends TestCase
         }
 
         $writersProperty = new \ReflectionProperty($this->generator, 'writers');
-        $writersProperty->setAccessible(true);
 
         $writers = $writersProperty->getValue($this->generator);
 
         $this->assertCount(1, $writers);
 
         foreach ($writers as $writerClass => $writer) {
-            $this->assertEquals(\get_class($this->writer), $writerClass);
+            $this->assertEquals($this->writer::class, $writerClass);
             $this->assertTrue($writer instanceof $this->writer);
         }
     }
@@ -106,7 +106,7 @@ class GeneratorTest extends TestCase
             AbstractWriterConfigTest::DIRECTORY_VALUE
         ));
 
-        \array_walk($testFiles, function (&$i, $path) {
+        \array_walk($testFiles, function (&$i, $path): void {
             $i = \basename($path);
         });
 
@@ -123,7 +123,7 @@ class GeneratorTest extends TestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeDirectoryRecursive(\implode(
             '',

@@ -25,7 +25,7 @@ class BaseEntityTest extends TestCase
      */
     private $baseEntity;
 
-    public function setUp()
+    public function setUp(): void
     {
         $baseEntity = new BaseEntity();
 

@@ -23,7 +23,7 @@ class ColumnTraitTest extends AbstractTraitTestCase
      */
     private $columnTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->columnTraitClass = new class (ColumnTraitTest::COLUMN_DEFAULT)
         {

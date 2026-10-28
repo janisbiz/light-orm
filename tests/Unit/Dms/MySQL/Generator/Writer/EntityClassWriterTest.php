@@ -20,7 +20,7 @@ class EntityClassWriterTest extends BaseEntityClassWriterTest
      */
     protected $entityClassWriter;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -48,10 +48,8 @@ class EntityClassWriterTest extends BaseEntityClassWriterTest
     public function testConstruct()
     {
         $getWriterConfigMethod = new \ReflectionMethod($this->entityClassWriter, 'getWriterConfig');
-        $getWriterConfigMethod->setAccessible(true);
 
         $baseEntityClassWriterProperty = new \ReflectionProperty($this->entityClassWriter, 'baseEntityClassWriter');
-        $baseEntityClassWriterProperty->setAccessible(true);
 
         $this->assertTrue($getWriterConfigMethod->invoke($this->entityClassWriter) instanceof $this->writerConfig);
         $this->assertTrue(

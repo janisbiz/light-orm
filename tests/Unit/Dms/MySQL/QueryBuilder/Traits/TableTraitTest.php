@@ -24,7 +24,7 @@ class TableTraitTest extends AbstractTraitTestCase
      */
     private $tableTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->tableTraitClass = new class (TableTraitTest::TABLE_DEFAULT)
         {

@@ -4,8 +4,10 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Connection;
 
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionPDOException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class ConnectionTest extends TestCase
 {
     /**
@@ -13,16 +15,18 @@ class ConnectionTest extends TestCase
      */
     private $connection;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->connection = $this->createPartialMock(
-            Connection::class,
-            [
+        $this->connection = $this
+            ->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([
+                'exec',
                 'inTransaction',
                 'parentBeginTransaction',
-                'exec',
-            ]
-        );
+            ])
+            ->getMock()
+        ;
     }
 
     public function testBeginTransaction()
@@ -44,9 +48,7 @@ class ConnectionTest extends TestCase
             ->connection
             ->expects($this->once())
             ->method('exec')
-            ->withConsecutive([
-                'SET SESSION SQL_SAFE_UPDATES = 1;',
-            ])
+            ->with('SET SESSION SQL_SAFE_UPDATES = 1;')
         ;
         $this->assertTrue($this->connection->setSqlSafeUpdates() instanceof Connection);
     }
@@ -57,9 +59,7 @@ class ConnectionTest extends TestCase
             ->connection
             ->expects($this->once())
             ->method('exec')
-            ->withConsecutive([
-                'SET SESSION SQL_SAFE_UPDATES = 0;',
-            ])
+            ->with('SET SESSION SQL_SAFE_UPDATES = 0;')
         ;
         $this->assertTrue($this->connection->unsetSqlSafeUpdates() instanceof Connection);
     }

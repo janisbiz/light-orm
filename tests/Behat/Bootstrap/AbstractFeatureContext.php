@@ -86,9 +86,7 @@ abstract class AbstractFeatureContext implements Context
     {
         $tableNodeParsedArray = [
             0 => \array_map(
-                function (string $column): string {
-                    return \explode(':', $column)[0];
-                },
+                fn(string $column): string => \explode(':', $column)[0],
                 $tableNode->getRow(0)
             ),
         ];
@@ -100,7 +98,7 @@ abstract class AbstractFeatureContext implements Context
                 $cellDataType = $cellNameWithDataType[1] ?? false;
 
                 if (false !== $cellDataType) {
-                    if (0 === \strpos($cellDataType, '?')) {
+                    if (str_starts_with($cellDataType, '?')) {
                         if ('' === $cellValue) {
                             $cellValue = null;
                         } else {
@@ -122,18 +120,21 @@ abstract class AbstractFeatureContext implements Context
          * Handling node validation. This is known exception, as it checks for type of string in cell values. If it is
          * not string, exception is thrown, but rest validation is valid.
          */
-        try {
-            new TableNode($tableNodeParsedArray);
-        } catch (\Throwable $e) {
-            if (70 !== $e->getLine() || 'Table is not two-dimensional.' !== $e->getMessage()) {
-                throw $e;
-            }
-        }
+        // try {
+        //     new TableNode($tableNodeParsedArray);
+        // } catch (\Throwable $e) {
+        // fwrite(STDOUT, var_export($e->getMessage(), true));
+        //     if (70 !== $e->getLine() || 'Table is not two-dimensional.' !== $e->getMessage()) {
+        //         throw $e;
+        //     }
+        // }
+
+
+        // fwrite(STDOUT, var_export($tableNodeParsedArray, true));
 
         $tableNodeParsed = new TableNode([]);
 
         $tableProperty = new \ReflectionProperty($tableNodeParsed, 'table');
-        $tableProperty->setAccessible(true);
         $tableProperty->setValue($tableNodeParsed, $tableNodeParsedArray);
 
         return $tableNodeParsed;

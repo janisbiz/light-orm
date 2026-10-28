@@ -28,46 +28,6 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
     protected $commit;
 
     /**
-     * @param null|double|int|string $value
-     *
-     * @return string
-     * @throws RepositoryException
-     */
-    protected function quote($value)
-    {
-        switch ($phpParamType = \mb_strtolower(\gettype($value))) {
-            case 'null':
-                $pdoParamType = \PDO::PARAM_NULL;
-
-                break;
-
-            case 'integer':
-                $pdoParamType = \PDO::PARAM_INT;
-
-                break;
-
-            case 'double':
-            case 'string':
-                $pdoParamType = \PDO::PARAM_STR;
-
-                break;
-
-            case 'boolean':
-                $pdoParamType = \PDO::PARAM_BOOL;
-
-                break;
-
-            default:
-                throw new RepositoryException(\sprintf(
-                    'Parameter type "%s" could not be quoted for SQL execution!',
-                    $phpParamType
-                ));
-        }
-
-        return $this->getConnection()->quote($value, $pdoParamType);
-    }
-
-    /**
      * @param QueryBuilderInterface $queryBuilder
      * @param int $pageSize
      * @param int $currentPage
@@ -91,12 +51,10 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
 
         return new Paginator(
             $queryBuilder,
-            function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage) {
+            function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage): void {
                 $this->addPaginateQuery($queryBuilder, $pageSize, $currentPage);
             },
-            function (QueryBuilderInterface $queryBuilder, $toString) {
-                return $this->getPaginateResult($queryBuilder, $toString);
-            },
+            fn(QueryBuilderInterface $queryBuilder, $toString) => $this->getPaginateResult($queryBuilder, $toString),
             $pageSize,
             $currentPage,
             $options
@@ -126,11 +84,9 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
      *
      * @return $this
      */
-    protected function beginTransaction(ConnectionInterface $connection = null): AbstractRepository
+    protected function beginTransaction(?ConnectionInterface $connection): AbstractRepository
     {
-        if (null === $connection) {
-            $connection = $this->getConnection();
-        }
+        $connection ??= $this->getConnection();
 
         if (true === ($this->commit = !$connection->inTransaction())) {
             $connection->beginTransaction();
@@ -144,11 +100,9 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
      *
      * @return bool
      */
-    protected function commit(ConnectionInterface $connection = null): bool
+    protected function commit(?ConnectionInterface $connection): bool
     {
-        if (null === $connection) {
-            $connection = $this->getConnection();
-        }
+        $connection ??= $this->getConnection();
 
         if (true === $this->commit) {
             return $connection->commit();
@@ -162,11 +116,9 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
      *
      * @return $this
      */
-    protected function rollback(ConnectionInterface $connection = null): AbstractRepository
+    protected function rollback(?ConnectionInterface $connection = null): AbstractRepository
     {
-        if (null === $connection) {
-            $connection = $this->getConnection();
-        }
+        $connection ??= $this->getConnection();
 
         if ($connection->inTransaction()) {
             $connection->rollBack();
@@ -185,11 +137,9 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
     protected function prepareAndExecute(
         QueryBuilderInterface $queryBuilder,
         array $bindData,
-        ConnectionInterface $connection = null
+        ?ConnectionInterface $connection = null
     ): \PDOStatement {
-        if (null === $connection) {
-            $connection = $this->getConnection();
-        }
+        $connection ??= $this->getConnection();
 
         $statement = $connection->prepare($queryBuilder->buildQuery());
         $statement->execute($bindData);
@@ -235,9 +185,8 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
      */
     protected function createRepositoryCallClosure(): \Closure
     {
-        return function ($methodName, QueryBuilderInterface $queryBuilder, $toString) {
-            return $this->$methodName($queryBuilder, $toString);
-        };
+        return fn($methodName, QueryBuilderInterface $queryBuilder, $toString) =>
+            $this->$methodName($queryBuilder, $toString);
     }
 
     /**
@@ -245,7 +194,7 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
      *
      * @return QueryBuilderInterface
      */
-    abstract protected function createQueryBuilder(EntityInterface $entity = null): QueryBuilderInterface;
+    abstract protected function createQueryBuilder(?EntityInterface $entity): QueryBuilderInterface;
 
     /**
      * @return string

@@ -7,21 +7,21 @@ use Behat\Gherkin\Node\TableNode;
 class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
 {
     /**
-     * @When /^I call method "(.*)" on repository with parameters:$/
      *
      * @param string $method
      * @param TableNode $parameters
      */
+    #[\Behat\Step\When('/^I call method "(.*)" on repository with parameters:$/')]
     public function iCallMethodOnRepositoryWithParameters(string $method, TableNode $parameters)
     {
         $this->callMethodOnRepositoryWithParameters($method, $parameters);
     }
     /**
-     * @When /^I call method "(.*)" on repository with parameters and expecting exception:$/
      *
      * @param string $method
      * @param TableNode $parameters
      */
+    #[\Behat\Step\When('/^I call method "(.*)" on repository with parameters and expecting exception:$/')]
     public function iCallMethodOnRepositoryWithParametersAndExpectingException(string $method, TableNode $parameters)
     {
         try {
@@ -34,12 +34,11 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @Then I have following entities with identifiers set:
      *
      * @param TableNode $identifiers
-     *
      * @throws \Exception
      */
+    #[\Behat\Step\Then('I have following entities with identifiers set:')]
     public function iHaveFollowingEntitiesWithIdentifiersSet(TableNode $identifiers)
     {
         if (($entitiesCount = \count(static::$entities))
@@ -60,7 +59,7 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
                 if ($identifierValue != $entity->$getterMethod()) {
                     throw new \Exception(\sprintf(
                         'Identifiers does not match! %s::%s => %s != %s => %s',
-                        \get_class($entity),
+                        $entity::class,
                         $getterMethod,
                         $entity->$getterMethod(),
                         $identifierName,

@@ -14,10 +14,9 @@ trait QueryBuilderTrait
      *
      * @return QueryBuilder
      */
-    protected function createQueryBuilder(RepositoryInterface $repository, EntityInterface $entity = null)
+    protected function createQueryBuilder(RepositoryInterface $repository, ?EntityInterface $entity = null)
     {
         $abstractRepositoryCreateClosureMethod = new \ReflectionMethod($repository, 'createRepositoryCallClosure');
-        $abstractRepositoryCreateClosureMethod->setAccessible(true);
 
         return new QueryBuilder($abstractRepositoryCreateClosureMethod->invoke($repository), $entity);
     }

@@ -6,6 +6,7 @@ use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\OrderByTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class OrderByTraitTest extends AbstractTraitTestCase
 {
@@ -26,7 +27,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
      */
     private $orderByTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->orderBy = static::ORDER_BY_DEFAULT;
         $this->orderByTraitClass = new class (OrderByTraitTest::ORDER_BY_DEFAULT)
@@ -65,11 +66,10 @@ class OrderByTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider orderByData
-     *
      * @param array|string $columns
      * @param string $keyword
      */
+    #[DataProvider('orderByData')]
     public function testOrderBy($columns, $keyword)
     {
         $object = $this->orderByTraitClass->orderBy($columns, $keyword);
@@ -78,9 +78,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
             \array_merge(
                 static::ORDER_BY_DEFAULT,
                 \array_map(
-                    function ($column) use ($keyword) {
-                        return \sprintf('%s %s', $column, $keyword);
-                    },
+                    fn($column) => \sprintf('%s %s', $column, $keyword),
                     \is_array($columns) ? $columns : [$columns]
                 )
             ),
@@ -89,11 +87,10 @@ class OrderByTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider orderByData
-     *
      * @param array|string $columns
      * @param string $keyword
      */
+    #[DataProvider('orderByData')]
     public function testBuildOrderByQueryPart($columns, $keyword)
     {
         $this->orderByTraitClass->orderBy($columns, $keyword);
@@ -115,7 +112,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
      *
      * @return array
      */
-    public function orderByData()
+    public static function orderByData()
     {
         return [
             [

@@ -9,8 +9,11 @@ use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Repository\RepositoryInterface;
 use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class PaginatorTest extends TestCase
 {
     use ReflectionTrait;
@@ -49,20 +52,17 @@ class PaginatorTest extends TestCase
      */
     private $getPaginateResult;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->entity = $this->createMock(EntityInterface::class);
         $this->queryBuilder = $this->createMock(QueryBuilderInterface::class);
-        $this->abstractRepository = $this->getMockForAbstractClass(
+        $this->abstractRepository = $this->createPartialMock(
             AbstractRepository::class,
-            [],
-            '',
-            true,
-            true,
-            true,
             [
                 'addPaginateQuery',
                 'getPaginateResult',
+                'createQueryBuilder',
+                'getEntityClass',
             ]
         );
     }
@@ -103,7 +103,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE])
+            ->with($this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE)
         ;
 
         $resultExpected = [];
@@ -114,7 +114,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('getPaginateResult')
-            ->withConsecutive([$this->queryBuilder, false])
+            ->with($this->queryBuilder, false)
             ->willReturn($resultExpected)
         ;
 
@@ -139,7 +139,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE_LOW])
+            ->with($this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE_LOW)
         ;
 
         $resultExpected = [];
@@ -150,7 +150,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('getPaginateResult')
-            ->withConsecutive([$this->queryBuilder, false])
+            ->with($this->queryBuilder, false)
             ->willReturn($resultExpected)
         ;
 
@@ -172,7 +172,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE])
+            ->with($this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE)
         ;
 
         $resultExpected = [];
@@ -183,7 +183,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('getPaginateResult')
-            ->withConsecutive([$this->queryBuilder, false])
+            ->with($this->queryBuilder, false)
             ->willReturn($resultExpected)
         ;
 
@@ -207,7 +207,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('addPaginateQuery')
-            ->withConsecutive([$this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE])
+            ->with($this->queryBuilder, static::PAGE_SIZE, static::CURRENT_PAGE)
         ;
 
         $resultExpected = [];
@@ -215,7 +215,7 @@ class PaginatorTest extends TestCase
             ->abstractRepository
             ->expects($this->once())
             ->method('getPaginateResult')
-            ->withConsecutive([$this->queryBuilder, false])
+            ->with($this->queryBuilder, false)
             ->willReturn($resultExpected)
         ;
 
@@ -295,11 +295,10 @@ class PaginatorTest extends TestCase
     }
 
     /**
-     * @dataProvider getTotalPagesData
-     *
      * @param int $resultCount
      * @param int $expectedTotalPages
      */
+    #[DataProvider('getTotalPagesData')]
     public function testGetTotalPages(int $resultCount, int $expectedTotalPages)
     {
         $this->queryBuilder->method('count')->willReturn($resultCount);
@@ -313,7 +312,7 @@ class PaginatorTest extends TestCase
     /**
      * @return array
      */
-    public function getTotalPagesData()
+    public static function getTotalPagesData()
     {
         return [
             [
@@ -462,18 +461,15 @@ class PaginatorTest extends TestCase
      */
     private function createPaginator()
     {
-        $this->addPaginateQuery = function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage) {
+        $this->addPaginateQuery = function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage): void {
             $this
                 ->createAccessibleMethod($this->abstractRepository, 'addPaginateQuery')
                 ->invoke($this->abstractRepository, $queryBuilder, $pageSize, $currentPage)
             ;
         };
-        $this->getPaginateResult = function (QueryBuilderInterface $queryBuilder, $toString) {
-            return $this
-                ->createAccessibleMethod($this->abstractRepository, 'getPaginateResult')
-                ->invoke($this->abstractRepository, $queryBuilder, $toString)
-            ;
-        };
+        $this->getPaginateResult = (fn(QueryBuilderInterface $queryBuilder, $toString) => $this
+            ->createAccessibleMethod($this->abstractRepository, 'getPaginateResult')
+            ->invoke($this->abstractRepository, $queryBuilder, $toString));
 
         return new Paginator(
             $this->queryBuilder,

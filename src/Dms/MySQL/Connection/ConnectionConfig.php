@@ -7,6 +7,7 @@ use Janisbiz\LightOrm\Connection\AbstractConnectionConfig;
 class ConnectionConfig extends AbstractConnectionConfig
 {
     const ADAPTER = 'mysql';
+    const DEFAULT_PORT = 3306;
 
     /**
      * @param string $host
@@ -15,8 +16,13 @@ class ConnectionConfig extends AbstractConnectionConfig
      * @param string $dbname
      * @param int $port
      */
-    public function __construct(string $host, string $username, string $password, string $dbname, int $port = 3306)
-    {
+    public function __construct(
+        string $host,
+        string $username,
+        string $password,
+        string $dbname,
+        int $port = self::DEFAULT_PORT,
+    ) {
         parent::__construct($host, $username, $password, $dbname, static::ADAPTER, $port);
     }
 

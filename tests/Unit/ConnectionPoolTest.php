@@ -6,8 +6,10 @@ use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig;
 use Janisbiz\LightOrm\Exception\InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class ConnectionPoolTest extends TestCase
 {
     use ReflectionTrait;
@@ -30,7 +32,7 @@ class ConnectionPoolTest extends TestCase
      */
     private $connectionPoolMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $connectionConfigOne = new ConnectionConfig(
             static::CONNECTION_CONFIG_HOST,
@@ -63,9 +65,7 @@ class ConnectionPoolTest extends TestCase
     {
         $connectionPoolReflection = new \ReflectionClass($this->connectionPool);
         $connectionConfigProperty = $connectionPoolReflection->getProperty('connectionConfig');
-        $connectionConfigProperty->setAccessible(true);
         $connectionConfig = $connectionConfigProperty->getValue($this->connectionPool);
-        $connectionConfigProperty->setAccessible(false);
 
         $this->assertCount(2, $connectionConfig);
     }
@@ -90,7 +90,7 @@ class ConnectionPoolTest extends TestCase
         ;
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/Could not find connection by name "(.*)"\!/'
         );
 
@@ -100,7 +100,7 @@ class ConnectionPoolTest extends TestCase
     public function testGetConnectionException()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/Could not find connection by name "(.*)"\! Available connections: "(.*)"\./'
         );
 
@@ -122,7 +122,7 @@ class ConnectionPoolTest extends TestCase
     public function testGetConnectionStaticException()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp(
+        $this->expectExceptionMessageMatches(
             '/Could not find connection by name "(.*)"\! Available connections: "(.*)"\./'
         );
 

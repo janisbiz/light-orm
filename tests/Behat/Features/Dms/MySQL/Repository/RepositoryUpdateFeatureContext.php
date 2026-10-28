@@ -7,21 +7,21 @@ use Behat\Gherkin\Node\TableNode;
 class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
 {
     /**
-     * @When /^I call method "(.*)" on repository with existing entities and parameters:$/
      *
      * @param string $method
      * @param TableNode $parameters
      */
+    #[\Behat\Step\When('/^I call method "(.*)" on repository with existing entities and parameters:$/')]
     public function iCallMethodOnRepositoryWithExistingEntitiesAndParameters(string $method, TableNode $parameters)
     {
         $this->callMethodOnRepositoryWithExistingEntitiesAndParameters($method, $parameters);
     }
     /**
-     * @When /^I call method "(.*)" on repository with existing entities and parameters and expecting exception:$/
      *
      * @param string $method
      * @param TableNode $parameters
      */
+    #[\Behat\Step\When('/^I call method "(.*)" on repository with existing entities and parameters and expecting exception:$/')] // phpcs:ignore
     public function iCallMethodOnRepositoryWithExistingEntitiesAndParametersAndExpectingException(
         string $method,
         TableNode $parameters
@@ -50,7 +50,7 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
                     $method,
                 ],
                 [
-                    'entity' => $entitiesStorage[$i],
+                    $entitiesStorage[$i],
                 ]
                 + $methodParameters
             );

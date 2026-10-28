@@ -24,7 +24,7 @@ class GroupByTraitTest extends AbstractTraitTestCase
      */
     private $groupByTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->groupByTraitClass = new class (GroupByTraitTest::GROUP_BY_DEFAULT)
         {

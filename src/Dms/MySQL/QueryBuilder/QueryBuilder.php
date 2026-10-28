@@ -23,7 +23,7 @@ class QueryBuilder implements QueryBuilderInterface
      * @param \Closure $repositoryCallback
      * @param EntityInterface|null $entity
      */
-    public function __construct(\Closure $repositoryCallback, EntityInterface $entity = null)
+    public function __construct(\Closure $repositoryCallback, ?EntityInterface $entity = null)
     {
         $this->repositoryCallback = $repositoryCallback;
         $this->entity = $entity;
@@ -262,7 +262,7 @@ class QueryBuilder implements QueryBuilderInterface
         foreach ($this->bind as $bindName => $bindValue) {
             $query = \preg_replace(
                 \sprintf('/\:\b%s\b/', \preg_quote($bindName)),
-                \is_string($bindValue) ? \sprintf('\'%s\'', $bindValue) : $bindValue,
+                \is_string($bindValue) ? \sprintf('\'%s\'', $bindValue) : (string)$bindValue,
                 $query
             );
         }
@@ -270,7 +270,7 @@ class QueryBuilder implements QueryBuilderInterface
         foreach ($this->bindValue as $bindValueName => $bindValueValue) {
             $query = \preg_replace(
                 \sprintf('/\:\b%s\b/', \preg_quote($bindValueName)),
-                \is_string($bindValueValue) ? \sprintf('\'%s\'', $bindValueValue) : $bindValueValue,
+                \is_string($bindValueValue) ? \sprintf('\'%s\'', $bindValueValue) : (string)$bindValueValue,
                 $query
             );
         }

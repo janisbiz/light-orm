@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTraitTestCase extends TestCase
 {
+    protected array $orderBy;
+
     /**
      * @param string $trait
      * @param string|object $object
@@ -24,7 +26,7 @@ abstract class AbstractTraitTestCase extends TestCase
                 : \sprintf(
                     'Failed asserting that "%s" is used in object "%s"',
                     $trait,
-                    \get_class($object)
+                    $object::class
                 )
         );
     }

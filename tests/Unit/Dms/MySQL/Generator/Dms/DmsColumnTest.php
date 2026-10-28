@@ -4,6 +4,7 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms;
 
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsColumn;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class DmsColumnTest extends TestCase
@@ -62,11 +63,10 @@ class DmsColumnTest extends TestCase
     }
 
     /**
-     * @dataProvider getPhpNameData
-     *
      * @param string $name
      * @param string $phpName
      */
+    #[DataProvider('getPhpNameData')]
     public function testGetPhpName(string $name, string $phpName)
     {
         $dmsColumn = new DmsColumn(
@@ -85,7 +85,7 @@ class DmsColumnTest extends TestCase
      *
      * @return array
      */
-    public function getPhpNameData()
+    public static function getPhpNameData()
     {
         return [
             [
@@ -130,12 +130,11 @@ class DmsColumnTest extends TestCase
     }
 
     /**
-     * @dataProvider defaultData
-     *
      * @param string $default
      * @param string $dmsType
      * @param string $phpDefaultType
      */
+    #[DataProvider('defaultData')]
     public function testGetPhpDefaultType(string $default, string $dmsType, string $phpDefaultType)
     {
         $dmsColumn = new DmsColumn(
@@ -154,7 +153,7 @@ class DmsColumnTest extends TestCase
      *
      * @return array
      */
-    public function defaultData()
+    public static function defaultData()
     {
         return [
             [
@@ -181,11 +180,10 @@ class DmsColumnTest extends TestCase
     }
 
     /**
-     * @dataProvider isNullableData
-     *
      * @param bool $isNullable
      * @param bool $expectedIsNullable
      */
+    #[DataProvider('isNullableData')]
     public function testIsNullable(bool $isNullable, bool $expectedIsNullable)
     {
         $dmsColumn = new DmsColumn(
@@ -204,7 +202,7 @@ class DmsColumnTest extends TestCase
      *
      * @return array
      */
-    public function isNullableData()
+    public static function isNullableData()
     {
         return [
             [
@@ -219,11 +217,10 @@ class DmsColumnTest extends TestCase
     }
 
     /**
-     * @dataProvider getKeyData
-     *
      * @param string $key
      * @param string $expectedKey
      */
+    #[DataProvider('getKeyData')]
     public function testGetKey(string $key, string $expectedKey)
     {
         $dmsColumn = new DmsColumn(
@@ -242,7 +239,7 @@ class DmsColumnTest extends TestCase
      *
      * @return array
      */
-    public function getKeyData()
+    public static function getKeyData()
     {
         return [
             [
@@ -261,11 +258,10 @@ class DmsColumnTest extends TestCase
     }
 
     /**
-     * @dataProvider typeData
-     *
      * @param array $dmsTypes
      * @param $phpType
      */
+    #[DataProvider('typeData')]
     public function testGetPhpType(array $dmsTypes, string $phpType)
     {
         foreach ($dmsTypes as $dmsType) {
@@ -286,7 +282,7 @@ class DmsColumnTest extends TestCase
      *
      * @return array
      */
-    public function typeData()
+    public static function typeData()
     {
         return [
             [

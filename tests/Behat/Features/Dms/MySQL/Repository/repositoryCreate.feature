@@ -25,7 +25,7 @@ Feature: Repository Create
     When I call method "create" on repository with parameters and expecting exception:
       | id:int | intColNotNull:int | varcharColNotNull:string | floatColNotNull:float | intColNull:?int | varcharColNull:?string | floatColNull:?float | createdAt:?string   | updatedAt:?string |
       | 1      | 1                 | varcharNotNull1          | 1.1                   | 2               | varcharNull1           | 2.2                 | 2019-01-01 00:00:00 |                   |
-    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1' for key 'PRIMARY'"
+    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1' for key 'test_table_one.PRIMARY'"
 
   Scenario: Create rows in table "test_table_one" with duplicate key update
     Given I have existing connection config "light_orm_mysql"
@@ -83,7 +83,7 @@ Feature: Repository Create
     When I call method "create" on repository with parameters and expecting exception:
       | id:int |
       | 1      |
-    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1' for key 'PRIMARY'"
+    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1' for key 'test_table_two.PRIMARY'"
 
   Scenario: Create rows in table "test_table_one_two"
     Given I have existing connection config "light_orm_mysql"
@@ -105,7 +105,7 @@ Feature: Repository Create
     When I call method "create" on repository with parameters and expecting exception:
       | testTableOneId:int | testTableTwoId:int |
       | 1                  | 2                  |
-    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1-2' for key 'PRIMARY'"
+    Then I have exception with message "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1-2' for key 'test_table_one_two.PRIMARY'"
 
   Scenario: Create rows in tables "test_table_one", "test_table_two", "test_table_one_two" when in transaction with rollback
     When I have existing connection config "light_orm_mysql"

@@ -24,9 +24,7 @@ trait SetTrait
             \implode(
                 '_',
                 \array_map(
-                    function ($columnPart) {
-                        return \mb_convert_case($columnPart, MB_CASE_TITLE);
-                    },
+                    fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
                     \explode('.', $column)
                 )
             )

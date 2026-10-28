@@ -313,7 +313,7 @@ There are two ways to run tests:
     - Execute `make start_dev`
     - Execute `make test`
 2) By using your local php and mysql database environment:
-    - Ensure, that your php version is `7.1+`
+    - Ensure, that your php version is `8.5+`
     - Execute `composer install`
     - Execute `vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests; vendor/bin/phpunit; vendor/bin/behat;`
 

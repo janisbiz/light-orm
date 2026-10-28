@@ -6,6 +6,7 @@ use Janisbiz\LightOrm\Dms\MySQL\Enum\JoinEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\JoinTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class JoinTraitTest extends AbstractTraitTestCase
 {
@@ -37,7 +38,7 @@ class JoinTraitTest extends AbstractTraitTestCase
      */
     private $joinTraitClass;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->joinTraitClass = new class (JoinTraitTest::JOIN_BIND_DEFAULT, JoinTraitTest::JOIN_DEFAULT)
         {
@@ -78,13 +79,12 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider joinData
-     *
      * @param string $join
      * @param string $tableName
      * @param string $onCondition
      * @param array $bind
      */
+    #[DataProvider('joinData')]
     public function testJoin($join, $tableName, $onCondition, array $bind)
     {
         $object = $this->joinTraitClass->join($join, $tableName, $onCondition, $bind);
@@ -109,13 +109,12 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider joinData
-     *
      * @param string $join
      * @param string $tableName
      * @param string $onCondition
      * @param array $bind
      */
+    #[DataProvider('joinData')]
     public function testBuildJoinQueryPart($join, $tableName, $onCondition, array $bind)
     {
         $this->joinTraitClass->join($join, $tableName, $onCondition, $bind);
@@ -137,7 +136,7 @@ class JoinTraitTest extends AbstractTraitTestCase
      *
      * @return array
      */
-    public function joinData()
+    public static function joinData()
     {
         return [
             [
@@ -267,14 +266,13 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     * @dataProvider joinAsData
-     *
      * @param string $join
      * @param string $tableName
      * @param string $alias
      * @param string $onCondition
      * @param array $bind
      */
+    #[DataProvider('joinAsData')]
     public function testJoinAs($join, $tableName, $alias, $onCondition, array $bind)
     {
         $object = $this->joinTraitClass->joinAs($join, $tableName, $alias, $onCondition, $bind);
@@ -299,10 +297,9 @@ class JoinTraitTest extends AbstractTraitTestCase
     }
 
     /**
-     *
      * @return array
      */
-    public function joinAsData()
+    public static function joinAsData()
     {
         return [
             [

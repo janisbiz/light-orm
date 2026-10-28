@@ -13,7 +13,6 @@ trait ReflectionTrait
     protected function createAccessibleMethod($class, string $method)
     {
         $reflectionMethod = new \ReflectionMethod($class, $method);
-        $reflectionMethod->setAccessible(true);
 
         return $reflectionMethod;
     }
@@ -27,7 +26,6 @@ trait ReflectionTrait
     protected function createAccessibleProperty($class, string $property)
     {
         $reflectionProperty = new \ReflectionProperty($class, $property);
-        $reflectionProperty->setAccessible(true);
 
         return $reflectionProperty;
     }

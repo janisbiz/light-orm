@@ -12,7 +12,7 @@ help:
 	grep -E '^[a-zA-Z-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "[32m%-12s[0m %s\n", $$1, $$2}'
 
 .PHONY: test
-test: test-phpcs test-phpstan test-phpunit test-infection test-behat ## Run tests
+test: test-phpcs test-phpstan test-phpunit test-behat test-infection ## Run tests
 
 test-phpcs: ## Run PHPCS tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests
@@ -25,7 +25,7 @@ test-phpunit: ## Run PHPUNIT tests
 	@echo -e "Test coverage can be found here: $(PHPUNIT_COVERATE_REPORT_FILE)"
 
 test-infection: ## Run INFECTION tests
-	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/infection --threads=4 --only-covered --coverage=var/phpunit
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/infection --threads=4 --coverage=var/phpunit
 
 test-behat: ## Run BEHAT tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/behat

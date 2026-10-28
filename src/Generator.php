@@ -36,7 +36,7 @@ class Generator
      */
     public function addWriter(WriterInterface $writer): Generator
     {
-        $writerClass = \get_class($writer);
+        $writerClass = $writer::class;
 
         if (!\array_key_exists($writerClass, $this->writers)) {
             $this->writers[$writerClass] = $writer;
