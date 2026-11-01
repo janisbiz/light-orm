@@ -122,11 +122,12 @@ class DmsColumn implements DmsColumnInterface
     {
         \preg_match(static::REGEX_PHP_TYPE, $this->getType(), $matches);
         return match ($matches['type']) {
-            static::TYPE_BIGINT, static::TYPE_INT, static::TYPE_TIMESTAMP, static::TYPE_TINYINT
+            static::TYPE_BIGINT, static::TYPE_INT, static::TYPE_TINYINT
                 => static::PHP_TYPE_INTEGER,
             static::TYPE_FLOAT => static::PHP_TYPE_FLOAT,
             static::TYPE_CHAR, static::TYPE_DATE, static::TYPE_DATETIME, static::TYPE_JSON, static::TYPE_LONGTEXT,
-            static::TYPE_MEDIUMTEXT, static::TYPE_TEXT, static::TYPE_VARCHAR => static::PHP_TYPE_STRING,
+            static::TYPE_MEDIUMTEXT, static::TYPE_TEXT, static::TYPE_VARCHAR,
+            static::TYPE_TIMESTAMP => static::PHP_TYPE_STRING,
             default => throw new DmsException(\sprintf(
                 'Could not determine type for column "%s" with type "%s"',
                 $this->getName(),

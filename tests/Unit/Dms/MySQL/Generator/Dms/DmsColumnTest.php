@@ -289,7 +289,6 @@ class DmsColumnTest extends TestCase
                 [
                     'bigint',
                     'int',
-                    'timestamp',
                     'tinyint',
                 ],
                 'int'
@@ -310,6 +309,7 @@ class DmsColumnTest extends TestCase
                     'mediumtext',
                     'text',
                     'varchar',
+                    'timestamp',
                 ],
                 'string',
             ],
