@@ -7,16 +7,16 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\ColumnTrait;
 
 class ColumnTraitTest extends AbstractTraitTestCase
 {
-    const COLUMN_DEFAULT = [
+    const array COLUMN_DEFAULT = [
         'column1',
         'column2',
     ];
-    const COLUMN_ARRAY = [
+    const array COLUMN_ARRAY = [
         'column3',
         'column4',
     ];
-    const COLUMN_EMPTY = '';
-    const COLUMN = 'column5';
+    const string COLUMN_EMPTY = '';
+    const string COLUMN = 'column5';
 
     /**
      * @var ColumnTrait
@@ -29,17 +29,11 @@ class ColumnTraitTest extends AbstractTraitTestCase
         {
             use ColumnTrait;
 
-            /**
-             * @param array $columnDefault
-             */
             public function __construct(array $columnDefault)
             {
                 $this->column = $columnDefault;
             }
 
-            /**
-             * @return array
-             */
             public function columnData(): array
             {
                 return $this->column;
@@ -50,9 +44,6 @@ class ColumnTraitTest extends AbstractTraitTestCase
                 $this->column = [];
             }
 
-            /**
-             * @return string
-             */
             public function buildColumnQueryPartPublic(): string
             {
                 return $this->buildColumnQueryPart();
@@ -67,14 +58,14 @@ class ColumnTraitTest extends AbstractTraitTestCase
         $object = $this->columnTraitClass->column(static::COLUMN_ARRAY);
         $this->assertObjectUsesTrait(ColumnTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY),
+            array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY),
             $this->columnTraitClass->columnData()
         );
 
         $object = $this->columnTraitClass->column(static::COLUMN);
         $this->assertObjectUsesTrait(ColumnTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY, [static::COLUMN]),
+            array_merge(static::COLUMN_DEFAULT, static::COLUMN_ARRAY, [static::COLUMN]),
             $this->columnTraitClass->columnData()
         );
     }
@@ -98,7 +89,7 @@ class ColumnTraitTest extends AbstractTraitTestCase
         $this->columnTraitClass->column(static::COLUMN);
 
         $this->assertEquals(
-            \implode(', ', $this->columnTraitClass->columnData()),
+            implode(', ', $this->columnTraitClass->columnData()),
             $this->columnTraitClass->buildColumnQueryPartPublic()
         );
     }

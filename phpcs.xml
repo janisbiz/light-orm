@@ -2,6 +2,9 @@
 <ruleset name="janisbiz_light-orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
     <description>Coding Standard for janisbiz/light-orm.</description>
 
+    <file>src</file>
+    <file>tests</file>
+
     <!-- Run against the PSR2 ruleset -->
     <rule ref="PSR2"/>
 

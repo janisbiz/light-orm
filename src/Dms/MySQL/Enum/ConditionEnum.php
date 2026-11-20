@@ -4,13 +4,13 @@ namespace Janisbiz\LightOrm\Dms\MySQL\Enum;
 
 class ConditionEnum
 {
-    const LIMIT = 'LIMIT';
-    const OFFSET = 'OFFSET';
-    const ORDER_BY = 'ORDER BY';
-    const GROUP_BY = 'GROUP BY';
-    const SET = 'SET';
-    const WHERE = 'WHERE';
-    const VALUES = 'VALUES';
-    const HAVING = 'HAVING';
-    const FROM = 'FROM';
+    const string LIMIT = 'LIMIT';
+    const string OFFSET = 'OFFSET';
+    const string ORDER_BY = 'ORDER BY';
+    const string GROUP_BY = 'GROUP BY';
+    const string SET = 'SET';
+    const string WHERE = 'WHERE';
+    const string VALUES = 'VALUES';
+    const string HAVING = 'HAVING';
+    const string FROM = 'FROM';
 }

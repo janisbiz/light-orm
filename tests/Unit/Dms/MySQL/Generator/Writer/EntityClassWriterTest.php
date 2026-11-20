@@ -4,21 +4,17 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Writer;
 
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\WriterConfig;
+use ReflectionMethod;
+use ReflectionProperty;
 
 class EntityClassWriterTest extends BaseEntityClassWriterTest
 {
-    const WRITER_CONFIG_CLASS_PREFIX_VALUE = '';
-    const WRITER_CONFIG_CLASS_SUFFIX_VALUE = 'Entity';
+    const string WRITER_CONFIG_CLASS_PREFIX_VALUE = '';
+    const string WRITER_CONFIG_CLASS_SUFFIX_VALUE = 'Entity';
 
-    /**
-     * @var WriterConfig
-     */
-    private $writerConfig;
+    private WriterConfig $writerConfig;
 
-    /**
-     * @var EntityClassWriter
-     */
-    protected $entityClassWriter;
+    protected EntityClassWriter $entityClassWriter;
 
     public function setUp(): void
     {
@@ -33,7 +29,7 @@ class EntityClassWriterTest extends BaseEntityClassWriterTest
 
         $this->entityClassWriter = new EntityClassWriter($this->writerConfig, $this->baseEntityClassWriter);
 
-        $this->dmsGeneratedDirectory = \implode(
+        $this->dmsGeneratedDirectory = implode(
             '',
             [
                 $this->writerConfig->getDirectory(),
@@ -47,9 +43,9 @@ class EntityClassWriterTest extends BaseEntityClassWriterTest
 
     public function testConstruct()
     {
-        $getWriterConfigMethod = new \ReflectionMethod($this->entityClassWriter, 'getWriterConfig');
+        $getWriterConfigMethod = new ReflectionMethod($this->entityClassWriter, 'getWriterConfig');
 
-        $baseEntityClassWriterProperty = new \ReflectionProperty($this->entityClassWriter, 'baseEntityClassWriter');
+        $baseEntityClassWriterProperty = new ReflectionProperty($this->entityClassWriter, 'baseEntityClassWriter');
 
         $this->assertTrue($getWriterConfigMethod->invoke($this->entityClassWriter) instanceof $this->writerConfig);
         $this->assertTrue(
@@ -57,19 +53,16 @@ class EntityClassWriterTest extends BaseEntityClassWriterTest
         );
     }
 
-    /**
-     * @param array $files
-     */
     public function testWrite(array &$files = [])
     {
         $this->entityClassWriter->write($this->dmsDatabase, $this->dmsTable, $files);
 
-        $entityFilePath = \implode(
+        $entityFilePath = implode(
             '',
             [
                 $this->dmsGeneratedDirectory,
                 DIRECTORY_SEPARATOR,
-                \sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
+                sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
             ]
         );
         $this->assertFileExists($entityFilePath);
@@ -88,7 +81,7 @@ class TableNameSnakeCase4Entity extends TableNameSnakeCase4
 
 PHP
             ,
-            \file_get_contents($entityFilePath)
+            file_get_contents($entityFilePath)
         );
     }
 
@@ -96,22 +89,22 @@ PHP
     {
         $files = $this->createTestFiles(
             [
-                \sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
+                sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
             ],
             $this->dmsGeneratedDirectory
         );
 
         $this->entityClassWriter->write($this->dmsDatabase, $this->dmsTable, $files);
 
-        $repositoryFilePath = \implode(
+        $repositoryFilePath = implode(
             '',
             [
                 $this->dmsGeneratedDirectory,
                 DIRECTORY_SEPARATOR,
-                \sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
+                sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
             ]
         );
         $this->assertFileExists($repositoryFilePath);
-        $this->assertEquals('', \file_get_contents($repositoryFilePath));
+        $this->assertEquals('', file_get_contents($repositoryFilePath));
     }
 }

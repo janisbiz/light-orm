@@ -11,10 +11,7 @@ use PHPUnit\Framework\TestCase;
 #[AllowMockObjectsWithoutExpectations]
 class AbstractDmsFactoryTest extends TestCase
 {
-    /**
-     * @var AbstractDmsFactory
-     */
-    private $abstractDmsFactory;
+    private AbstractDmsFactory $abstractDmsFactory;
 
     public function setUp(): void
     {

@@ -2,6 +2,8 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Repository;
 
+use ArrayObject;
+use Exception;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
@@ -13,8 +15,12 @@ use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsTableTest;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\QueryBuilderTrait;
 use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 #[AllowMockObjectsWithoutExpectations]
 class AbstractRepositoryTest extends TestCase
@@ -22,56 +28,38 @@ class AbstractRepositoryTest extends TestCase
     use QueryBuilderTrait;
     use ReflectionTrait;
 
-    const COLUMN_AUTO_INCREMENT = 'col_a_i';
-    const COLUMN_AUTO_INCREMENT_VALUE = '1';
-    const COLUMN_ONE = 'col_1';
-    const COLUMN_ONE_UPDATE_VALUE = 'val1Update';
+    const string COLUMN_AUTO_INCREMENT = 'col_a_i';
+    const string COLUMN_AUTO_INCREMENT_VALUE = '1';
+    const string COLUMN_ONE = 'col_1';
+    const string COLUMN_ONE_UPDATE_VALUE = 'val1Update';
 
-    const TABLE = 'table';
+    const string TABLE = 'table';
 
-    const RESULT_COUNT = 3;
+    const int RESULT_COUNT = 3;
 
-    const PAGINATE_CURRENT_PAGE = 2;
-    const PAGINATE_PAGE_SIZE = 10;
+    const int PAGINATE_CURRENT_PAGE = 2;
+    const int PAGINATE_PAGE_SIZE = 10;
 
-    /**
-     * @var \PDOStatement|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $statement;
+    private PDOStatement|MockObject $statement;
 
-    /**
-     * @var ConnectionInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $connection;
+    private ConnectionInterface|MockObject $connection;
 
-    /**
-     * @var EntityInterface
-     */
-    private $entity;
+    private EntityInterface $entity;
 
-    /**
-     * @var \ArrayObject|array
-     */
-    private $dataOriginal = [
+    private ArrayObject|array $dataOriginal = [
         self::COLUMN_AUTO_INCREMENT => null,
         self::COLUMN_ONE => 'val1',
         'col_2' => 2,
         'col_3' => 3.3,
     ];
 
-    /**
-     * @var \ArrayObject
-     */
-    private $data;
+    private ArrayObject|array $data;
 
-    /**
-     * @var AbstractRepository|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $abstractRepository;
+    private AbstractRepository|MockObject $abstractRepository;
 
     public function setUp(): void
     {
-        $this->statement = $this->createMock(\PDOStatement::class);
+        $this->statement = $this->createMock(PDOStatement::class);
 
         $this->connection = $this->createPartialMock(
             ConnectionInterface::class,
@@ -147,11 +135,11 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
-            ->willThrowException(new \Exception('PDO Exception'))
+            ->willThrowException(new Exception('PDO Exception'))
         ;
         $this->abstractRepository->expects($this->once())->method('rollBack');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
         $this
@@ -172,7 +160,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($insertQuery));
+        $this->assertTrue(is_string($insertQuery));
         $this->assertStringStartsWith(CommandEnum::INSERT_INTO, $insertQuery);
     }
 
@@ -224,7 +212,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($insertIgnoreQuery));
+        $this->assertTrue(is_string($insertIgnoreQuery));
         $this->assertStringStartsWith(CommandEnum::INSERT_IGNORE_INTO, $insertIgnoreQuery);
     }
 
@@ -261,7 +249,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($replaceQuery));
+        $this->assertTrue(is_string($replaceQuery));
         $this->assertStringStartsWith(CommandEnum::REPLACE_INTO, $replaceQuery);
     }
 
@@ -278,7 +266,7 @@ class AbstractRepositoryTest extends TestCase
             ->expects($this->once())
             ->method('setFetchMode')
             ->with(
-                \PDO::FETCH_CLASS,
+                PDO::FETCH_CLASS,
                 $this->entity::class,
                 [
                     false,
@@ -308,7 +296,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($findOneQuery));
+        $this->assertTrue(is_string($findOneQuery));
         $this->assertStringStartsWith(CommandEnum::SELECT, $findOneQuery);
     }
 
@@ -322,12 +310,12 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
-            ->willThrowException(new \Exception('PDO Exception'))
+            ->willThrowException(new Exception('PDO Exception'))
         ;
 
         $this->abstractRepository->expects($this->once())->method('rollBack');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
         $this
@@ -354,7 +342,7 @@ class AbstractRepositoryTest extends TestCase
             ->expects($this->once())
             ->method('setFetchMode')
             ->with(
-                \PDO::FETCH_CLASS,
+                PDO::FETCH_CLASS,
                 $this->entity::class,
                 [
                     false,
@@ -369,7 +357,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder)
         ;
 
-        $this->assertCount(\count($entityArray), $resultArray);
+        $this->assertCount(count($entityArray), $resultArray);
         foreach ($resultArray as $resultEntity) {
             $this->assertTrue($resultEntity instanceof $this->entity);
         }
@@ -387,7 +375,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($findQuery));
+        $this->assertTrue(is_string($findQuery));
         $this->assertStringStartsWith(CommandEnum::SELECT, $findQuery);
     }
 
@@ -401,12 +389,12 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
-            ->willThrowException(new \Exception('PDO Exception'))
+            ->willThrowException(new Exception('PDO Exception'))
         ;
 
         $this->abstractRepository->expects($this->once())->method('rollBack');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
         $this
@@ -457,7 +445,7 @@ class AbstractRepositoryTest extends TestCase
             ->createQueryBuilder($this->abstractRepository)
             ->command(CommandEnum::UPDATE)
             ->set(static::COLUMN_ONE, static::COLUMN_ONE_UPDATE_VALUE)
-            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
+            ->where(sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -516,7 +504,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($updateQuery));
+        $this->assertTrue(is_string($updateQuery));
         $this->assertStringStartsWith(CommandEnum::UPDATE, $updateQuery);
     }
 
@@ -542,10 +530,10 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
-            ->willThrowException(new \Exception('PDO Exception'))
+            ->willThrowException(new Exception('PDO Exception'))
         ;
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
         $this
@@ -610,7 +598,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($updateIgnoreQuery));
+        $this->assertTrue(is_string($updateIgnoreQuery));
         $this->assertStringStartsWith(CommandEnum::UPDATE_IGNORE, $updateIgnoreQuery);
     }
 
@@ -646,7 +634,7 @@ class AbstractRepositoryTest extends TestCase
         $queryBuilder = $this
             ->createQueryBuilder($this->abstractRepository)
             ->command(CommandEnum::DELETE)
-            ->where(\sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
+            ->where(sprintf('%s = %d', static::COLUMN_AUTO_INCREMENT, static::COLUMN_AUTO_INCREMENT_VALUE))
         ;
 
         $this->connection->expects($this->once())->method('setSqlSafeUpdates');
@@ -695,7 +683,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($deleteQuery));
+        $this->assertTrue(is_string($deleteQuery));
         $this->assertStringStartsWith(CommandEnum::DELETE, $deleteQuery);
     }
 
@@ -719,10 +707,10 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
-            ->willThrowException(new \Exception('PDO Exception'))
+            ->willThrowException(new Exception('PDO Exception'))
         ;
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
         $this
@@ -776,7 +764,7 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder, true)
         ;
 
-        $this->assertTrue(\is_string($countQuery));
+        $this->assertTrue(is_string($countQuery));
         $this->assertStringStartsWith(CommandEnum::SELECT, $countQuery);
     }
 
@@ -788,12 +776,12 @@ class AbstractRepositoryTest extends TestCase
         $this->abstractRepository
             ->expects($this->once())
             ->method('prepareAndExecute')
-            ->willThrowException(new \Exception('PDO Exception'))
+            ->willThrowException(new Exception('PDO Exception'))
         ;
 
         $this->abstractRepository->expects($this->once())->method('rollBack');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('PDO Exception');
 
         $this
@@ -804,7 +792,7 @@ class AbstractRepositoryTest extends TestCase
 
     public function testCreateQueryBuilder()
     {
-        $createQueryBuilderMethod = new \ReflectionMethod($this->abstractRepository, 'createQueryBuilder');
+        $createQueryBuilderMethod = new ReflectionMethod($this->abstractRepository, 'createQueryBuilder');
 
         $this->abstractRepository
             ->expects($this->exactly(2))
@@ -861,7 +849,7 @@ class AbstractRepositoryTest extends TestCase
             ->expects($this->once())
             ->method('setFetchMode')
             ->with(
-                \PDO::FETCH_CLASS,
+                PDO::FETCH_CLASS,
                 $this->entity::class,
                 [
                     false,
@@ -876,20 +864,17 @@ class AbstractRepositoryTest extends TestCase
             ->invoke($this->abstractRepository, $queryBuilder)
         ;
 
-        $this->assertCount(\count($entityArray), $resultArray);
+        $this->assertCount(count($entityArray), $resultArray);
         foreach ($resultArray as $resultEntity) {
             $this->assertTrue($resultEntity instanceof $this->entity);
         }
     }
 
-    /**
-     * @return EntityInterface
-     */
-    private function createEntity()
+    private function createEntity(): EntityInterface
     {
         return new class(
             $this->dataOriginal,
-            \array_keys($this->dataOriginal),
+            array_keys($this->dataOriginal),
             [
                 AbstractRepositoryTest::COLUMN_AUTO_INCREMENT,
             ],
@@ -900,12 +885,6 @@ class AbstractRepositoryTest extends TestCase
         {
             const TABLE_NAME = AbstractRepositoryTest::TABLE;
 
-            /**
-             * @param array $dataOriginal
-             * @param array $columns
-             * @param array $primaryKeys
-             * @param array $primaryKeysAutoIncrement
-             */
             public function __construct(
                 array &$dataOriginal,
                 array $columns,
@@ -918,11 +897,6 @@ class AbstractRepositoryTest extends TestCase
                 $this->primaryKeysAutoIncrement = $primaryKeysAutoIncrement;
             }
 
-            /**
-             * @param bool $isNew
-             *
-             * @return $this
-             */
             public function setIsNew(bool $isNew): BaseEntity
             {
                 $this->isNew = $isNew;
@@ -930,11 +904,6 @@ class AbstractRepositoryTest extends TestCase
                 return $this;
             }
 
-            /**
-             * @param bool $isSaved
-             *
-             * @return $this
-             */
             public function setIsSaved(bool $isSaved): BaseEntity
             {
                 $this->isSaved = $isSaved;
@@ -942,13 +911,7 @@ class AbstractRepositoryTest extends TestCase
                 return $this;
             }
 
-            /**
-             * @param string $key
-             * @param array|string|int|double|null $value
-             *
-             * @return $this
-             */
-            public function setDataOriginal(string $key, $value): BaseEntity
+            public function setDataOriginal(string $key, mixed $value): BaseEntity
             {
                 $this->dataOriginal[$key] = $value;
 

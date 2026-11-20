@@ -6,42 +6,32 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait ColumnTrait
 {
-    /**
-     * @var array
-     */
-    protected $column = [];
+    protected array $column = [];
 
     /**
-     * @param array|string $column
-     * @param boolean $clearAll
-     *
-     * @return $this
      * @throws QueryBuilderException
      */
-    public function column($column, bool $clearAll = false)
+    public function column(array|string $column, bool $clearAll = false): static
     {
         if (empty($column)) {
             throw new QueryBuilderException('You must pass $column to column method!');
         }
 
-        if (!\is_array($column)) {
+        if (!is_array($column)) {
             $column = [$column];
         }
 
         if ($clearAll == true) {
             $this->column = $column;
         } else {
-            $this->column = \array_merge($this->column, $column);
+            $this->column = array_merge($this->column, $column);
         }
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     protected function buildColumnQueryPart(): string
     {
-        return empty($this->column) ? '*' : \implode(', ', $this->column);
+        return empty($this->column) ? '*' : implode(', ', $this->column);
     }
 }

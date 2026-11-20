@@ -12,46 +12,26 @@ class Generator
     use HeredocTrait;
 
     /**
-     * @var DmsFactory
-     */
-    protected $dmsFactory;
-
-    /**
      * @var WriterInterface[]
      */
-    protected $writers = [];
+    protected array $writers = [];
 
-    /**
-     * @param DmsFactory $dmsFactory
-     */
-    public function __construct(DmsFactory $dmsFactory)
+    public function __construct(protected DmsFactory $dmsFactory)
     {
-        $this->dmsFactory = $dmsFactory;
     }
 
-    /**
-     * @param WriterInterface $writer
-     *
-     * @return $this
-     */
-    public function addWriter(WriterInterface $writer): Generator
+    public function addWriter(WriterInterface $writer): static
     {
         $writerClass = $writer::class;
 
-        if (!\array_key_exists($writerClass, $this->writers)) {
+        if (!array_key_exists($writerClass, $this->writers)) {
             $this->writers[$writerClass] = $writer;
         }
 
         return $this;
     }
 
-    /**
-     * @param ConnectionInterface $connection
-     * @param string $databaseName
-     *
-     * @return $this
-     */
-    public function generate(ConnectionInterface $connection, string $databaseName): Generator
+    public function generate(ConnectionInterface $connection, string $databaseName): static
     {
         $dmsDatabase = $this->dmsFactory->createDmsDatabase($databaseName, $connection);
 
@@ -68,16 +48,11 @@ class Generator
         return $this;
     }
 
-    /**
-     * @param string[] $existingFiles
-     *
-     * @return $this
-     */
-    protected function removeExistingFiles(array &$existingFiles): Generator
+    protected function removeExistingFiles(array &$existingFiles): static
     {
-        foreach (\array_keys($existingFiles) as $path) {
-            if (!\is_dir($path) && \file_exists($path)) {
-                \unlink($path);
+        foreach (array_keys($existingFiles) as $path) {
+            if (!is_dir($path) && file_exists($path)) {
+                unlink($path);
                 unset($existingFiles[$path]);
             }
         }

@@ -9,16 +9,16 @@ use PHPUnit\Framework\TestCase;
 
 class DmsColumnTest extends TestCase
 {
-    const COLUMN_NAME = 'name_snake_case';
-    const COLUMN_NAME_PHP = 'NameSnakeCase';
-    const COLUMN_TYPE = 'varchar';
-    const COLUMN_TYPE_INVALID = 'invalid';
-    const COLUMN_TYPE_PHP = 'string';
-    const COLUMN_NULLABLE = true;
-    const COLUMN_KEY = 'PRI';
-    const COLUMN_DEFAULT = 'string';
-    const COLUMN_DEFAULT_PHP = 'string';
-    const COLUMN_EXTRA = 'auto_increment';
+    const string COLUMN_NAME = 'name_snake_case';
+    const string COLUMN_NAME_PHP = 'NameSnakeCase';
+    const string COLUMN_TYPE = 'varchar';
+    const string COLUMN_TYPE_INVALID = 'invalid';
+    const string COLUMN_TYPE_PHP = 'string';
+    const bool COLUMN_NULLABLE = true;
+    const string COLUMN_KEY = 'PRI';
+    const string COLUMN_DEFAULT = 'string';
+    const string COLUMN_DEFAULT_PHP = 'string';
+    const string COLUMN_EXTRA = 'auto_increment';
 
     public function testGetName()
     {
@@ -62,10 +62,6 @@ class DmsColumnTest extends TestCase
         $this->assertEquals(static::COLUMN_EXTRA, $dmsColumn->getExtra());
     }
 
-    /**
-     * @param string $name
-     * @param string $phpName
-     */
     #[DataProvider('getPhpNameData')]
     public function testGetPhpName(string $name, string $phpName)
     {
@@ -81,11 +77,7 @@ class DmsColumnTest extends TestCase
         $this->assertEquals($phpName, $dmsColumn->getPhpName());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function getPhpNameData()
+    public static function getPhpNameData(): array
     {
         return [
             [
@@ -129,11 +121,6 @@ class DmsColumnTest extends TestCase
         $this->assertEquals(static::COLUMN_DEFAULT, $dmsColumn->getDefault());
     }
 
-    /**
-     * @param string $default
-     * @param string $dmsType
-     * @param string $phpDefaultType
-     */
     #[DataProvider('defaultData')]
     public function testGetPhpDefaultType(string $default, string $dmsType, string $phpDefaultType)
     {
@@ -149,11 +136,7 @@ class DmsColumnTest extends TestCase
         $this->assertEquals($phpDefaultType, $dmsColumn->getPhpDefaultType());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function defaultData()
+    public static function defaultData(): array
     {
         return [
             [
@@ -179,10 +162,6 @@ class DmsColumnTest extends TestCase
         ];
     }
 
-    /**
-     * @param bool $isNullable
-     * @param bool $expectedIsNullable
-     */
     #[DataProvider('isNullableData')]
     public function testIsNullable(bool $isNullable, bool $expectedIsNullable)
     {
@@ -198,11 +177,7 @@ class DmsColumnTest extends TestCase
         $this->assertEquals($expectedIsNullable, $dmsColumn->isNullable());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function isNullableData()
+    public static function isNullableData(): array
     {
         return [
             [
@@ -216,10 +191,6 @@ class DmsColumnTest extends TestCase
         ];
     }
 
-    /**
-     * @param string $key
-     * @param string $expectedKey
-     */
     #[DataProvider('getKeyData')]
     public function testGetKey(string $key, string $expectedKey)
     {
@@ -235,11 +206,7 @@ class DmsColumnTest extends TestCase
         $this->assertEquals($expectedKey, $dmsColumn->getKey());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function getKeyData()
+    public static function getKeyData(): array
     {
         return [
             [
@@ -257,10 +224,6 @@ class DmsColumnTest extends TestCase
         ];
     }
 
-    /**
-     * @param array $dmsTypes
-     * @param $phpType
-     */
     #[DataProvider('typeData')]
     public function testGetPhpType(array $dmsTypes, string $phpType)
     {
@@ -278,11 +241,7 @@ class DmsColumnTest extends TestCase
         }
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function typeData()
+    public static function typeData(): array
     {
         return [
             [

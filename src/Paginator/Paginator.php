@@ -2,102 +2,43 @@
 
 namespace Janisbiz\LightOrm\Paginator;
 
+use Closure;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
 
 class Paginator implements PaginatorInterface
 {
-    const OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE = 'show_pages_before_and_after_current_page';
+    const string OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE = 'show_pages_before_and_after_current_page';
 
-    const OPTION_VALUE_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE_UNLIMITED = 'unlimited';
+    const string OPTION_VALUE_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE_UNLIMITED = 'unlimited';
 
-    /**
-     * @var QueryBuilderInterface
-     */
-    protected $queryBuilder;
+    protected bool $paginate = true;
 
-    /**
-     * @var \Closure
-     */
-    protected $addPaginateQuery;
+    protected ?string $paginateMethod = null;
 
-    /**
-     * @var \Closure
-     */
-    protected $getPaginateResult;
+    protected array $result = [];
 
-    /**
-     * @var int
-     */
-    protected $pageSize;
+    protected int $resultTotalCount = 0;
 
-    /**
-     * @var int
-     */
-    protected $currentPage;
+    protected int $resultTotalPages = 0;
 
-    /**
-     * @var array
-     */
-    protected $options = [];
-
-    /**
-     * @var bool
-     */
-    protected $paginate = true;
-
-    /**
-     * @var string
-     */
-    protected $paginateMethod;
-
-    /**
-     * @var array
-     */
-    protected $result = [];
-
-    /**
-     * @var int
-     */
-    protected $resultTotalCount = 0;
-
-    /**
-     * @var int
-     */
-    protected $resultTotalPages = 0;
-
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param \Closure $addPaginateQuery
-     * @param \Closure $getPaginateResult
-     * @param int $pageSize
-     * @param int $currentPage
-     * @param array $options
-     */
     public function __construct(
-        QueryBuilderInterface $queryBuilder,
-        \Closure $addPaginateQuery,
-        \Closure $getPaginateResult,
-        int $pageSize,
-        int $currentPage = 1,
-        array $options = []
+        protected QueryBuilderInterface $queryBuilder,
+        protected Closure $addPaginateQuery,
+        protected Closure $getPaginateResult,
+        protected int $pageSize,
+        protected int $currentPage = 1,
+        protected array $options = []
     ) {
-        $this->queryBuilder = clone $queryBuilder;
-        $this->addPaginateQuery = $addPaginateQuery;
-        $this->getPaginateResult = $getPaginateResult;
-        $this->pageSize = $pageSize;
-        $this->currentPage = (int) $currentPage;
         $this->options = $options + [
             static::OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE => 2,
         ];
     }
 
     /**
-     * @param bool $toString
-     *
      * @return EntityInterface[]|string
      */
-    public function paginate(bool $toString = false)
+    public function paginate(bool $toString = false): string|array
     {
         if (false === $this->paginate) {
             return $this->result;
@@ -109,7 +50,7 @@ class Paginator implements PaginatorInterface
         $this->resultTotalCount = $countQueryBuilder->count();
 
         if (0 < $this->resultTotalCount) {
-            $this->resultTotalPages = (int) \ceil($this->resultTotalCount / $this->pageSize);
+            $this->resultTotalPages = (int) ceil($this->resultTotalCount / $this->pageSize);
 
             if ($this->currentPage > $this->resultTotalPages) {
                 $this->currentPage = $this->resultTotalPages;
@@ -124,11 +65,9 @@ class Paginator implements PaginatorInterface
     /**
      * Same behavior as paginate method, except executing count to get the total result count!
      *
-     * @param bool $toString
-     *
      * @return EntityInterface[]|string
      */
-    public function paginateFake(bool $toString = false)
+    public function paginateFake(bool $toString = false): string|array
     {
         if (false === $this->paginate) {
             return $this->result;
@@ -136,15 +75,14 @@ class Paginator implements PaginatorInterface
 
         $this->setPaginateMethod(__METHOD__);
 
-        \call_user_func($this->addPaginateQuery, $this->queryBuilder, $this->pageSize, $this->currentPage);
-        $this->result = \call_user_func($this->getPaginateResult, $this->queryBuilder, $toString);
+        call_user_func($this->addPaginateQuery, $this->queryBuilder, $this->pageSize, $this->currentPage);
+        $this->result = call_user_func($this->getPaginateResult, $this->queryBuilder, $toString);
         $this->paginate = false;
 
         return $this->result;
     }
 
     /**
-     * @return array
      * @throws PaginatorException
      */
     public function getPageNumbers(): array
@@ -185,13 +123,12 @@ class Paginator implements PaginatorInterface
             }
         }
 
-        \ksort($pages);
+        ksort($pages);
 
         return $pages;
     }
 
     /**
-     * @return int
      * @throws PaginatorException
      */
     public function getTotalPages(): int
@@ -212,7 +149,6 @@ class Paginator implements PaginatorInterface
     }
 
     /**
-     * @return int
      * @throws PaginatorException
      */
     public function getCurrentPageNumber(): int
@@ -225,7 +161,6 @@ class Paginator implements PaginatorInterface
     }
 
     /**
-     * @return null|int
      * @throws PaginatorException
      */
     public function getNextPageNumber(): ?int
@@ -242,7 +177,6 @@ class Paginator implements PaginatorInterface
     }
 
     /**
-     * @return null|int
      * @throws PaginatorException
      */
     public function getPreviousPageNumber(): ?int
@@ -259,7 +193,6 @@ class Paginator implements PaginatorInterface
     }
 
     /**
-     * @return int
      * @throws PaginatorException
      */
     public function getResultTotalCount(): int
@@ -278,7 +211,6 @@ class Paginator implements PaginatorInterface
     }
 
     /**
-     * @return int
      * @throws PaginatorException
      */
     public function getPageSize(): int
@@ -290,15 +222,10 @@ class Paginator implements PaginatorInterface
         return $this->pageSize;
     }
 
-    /**
-     * @param string $paginateMethod
-     *
-     * @return $this
-     */
-    protected function setPaginateMethod(string $paginateMethod): Paginator
+    protected function setPaginateMethod(string $paginateMethod): static
     {
         if (null === $this->paginateMethod) {
-            $this->paginateMethod = \explode('::', $paginateMethod)[1];
+            $this->paginateMethod = explode('::', $paginateMethod)[1];
         }
 
         return $this;

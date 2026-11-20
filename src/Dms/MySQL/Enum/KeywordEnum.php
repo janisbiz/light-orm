@@ -4,6 +4,6 @@ namespace Janisbiz\LightOrm\Dms\MySQL\Enum;
 
 class KeywordEnum
 {
-    const ASC = 'ASC';
-    const DESC = 'DESC';
+    const string ASC = 'ASC';
+    const string DESC = 'DESC';
 }

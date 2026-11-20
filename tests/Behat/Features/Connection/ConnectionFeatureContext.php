@@ -8,16 +8,8 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\AbstractFeatureContext;
 
 class ConnectionFeatureContext extends AbstractFeatureContext
 {
-    /**
-     * @var ConnectionConfigInterface
-     */
-    private $connectionConfig;
+    private ConnectionConfigInterface $connectionConfig;
 
-    /**
-     *
-     * @param string $connectionName
-     * @throws \Exception
-     */
     #[\Behat\Step\Given('/^I have existing connection config "(\w+)"$/')]
     public function iHaveExistingConnectionConfig(string $connectionName)
     {
@@ -43,9 +35,6 @@ class ConnectionFeatureContext extends AbstractFeatureContext
         $this->connectionPool->addConnectionConfig($this->connectionConfig);
     }
 
-    /**
-     * @param string $connectionName
-     */
     #[\Behat\Step\Then('/^I should have connection "(\w+)"$/')]
     public function iShouldHaveConnection(string $connectionName)
     {

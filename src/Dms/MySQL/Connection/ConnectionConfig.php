@@ -9,13 +9,6 @@ class ConnectionConfig extends AbstractConnectionConfig
     const ADAPTER = 'mysql';
     const DEFAULT_PORT = 3306;
 
-    /**
-     * @param string $host
-     * @param string $username
-     * @param string $password
-     * @param string $dbname
-     * @param int $port
-     */
     public function __construct(
         string $host,
         string $username,
@@ -26,12 +19,9 @@ class ConnectionConfig extends AbstractConnectionConfig
         parent::__construct($host, $username, $password, $dbname, static::ADAPTER, $port);
     }
 
-    /**
-     * @return string
-     */
     public function generateDsn(): string
     {
-        return \sprintf(
+        return sprintf(
             '%s:host=%s;dbname=%s;charset=utf8mb4;port=%d',
             $this->adapter,
             $this->host,
@@ -40,9 +30,6 @@ class ConnectionConfig extends AbstractConnectionConfig
         );
     }
 
-    /**
-     * @return string
-     */
     public function getAdapterConnectionClass(): string
     {
         return Connection::class;

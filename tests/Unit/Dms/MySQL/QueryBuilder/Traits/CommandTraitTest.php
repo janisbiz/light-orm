@@ -19,9 +19,6 @@ class CommandTraitTest extends AbstractTraitTestCase
         {
             use CommandTrait;
 
-            /**
-             * @return string
-             */
             public function buildCommandQueryPartPublic(): string
             {
                 return $this->buildCommandQueryPart();
@@ -29,36 +26,25 @@ class CommandTraitTest extends AbstractTraitTestCase
         };
     }
 
-    /**
-     * @param string $command
-     * @param string $expected
-     */
     #[DataProvider('setCommandData')]
-    public function testSetCommand($command, $expected)
+    public function testSetCommand(string $command, mixed $expected)
     {
         $object = $this->commandTraitClass->command($command);
         $this->assertObjectUsesTrait(CommandTrait::class, $object);
         $this->assertEquals($expected, $this->commandTraitClass->commandData());
     }
 
-    /**
-     * @param string $command
-     * @param string $expected
-     */
     #[DataProvider('setCommandData')]
-    public function testSetCommandData($command, $expected)
+    public function testSetCommandData(string $command, mixed $expected)
     {
         $object = $this->commandTraitClass->command($command);
         $this->assertObjectUsesTrait(CommandTrait::class, $object);
         $this->assertEquals($expected, $this->commandTraitClass->commandData());
     }
 
-    /**
-     * @return array
-     */
-    public static function setCommandData()
+    public static function setCommandData(): array
     {
-        return \array_map(
+        return array_map(
             fn($val) => [
                 $val,
                 $val
@@ -67,11 +53,8 @@ class CommandTraitTest extends AbstractTraitTestCase
         );
     }
 
-    /**
-     * @param string $command
-     */
     #[DataProvider('buildCommandQueryPartData')]
-    public function testBuildCommandQueryPart($command)
+    public function testBuildCommandQueryPart(string $command)
     {
         $this->commandTraitClass->command($command);
 
@@ -81,13 +64,9 @@ class CommandTraitTest extends AbstractTraitTestCase
         );
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function buildCommandQueryPartData()
+    public static function buildCommandQueryPartData(): array
     {
-        return \array_map(
+        return array_map(
             fn($val) => [
                 $val
             ],

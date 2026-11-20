@@ -7,19 +7,12 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait WhereTrait
 {
-    /**
-     * @var array
-     */
-    protected $where = [];
+    protected array $where = [];
 
     /**
-     * @param string $condition
-     * @param array $bind
-     *
-     * @return $this
      * @throws QueryBuilderException
      */
-    public function where(string $condition, array $bind = [])
+    public function where(string $condition, array $bind = []): static
     {
         if (empty($condition)) {
             throw new QueryBuilderException('You must pass $condition name to where method!');
@@ -34,26 +27,20 @@ trait WhereTrait
         return $this;
     }
 
-    /**
-     * @param string $column
-     * @param array $params
-     *
-     * @return $this
-     */
-    public function whereIn(string $column, array $params = [])
+    public function whereIn(string $column, array $params = []): static
     {
         if (!empty($params)) {
             $bind = [];
             $bindParams = [];
             foreach ($params as $i => $param) {
-                $bindParamName = \sprintf('%d_%s_In', $i, \str_replace('.', '', $column));
+                $bindParamName = sprintf('%d_%s_In', $i, str_replace('.', '', $column));
 
                 $bind[$bindParamName] = $param;
-                $bindParams[] = \sprintf(':%s', $bindParamName);
+                $bindParams[] = sprintf(':%s', $bindParamName);
             }
 
             $this->where(
-                \sprintf('%s IN (%s)', $column, \implode(', ', $bindParams)),
+                sprintf('%s IN (%s)', $column, implode(', ', $bindParams)),
                 $bind
             );
         }
@@ -61,26 +48,20 @@ trait WhereTrait
         return $this;
     }
 
-    /**
-     * @param string $column
-     * @param array $params
-     *
-     * @return $this
-     */
-    public function whereNotIn(string $column, array $params = [])
+    public function whereNotIn(string $column, array $params = []): static
     {
         if (!empty($params)) {
             $bind = [];
             $bindParams = [];
             foreach ($params as $i => $param) {
-                $bindParamName = \sprintf('%d_%s_NotIn', $i, \str_replace('.', '', $column));
+                $bindParamName = sprintf('%d_%s_NotIn', $i, str_replace('.', '', $column));
 
                 $bind[$bindParamName] = $param;
-                $bindParams[] = \sprintf(':%s', $bindParamName);
+                $bindParams[] = sprintf(':%s', $bindParamName);
             }
 
             $this->where(
-                \sprintf('%s NOT IN (%s)', $column, \implode(', ', $bindParams)),
+                sprintf('%s NOT IN (%s)', $column, implode(', ', $bindParams)),
                 $bind
             );
         }
@@ -88,14 +69,11 @@ trait WhereTrait
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     protected function buildWhereQueryPart(): ?string
     {
         return empty($this->where)
             ? null
-            : \sprintf('%s %s', ConditionEnum::WHERE, \implode(' AND ', \array_unique($this->where)))
+            : sprintf('%s %s', ConditionEnum::WHERE, implode(' AND ', array_unique($this->where)))
         ;
     }
 }

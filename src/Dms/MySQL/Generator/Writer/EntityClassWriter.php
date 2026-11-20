@@ -9,33 +9,18 @@ use Janisbiz\LightOrm\Generator\Writer\WriterConfigInterface;
 
 class EntityClassWriter extends AbstractWriter
 {
-    /**
-     * @var BaseEntityClassWriter
-     */
-    protected $baseEntityClassWriter;
-
-    /**
-     * @param WriterConfigInterface $writerConfig
-     * @param BaseEntityClassWriter $baseEntityClassWriter
-     */
-    public function __construct(WriterConfigInterface $writerConfig, BaseEntityClassWriter $baseEntityClassWriter)
-    {
-        $this->writerConfig = $writerConfig;
-        $this->baseEntityClassWriter = $baseEntityClassWriter;
+    public function __construct(
+        WriterConfigInterface $writerConfig,
+        protected BaseEntityClassWriter $baseEntityClassWriter
+    ) {
+        parent::__construct($writerConfig);
     }
 
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     * @param array $existingFiles
-     *
-     * @return EntityClassWriter
-     */
     public function write(
         DmsDatabaseInterface $dmsDatabase,
         DmsTableInterface $dmsTable,
         array &$existingFiles
-    ) {
+    ): static {
         $fileName = $this->generateFileName($dmsDatabase, $dmsTable);
 
         return $this
@@ -44,20 +29,6 @@ class EntityClassWriter extends AbstractWriter
         ;
     }
 
-    /**
-     * @return WriterConfigInterface
-     */
-    protected function getWriterConfig(): WriterConfigInterface
-    {
-        return $this->writerConfig;
-    }
-
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     *
-     * @return string
-     */
     protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
     {
         return /** @lang PHP */<<<PHP

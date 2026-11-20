@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
 use Behat\Gherkin\Node\TableNode;
+use Exception;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection as MySQLConnection;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
@@ -20,8 +21,6 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     *
-     * @param string $connectionName
      * @throws \Exception
      */
     #[\Behat\Step\Given('/^I flush all tables for connection "(.*)"$/')]
@@ -40,17 +39,12 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
                 break;
 
             default:
-                throw new \Exception(\sprintf('Flush all tables for connection "%s" is no defined!', $connectionName));
+                throw new Exception(sprintf('Flush all tables for connection "%s" is no defined!', $connectionName));
         }
 
         $this->flushTables($connection, $connectionName, $tables);
     }
 
-    /**
-     *
-     * @param string $connectionName
-     * @param TableNode $tables
-     */
     #[\Behat\Step\Given('/^I flush following tables for connection "(.*)":$/')]
     public function iFlushFollowingTablesForConnection(string $connectionName, TableNode $tables)
     {
@@ -62,16 +56,13 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
         $this->flushTables($this->connectionPool->getConnection($connectionName), $connectionName, $tablesArray);
     }
 
-    /**
-     * @param string $connectionName
-     */
     #[\Behat\Step\Given('/^I reset database for connection "(.*)"$/')]
     public function iResetDatabaseForConnection(string $connectionName)
     {
         $connection = $this->connectionPool->getConnection($connectionName);
         switch ($connection::class) {
             case MySQLConnection::class:
-                $connection->exec(\file_get_contents(\implode(
+                $connection->exec(file_get_contents(implode(
                     '',
                     [
                         JANISBIZ_LIGHT_ORM_ROOT_DIR,
@@ -90,21 +81,19 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
     
     /**
-     *
-     * @param $repositoryClass
-     * @throws \Exception
+     * @throws Exception
      */
     #[\Behat\Step\Given('/^I create repository "(.*)"$/')]
     public function iCreateRepository(string $repositoryClass)
     {
-        if (\array_key_exists($repositoryClass, static::$repositories)) {
+        if (array_key_exists($repositoryClass, static::$repositories)) {
             return;
         }
 
         $repository = new $repositoryClass;
 
         if (!$repository instanceof RepositoryInterface) {
-            throw new \Exception(\sprintf(
+            throw new Exception(sprintf(
                 'Class "%s" must implement "%s"',
                 $repository::class,
                 RepositoryInterface::class
@@ -112,7 +101,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
         }
 
         $logger = new Logger('light-orm-mysql');
-        $logger->pushHandler(new StreamHandler(\implode(
+        $logger->pushHandler(new StreamHandler(implode(
             '',
             [
                 JANISBIZ_LIGHT_ORM_ROOT_DIR,
@@ -131,15 +120,13 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     *
-     * @param string $repositoryClass
-     * @throws \Exception
+     * @throws Exception
      */
     #[\Behat\Step\Given('/^I make repository "(.*)" as active repository$/')]
     public function iMakeRepositoryAsActiveRepository(string $repositoryClass)
     {
-        if (!\array_key_exists($repositoryClass, static::$repositories)) {
-            throw new \Exception(\sprintf(
+        if (!array_key_exists($repositoryClass, static::$repositories)) {
+            throw new Exception(sprintf(
                 'There is no present repository "%s"! Please create repository before making it active!',
                 $repositoryClass
             ));
@@ -149,9 +136,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     *
-     * @param string $message
-     * @throws \Exception
+     * @throws Exception
      */
     #[\Behat\Step\Then('/^I have exception with message "(.*)"$/')]
     public function iHaveExceptionWithMessage(string $message)
@@ -161,7 +146,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
         }
 
         if ($message !== static::$exception->getMessage()) {
-            throw new \Exception(\sprintf(
+            throw new Exception(sprintf(
                 'Expected exception doesn\'t containt message "%s", it contains message "%s"!',
                 $message,
                 static::$exception->getMessage()
@@ -169,27 +154,18 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
         }
     }
 
-    /**
-     * @param string $connectionName
-     */
     #[\Behat\Step\Given('/^I begin transaction on connection "(.*)"$/')]
     public function iBeginTransactionOnConnection(string $connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->beginTransaction();
     }
 
-    /**
-     * @param string $connectionName
-     */
     #[\Behat\Step\Given('/^I commit transaction on connection "(.*)"$/')]
     public function iCommitTransactionOnConnection(string $connectionName)
     {
         $this->connectionPool->getConnection($connectionName)->commit();
     }
 
-    /**
-     * @param string $connectionName
-     */
     #[\Behat\Step\Given('/^I rollback transaction on connection "(.*)"$/')]
     public function iRollbackTransactionOnConnection(string $connectionName)
     {
@@ -197,11 +173,7 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     * @param ConnectionInterface $connection
-     * @param string $connectionName
-     * @param array $tables
-     *
-     * @throws \Exception
+     * @throws Exception
      */
     private function flushTables(ConnectionInterface $connection, string $connectionName, array $tables)
     {
@@ -209,14 +181,14 @@ class RepositoryFeatureContext extends AbstractRepositoryFeatureContext
             case MySQLConnection::class:
                 $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 0');
                 foreach ($tables as $table) {
-                    $connection->query(\sprintf('TRUNCATE TABLE %s', $table));
+                    $connection->query(sprintf('TRUNCATE TABLE %s', $table));
                 }
                 $connection->query('SET SESSION FOREIGN_KEY_CHECKS = 1');
 
                 break;
 
             default:
-                throw new \Exception(\sprintf('Flush all tables for connection "%s" is no defined!', $connectionName));
+                throw new Exception(sprintf('Flush all tables for connection "%s" is no defined!', $connectionName));
         }
     }
 }

@@ -4,51 +4,26 @@ namespace Janisbiz\LightOrm\Entity;
 
 class BaseEntity implements EntityInterface
 {
-    /**
-     * @var array
-     */
-    protected $primaryKeys = [];
+    protected array $primaryKeys = [];
 
-    /**
-     * @var array
-     */
-    protected $primaryKeysAutoIncrement = [];
+    protected array $primaryKeysAutoIncrement = [];
 
-    /**
-     * @var array
-     */
-    protected $columns = [];
+    protected array $columns = [];
 
-    /**
-     * @var array
-     */
-    protected $data = [];
+    protected array $data = [];
 
-    /**
-     * @var array
-     */
-    protected $dataOriginal = [];
+    protected array $dataOriginal = [];
 
-    /**
-     * @var bool $isNew
-     */
-    protected $isNew = true;
+    protected bool $isNew = true;
 
-    /**
-     * @var bool $isSaved
-     */
-    protected $isSaved = false;
+    protected bool $isSaved = false;
 
     /**
      * @deprecated 30.04.2019 Should have proper getters & setters
-     *
-     * @param string $name
-     *
-     * @return string|int|bool
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
-        if (\array_key_exists($name, $this->data)) {
+        if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         }
 
@@ -57,11 +32,8 @@ class BaseEntity implements EntityInterface
 
     /**
      * @deprecated 30.04.2019 Should have proper getters & setters
-     *
-     * @param string $name
-     * @param string|int|bool $value
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, string|int|float|null $value)
     {
         $this->data[$name] = $value;
 
@@ -70,25 +42,21 @@ class BaseEntity implements EntityInterface
     }
 
     /**
-     * @param string $name
-     * @param array|null $arguments
-     *
      * @throws EntityException
-     * @return bool|null|string|$this
      */
-    public function __call(string $name, ?array $arguments)
+    public function __call(string $name, ?array $arguments): mixed
     {
-        $methodName = \substr($name, 0, 3);
-        \preg_match_all('/[A-Z0-9][^A-Z0-9]*/', $name, $results);
+        $methodName = substr($name, 0, 3);
+        preg_match_all('/[A-Z0-9][^A-Z0-9]*/', $name, $results);
 
         switch ($methodName) {
             case 'get':
-                if (\array_key_exists(\mb_strtolower(\implode('_', $results[0])), $this->data)) {
-                    $variable = $this->data[\strtolower(\implode('_', $results[0]))];
+                if (array_key_exists(mb_strtolower(implode('_', $results[0])), $this->data)) {
+                    $variable = $this->data[strtolower(implode('_', $results[0]))];
 
-                    if ($arguments && $arguments[0] === true && \is_string($variable)) {
+                    if ($arguments && $arguments[0] === true && is_string($variable)) {
                         /** Stripping tags, output for user */
-                        return \nl2br(\htmlspecialchars(\trim($variable), ENT_QUOTES, 'UTF-8'));
+                        return nl2br(htmlspecialchars(trim($variable), ENT_QUOTES, 'UTF-8'));
                     }
 
                     /** Returning unchanged variable */
@@ -102,25 +70,22 @@ class BaseEntity implements EntityInterface
                     $arguments[0] = null;
                 }
 
-                $this->data[\strtolower(\implode('_', $results[0]))] = $arguments[0];
+                $this->data[strtolower(implode('_', $results[0]))] = $arguments[0];
 
                 return $this;
         }
 
-        throw new EntityException(\sprintf('Call to undefined method %s::%s()', self::class, $name));
+        throw new EntityException(sprintf('Call to undefined method %s::%s()', self::class, $name));
     }
 
     /**
-     * @param null|string $key
-     *
-     * @return null|array|string|int|double
      * @throws EntityException
      */
-    public function &data(?string $key = null)
+    public function &data(?string $key = null): array|string|int|float|null
     {
-        if (null !== $key && \is_string($key)) {
-            if (!\array_key_exists($key, $this->data)) {
-                throw new EntityException(\sprintf('There is no key "%s" present in data!', $key));
+        if (null !== $key && is_string($key)) {
+            if (!array_key_exists($key, $this->data)) {
+                throw new EntityException(sprintf('There is no key "%s" present in data!', $key));
             }
 
             return $this->data[$key];
@@ -130,16 +95,13 @@ class BaseEntity implements EntityInterface
     }
 
     /**
-     * @param null|string $key
-     *
-     * @return null|array|string|int|double
      * @throws EntityException
      */
-    public function &dataOriginal(?string $key = null)
+    public function &dataOriginal(?string $key = null): array|string|int|float|null
     {
-        if (null !== $key && \is_string($key)) {
-            if (!\array_key_exists($key, $this->data)) {
-                throw new EntityException(\sprintf('There is no key "%s" present in data original!', $key));
+        if (null !== $key && is_string($key)) {
+            if (!array_key_exists($key, $this->data)) {
+                throw new EntityException(sprintf('There is no key "%s" present in data original!', $key));
             }
 
             return $this->data[$key];
@@ -148,41 +110,26 @@ class BaseEntity implements EntityInterface
         return $this->dataOriginal;
     }
 
-    /**
-     * @return bool
-     */
     public function isNew(): bool
     {
         return $this->isNew;
     }
 
-    /**
-     * @return bool
-     */
     public function isSaved(): bool
     {
         return $this->isSaved;
     }
 
-    /**
-     * @return string[]
-     */
     public function primaryKeys(): array
     {
         return $this->primaryKeys;
     }
 
-    /**
-     * @return string[]
-     */
     public function primaryKeysAutoIncrement(): array
     {
         return $this->primaryKeysAutoIncrement;
     }
 
-    /**
-     * @return string[]
-     */
     public function columns(): array
     {
         return $this->columns;

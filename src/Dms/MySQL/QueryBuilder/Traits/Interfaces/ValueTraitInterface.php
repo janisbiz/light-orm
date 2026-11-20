@@ -4,23 +4,9 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
 interface ValueTraitInterface
 {
-    /**
-     * @param string $column
-     * @param null|int|string|double $value
-     *
-     * @return $this
-     */
-    public function value(string $column, $value);
+    public function value(string $column, string|int|float|null $value): static;
 
-    /**
-     * @param array $bindValue
-     *
-     * @return $this
-     */
-    public function bindValue(array $bindValue = []);
+    public function bindValue(array $bindValue = []): static;
 
-    /**
-     * @return array
-     */
     public function bindValueData(): array;
 }

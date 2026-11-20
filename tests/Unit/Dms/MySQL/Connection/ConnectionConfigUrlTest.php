@@ -7,17 +7,17 @@ use PHPUnit\Framework\TestCase;
 
 class ConnectionConfigUrlTest extends TestCase
 {
-    const URL_PART_SCHEME = 'mysql';
-    const URL_PART_USER = 'user';
-    const URL_PART_PASS = 'password';
-    const URL_PART_HOST = 'host';
-    const URL_PART_PORT = 1234;
-    const URL_PART_PATH = 'database_name';
+    const string URL_PART_SCHEME = 'mysql';
+    const string URL_PART_USER = 'user';
+    const string URL_PART_PASS = 'password';
+    const string URL_PART_HOST = 'host';
+    const int URL_PART_PORT = 1234;
+    const string URL_PART_PATH = 'database_name';
 
     public function testConstruct()
     {
         $connectionConfigUrl = new ConnectionConfigUrl(
-            \sprintf(
+            sprintf(
                 '%s://%s:%s@%s:%d/%s',
                 static::URL_PART_SCHEME,
                 static::URL_PART_USER,
@@ -29,7 +29,7 @@ class ConnectionConfigUrlTest extends TestCase
         );
 
         $this->assertEquals(
-            \sprintf(
+            sprintf(
                 '%s:host=%s;dbname=%s;charset=utf8mb4;port=%d',
                 static::URL_PART_SCHEME,
                 static::URL_PART_HOST,

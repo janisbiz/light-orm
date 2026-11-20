@@ -13,10 +13,10 @@ include_once __DIR__ . '/../vendor/autoload.php';
 
 $databaseName = 'light_orm_mysql';
 $connectionPool = (new ConnectionPool())
-    ->addConnectionConfig(new MySQLConnectionConfigUrl(\sprintf('mysql://root:password@mysql/%s', $databaseName)))
+    ->addConnectionConfig(new MySQLConnectionConfigUrl(sprintf('mysql://root:password@mysql/%s', $databaseName)))
 ;
 
-$directoryPersistent = \implode(
+$directoryPersistent = implode(
     '',
     [
         __DIR__,
@@ -32,7 +32,7 @@ $directoryPersistent = \implode(
         'Generated'
     ]
 );
-$directoryNonPersistent = \implode(
+$directoryNonPersistent = implode(
     '',
     [
         __DIR__,

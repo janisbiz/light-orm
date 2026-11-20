@@ -10,26 +10,26 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class JoinTraitTest extends AbstractTraitTestCase
 {
-    const JOIN_INVALID_JOIN = 'INVALID';
+    const string JOIN_INVALID_JOIN = 'INVALID';
 
-    const JOIN_EMPTY_TABLE = '';
-    const JOIN_EMPTY_ON_CONDITION = '';
-    const JOIN_EMPTY_ALIAS = '';
+    const string JOIN_EMPTY_TABLE = '';
+    const string JOIN_EMPTY_ON_CONDITION = '';
+    const string JOIN_EMPTY_ALIAS = '';
 
-    const JOIN_DEFAULT_JOIN = JoinEnum::INNER_JOIN;
-    const JOIN_DEFAULT_TABLE = 'table1';
-    const JOIN_DEFAULT_ON_CONDITION = 'table1.column1 = table2.column2 AND table1.column2 = :column2_ValueBind';
-    const JOIN_DEFAULT = [
+    const string JOIN_DEFAULT_JOIN = JoinEnum::INNER_JOIN;
+    const string JOIN_DEFAULT_TABLE = 'table1';
+    const string JOIN_DEFAULT_ON_CONDITION = 'table1.column1 = table2.column2 AND table1.column2 = :column2_ValueBind';
+    const array JOIN_DEFAULT = [
         self::JOIN_DEFAULT_JOIN . ' ' . self::JOIN_DEFAULT_TABLE . ' ON (' . self::JOIN_DEFAULT_ON_CONDITION . ')',
     ];
-    const JOIN_BIND_DEFAULT = [
+    const array JOIN_BIND_DEFAULT = [
         'column2_ValueBind' => 'column2_value',
     ];
 
-    const JOIN_TABLE = 'table0';
-    const JOIN_TABLE_ALIAS = 'table0_alias';
-    const JOIN_ON_CONDITION = 'table0.column0 = table1.column1 AND table1.column3 = :column3_ValueBind';
-    const JOIN_BIND = [
+    const string JOIN_TABLE = 'table0';
+    const string JOIN_TABLE_ALIAS = 'table0_alias';
+    const string JOIN_ON_CONDITION = 'table0.column0 = table1.column1 AND table1.column3 = :column3_ValueBind';
+    const array JOIN_BIND = [
         'column3_ValueBind' => 'column3_value',
     ];
 
@@ -45,19 +45,12 @@ class JoinTraitTest extends AbstractTraitTestCase
             use BindTrait;
             use JoinTrait;
 
-            /**
-             * @param array $bindDataDefault
-             * @param array $joinDataDefault
-             */
             public function __construct(array $bindDataDefault, array $joinDataDefault)
             {
                 $this->bind = $bindDataDefault;
                 $this->join = $joinDataDefault;
             }
 
-            /**
-             * @return array
-             */
             public function joinData(): array
             {
                 return $this->join;
@@ -68,9 +61,6 @@ class JoinTraitTest extends AbstractTraitTestCase
                 $this->join = [];
             }
 
-            /**
-             * @return null|string
-             */
             public function buildJoinQueryPartPublic(): ?string
             {
                 return $this->buildJoinQueryPart();
@@ -78,29 +68,23 @@ class JoinTraitTest extends AbstractTraitTestCase
         };
     }
 
-    /**
-     * @param string $join
-     * @param string $tableName
-     * @param string $onCondition
-     * @param array $bind
-     */
     #[DataProvider('joinData')]
-    public function testJoin($join, $tableName, $onCondition, array $bind)
+    public function testJoin(string $join, string $tableName, string $onCondition, array $bind)
     {
         $object = $this->joinTraitClass->join($join, $tableName, $onCondition, $bind);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf('%s %s ON (%s)', $join, $tableName, $onCondition),
+                    sprintf('%s %s ON (%s)', $join, $tableName, $onCondition),
                 ]
             ),
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 $bind
             ),
@@ -108,19 +92,13 @@ class JoinTraitTest extends AbstractTraitTestCase
         );
     }
 
-    /**
-     * @param string $join
-     * @param string $tableName
-     * @param string $onCondition
-     * @param array $bind
-     */
     #[DataProvider('joinData')]
-    public function testBuildJoinQueryPart($join, $tableName, $onCondition, array $bind)
+    public function testBuildJoinQueryPart(string $join, string $tableName, string $onCondition, array $bind)
     {
         $this->joinTraitClass->join($join, $tableName, $onCondition, $bind);
 
         $this->assertEquals(
-            \implode(' ', $this->joinTraitClass->joinData()),
+            implode(' ', $this->joinTraitClass->joinData()),
             $this->joinTraitClass->buildJoinQueryPartPublic()
         );
     }
@@ -132,11 +110,7 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertEquals(null, $this->joinTraitClass->buildJoinQueryPartPublic());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function joinData()
+    public static function joinData(): array
     {
         return [
             [
@@ -265,30 +239,23 @@ class JoinTraitTest extends AbstractTraitTestCase
         );
     }
 
-    /**
-     * @param string $join
-     * @param string $tableName
-     * @param string $alias
-     * @param string $onCondition
-     * @param array $bind
-     */
     #[DataProvider('joinAsData')]
-    public function testJoinAs($join, $tableName, $alias, $onCondition, array $bind)
+    public function testJoinAs(string $join, string $tableName, string $alias, string $onCondition, array $bind)
     {
         $object = $this->joinTraitClass->joinAs($join, $tableName, $alias, $onCondition, $bind);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf('%s %s AS %s ON (%s)', $join, $tableName, $alias, $onCondition),
+                    sprintf('%s %s AS %s ON (%s)', $join, $tableName, $alias, $onCondition),
                 ]
             ),
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 $bind
             ),
@@ -296,10 +263,7 @@ class JoinTraitTest extends AbstractTraitTestCase
         );
     }
 
-    /**
-     * @return array
-     */
-    public static function joinAsData()
+    public static function joinAsData(): array
     {
         return [
             [
@@ -405,16 +369,16 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf('%s %s ON (%s)', JoinEnum::INNER_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
+                    sprintf('%s %s ON (%s)', JoinEnum::INNER_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
                 ]
             ),
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -433,10 +397,10 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf(
+                    sprintf(
                         '%s %s AS %s ON (%s)',
                         JoinEnum::INNER_JOIN,
                         static::JOIN_TABLE,
@@ -448,7 +412,7 @@ class JoinTraitTest extends AbstractTraitTestCase
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -462,16 +426,16 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf('%s %s ON (%s)', JoinEnum::LEFT_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
+                    sprintf('%s %s ON (%s)', JoinEnum::LEFT_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
                 ]
             ),
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -490,10 +454,10 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf(
+                    sprintf(
                         '%s %s AS %s ON (%s)',
                         JoinEnum::LEFT_JOIN,
                         static::JOIN_TABLE,
@@ -505,7 +469,7 @@ class JoinTraitTest extends AbstractTraitTestCase
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -519,16 +483,16 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf('%s %s ON (%s)', JoinEnum::RIGHT_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
+                    sprintf('%s %s ON (%s)', JoinEnum::RIGHT_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
                 ]
             ),
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -547,10 +511,10 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf(
+                    sprintf(
                         '%s %s AS %s ON (%s)',
                         JoinEnum::RIGHT_JOIN,
                         static::JOIN_TABLE,
@@ -562,7 +526,7 @@ class JoinTraitTest extends AbstractTraitTestCase
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -576,16 +540,16 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf('%s %s ON (%s)', JoinEnum::CROSS_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
+                    sprintf('%s %s ON (%s)', JoinEnum::CROSS_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
                 ]
             ),
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -604,10 +568,10 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf(
+                    sprintf(
                         '%s %s AS %s ON (%s)',
                         JoinEnum::CROSS_JOIN,
                         static::JOIN_TABLE,
@@ -619,7 +583,7 @@ class JoinTraitTest extends AbstractTraitTestCase
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -637,16 +601,16 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf('%s %s ON (%s)', JoinEnum::FULL_OUTER_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
+                    sprintf('%s %s ON (%s)', JoinEnum::FULL_OUTER_JOIN, static::JOIN_TABLE, static::JOIN_ON_CONDITION),
                 ]
             ),
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),
@@ -665,10 +629,10 @@ class JoinTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(JoinTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_DEFAULT,
                 [
-                    \sprintf(
+                    sprintf(
                         '%s %s AS %s ON (%s)',
                         JoinEnum::FULL_OUTER_JOIN,
                         static::JOIN_TABLE,
@@ -680,7 +644,7 @@ class JoinTraitTest extends AbstractTraitTestCase
             $this->joinTraitClass->joinData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::JOIN_BIND_DEFAULT,
                 static::JOIN_BIND
             ),

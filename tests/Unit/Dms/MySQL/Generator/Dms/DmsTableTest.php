@@ -9,23 +9,20 @@ use PHPUnit\Framework\TestCase;
 
 class DmsTableTest extends TestCase
 {
-    const TABLE_NAME = 'table_name_snake_case';
+    const string TABLE_NAME = 'table_name_snake_case';
 
     /**
      * @var DmsColumn[]
      */
-    private $dmsColumns = [];
+    private array $dmsColumns = [];
 
-    /**
-     * @var DmsTable
-     */
-    private $dmsTable;
+    private DmsTable $dmsTable;
 
     public function setUp(): void
     {
         for ($i = 1; $i <= 3; $i++) {
             $this->dmsColumns[] = new DmsColumn(
-                \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
+                sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
                 DmsColumnTest::COLUMN_TYPE,
                 DmsColumnTest::COLUMN_NULLABLE,
                 DmsColumnTest::COLUMN_KEY,
@@ -42,10 +39,6 @@ class DmsTableTest extends TestCase
         $this->assertEquals(static::TABLE_NAME, $this->dmsTable->getName());
     }
 
-    /**
-     * @param string $name
-     * @param string $phpName
-     */
     #[DataProvider('getPhpNameData')]
     public function testGetPhpName(string $name, string $phpName)
     {
@@ -57,10 +50,7 @@ class DmsTableTest extends TestCase
         $this->assertEquals($phpName, $dmsTable->getPhpName());
     }
 
-    /**
-     * @return array
-     */
-    public static function getPhpNameData()
+    public static function getPhpNameData(): array
     {
         return [
             [
@@ -92,6 +82,6 @@ class DmsTableTest extends TestCase
 
     public function testGetColumns()
     {
-        $this->assertEquals(\count($this->dmsColumns), \count($this->dmsTable->getDmsColumns()));
+        $this->assertEquals(count($this->dmsColumns), count($this->dmsTable->getDmsColumns()));
     }
 }

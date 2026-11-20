@@ -7,19 +7,12 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait HavingTrait
 {
-    /**
-     * @var array
-     */
-    protected $having = [];
+    protected array $having = [];
 
     /**
-     * @param string $condition
-     * @param array $bind
-     *
-     * @return $this
      * @throws QueryBuilderException
      */
-    public function having(string $condition, array $bind = [])
+    public function having(string $condition, array $bind = []): static
     {
         if (!$condition) {
             throw new QueryBuilderException('You must pass $condition to having function!');
@@ -34,14 +27,11 @@ trait HavingTrait
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     protected function buildHavingQueryPart(): ?string
     {
         return empty($this->having)
             ? null
-            : \sprintf('%s %s', ConditionEnum::HAVING, \implode(' AND ', \array_unique($this->having)))
+            : sprintf('%s %s', ConditionEnum::HAVING, implode(' AND ', array_unique($this->having)))
         ;
     }
 }

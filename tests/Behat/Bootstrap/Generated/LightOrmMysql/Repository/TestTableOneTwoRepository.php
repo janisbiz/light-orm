@@ -7,11 +7,7 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestT
 
 class TestTableOneTwoRepository extends AbstractRepository
 {
-    /**
-     * @param int $testTableOneId
-     * @param int $testTableTwoId
-     */
-    public function create($testTableOneId, $testTableTwoId)
+    public function create(int $testTableOneId, int $testTableTwoId)
     {
         $this
             ->createQueryBuilder(
@@ -26,33 +22,22 @@ class TestTableOneTwoRepository extends AbstractRepository
     /**
      * @return TestTableOneTwoEntity[]
      */
-    public function read()
+    public function read(): array
     {
         return $this->createQueryBuilder()->orderBy(TestTableOneTwoEntity::COLUMN_TEST_TABLE_ONE_ID)->find();
     }
 
-    /**
-     * @return int
-     */
-    public function readCount()
+    public function readCount(): int
     {
         return $this->createQueryBuilder()->count();
     }
 
-    /**
-     * @param int $testTableOneIdCurrent
-     * @param int $testTableTwoIdCurrent
-     * @param int $testTableOneId
-     * @param int $testTableTwoId
-     *
-     * @return TestTableOneTwoEntity
-     */
     public function updateRow(
-        $testTableOneIdCurrent,
-        $testTableTwoIdCurrent,
-        $testTableOneId,
-        $testTableTwoId
-    ) {
+        int $testTableOneIdCurrent,
+        int $testTableTwoIdCurrent,
+        int $testTableOneId,
+        int $testTableTwoId
+    ): TestTableOneTwoEntity {
         $testTableOneTwoEntity = $this
             ->createQueryBuilder()
             ->where('test_table_one_two.test_table_one_id = :test_table_one_id')
@@ -72,18 +57,11 @@ class TestTableOneTwoRepository extends AbstractRepository
         return $this->createQueryBuilder($testTableOneTwoEntity)->update();
     }
 
-    /**
-     * @param TestTableOneTwoEntity $testTableOneTwoEntity
-     * @param int $testTableOneId
-     * @param int $testTableTwoId
-     *
-     * @return TestTableOneTwoEntity
-     */
     public function updateEntity(
         TestTableOneTwoEntity $testTableOneTwoEntity,
-        $testTableOneId,
-        $testTableTwoId
-    ) {
+        int $testTableOneId,
+        int $testTableTwoId
+    ): TestTableOneTwoEntity {
         $testTableOneTwoEntity
             ->setTestTableOneId($testTableOneId)
             ->setTestTableTwoId($testTableTwoId)
@@ -92,17 +70,11 @@ class TestTableOneTwoRepository extends AbstractRepository
         return $this->createQueryBuilder($testTableOneTwoEntity)->update();
     }
 
-    /**
-     * @param TestTableOneTwoEntity $testTableOneTwoEntity
-     */
     public function deleteEntity(TestTableOneTwoEntity $testTableOneTwoEntity)
     {
         $this->createQueryBuilder($testTableOneTwoEntity)->delete();
     }
 
-    /**
-     * @return string
-     */
     protected function getEntityClass(): string
     {
         return TestTableOneTwoEntity::class;

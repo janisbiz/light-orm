@@ -12,27 +12,18 @@ class RepositoryClassWriter extends AbstractWriter
 {
     use HeredocTrait;
 
-    /**
-     * @param WriterConfigInterface $writerConfig
-     * @param EntityClassWriter $entityClassWriter
-     */
-    public function __construct(WriterConfigInterface $writerConfig, private EntityClassWriter $entityClassWriter)
-    {
-        $this->writerConfig = $writerConfig;
+    public function __construct(
+        WriterConfigInterface $writerConfig,
+        private EntityClassWriter $entityClassWriter
+    ) {
+        parent::__construct($writerConfig);
     }
 
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     * @param array $existingFiles
-     *
-     * @return RepositoryClassWriter
-     */
     public function write(
         DmsDatabaseInterface $dmsDatabase,
         DmsTableInterface $dmsTable,
         array &$existingFiles
-    ) {
+    ): static {
         $fileName = $this->generateFileName($dmsDatabase, $dmsTable);
 
         return $this
@@ -41,20 +32,11 @@ class RepositoryClassWriter extends AbstractWriter
         ;
     }
 
-    /**
-     * @return WriterConfigInterface
-     */
     protected function getWriterConfig(): WriterConfigInterface
     {
         return $this->writerConfig;
     }
 
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     *
-     * @return string
-     */
     protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
     {
         return /** @lang PHP */
@@ -68,9 +50,6 @@ use {$this->entityClassWriter->generateFQDN($dmsDatabase, $dmsTable)};
 
 class {$this->generateClassName($dmsTable)} extends AbstractRepository
 {
-    /**
-     * @return string
-     */
     protected function getEntityClass(): string
     {
         return {$this->entityClassWriter->generateClassName($dmsTable)}::class;

@@ -9,15 +9,15 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\HavingTrait;
 
 class HavingTraitTest extends AbstractTraitTestCase
 {
-    const HAVING_CONDITION_DEFAULT = [
+    const array HAVING_CONDITION_DEFAULT = [
         'column1 = :value1Bind',
     ];
-    const HAVING_CONDITION_BIND_DEFAULT = [
+    const array HAVING_CONDITION_BIND_DEFAULT = [
         'value1Bind' => 'value1',
     ];
-    const HAVING_CONDITION_EMPTY = '';
-    const HAVING_CONDITION = 'column2 = :value2Bind';
-    const HAVING_CONDITION_BIND = [
+    const string HAVING_CONDITION_EMPTY = '';
+    const string HAVING_CONDITION = 'column2 = :value2Bind';
+    const array HAVING_CONDITION_BIND = [
         'value2Bind' => 'value2',
     ];
 
@@ -35,19 +35,12 @@ class HavingTraitTest extends AbstractTraitTestCase
             use BindTrait;
             use HavingTrait;
 
-            /**
-             * @param array $bindDefaultData
-             * @param array $havingDefaultData
-             */
             public function __construct(array $bindDefaultData, array $havingDefaultData)
             {
                 $this->bind = $bindDefaultData;
                 $this->having = $havingDefaultData;
             }
 
-            /**
-             * @return array
-             */
             public function havingData(): array
             {
                 return $this->having;
@@ -58,9 +51,6 @@ class HavingTraitTest extends AbstractTraitTestCase
                 $this->having = [];
             }
 
-            /**
-             * @return null|string
-             */
             public function buildHavingQueryPartPublic(): ?string
             {
                 return $this->buildHavingQueryPart();
@@ -74,11 +64,11 @@ class HavingTraitTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(HavingTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::HAVING_CONDITION_DEFAULT, [static::HAVING_CONDITION]),
+            array_merge(static::HAVING_CONDITION_DEFAULT, [static::HAVING_CONDITION]),
             $this->havingTraitClass->havingData()
         );
         $this->assertEquals(
-            \array_merge(static::HAVING_CONDITION_BIND_DEFAULT, static::HAVING_CONDITION_BIND),
+            array_merge(static::HAVING_CONDITION_BIND_DEFAULT, static::HAVING_CONDITION_BIND),
             $this->havingTraitClass->bindData()
         );
     }
@@ -96,10 +86,10 @@ class HavingTraitTest extends AbstractTraitTestCase
         $this->havingTraitClass->having(static::HAVING_CONDITION, static::HAVING_CONDITION_BIND);
 
         $this->assertEquals(
-            \sprintf(
+            sprintf(
                 '%s %s',
                 ConditionEnum::HAVING,
-                \implode(' AND ', \array_unique($this->havingTraitClass->havingData()))
+                implode(' AND ', array_unique($this->havingTraitClass->havingData()))
             ),
             $this->havingTraitClass->buildHavingQueryPartPublic()
         );

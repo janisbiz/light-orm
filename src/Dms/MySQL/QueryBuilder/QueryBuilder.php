@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder;
 
+use Closure;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 
@@ -9,136 +10,76 @@ class QueryBuilder implements QueryBuilderInterface
 {
     use Traits;
 
-    /**
-     * @var \Closure
-     */
-    protected $repositoryCallback;
-
-    /**
-     * @var null|EntityInterface
-     */
-    protected $entity;
-
-    /**
-     * @param \Closure $repositoryCallback
-     * @param EntityInterface|null $entity
-     */
-    public function __construct(\Closure $repositoryCallback, ?EntityInterface $entity = null)
-    {
-        $this->repositoryCallback = $repositoryCallback;
-        $this->entity = $entity;
+    public function __construct(
+        protected Closure $repositoryCallback,
+        protected ?EntityInterface $entity = null
+    ) {
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     */
-    public function insert(bool $toString = false)
+    public function insert(bool $toString = false): string|EntityInterface
     {
         $this->command(CommandEnum::INSERT_INTO);
 
-        return \call_user_func($this->repositoryCallback, 'insert', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'insert', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     */
-    public function insertIgnore(bool $toString = false)
+    public function insertIgnore(bool $toString = false): string|EntityInterface
     {
         $this->command(CommandEnum::INSERT_IGNORE_INTO);
 
-        return \call_user_func($this->repositoryCallback, 'insertIgnore', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'insertIgnore', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     */
-    public function replace(bool $toString = false)
+    public function replace(bool $toString = false): string|EntityInterface
     {
         $this->command(CommandEnum::REPLACE_INTO);
 
-        return \call_user_func($this->repositoryCallback, 'replace', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'replace', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface[]
-     */
-    public function find(bool $toString = false)
+    public function find(bool $toString = false): string|array
     {
         $this->command(CommandEnum::SELECT);
 
-        return \call_user_func($this->repositoryCallback, 'find', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'find', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return null|string|EntityInterface
-     */
-    public function findOne(bool $toString = false)
+    public function findOne(bool $toString = false): string|EntityInterface|null
     {
         $this->command(CommandEnum::SELECT);
 
-        return \call_user_func($this->repositoryCallback, 'findOne', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'findOne', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return null|string|bool|EntityInterface
-     */
-    public function update(bool $toString = false)
+    public function update(bool $toString = false): string|EntityInterface|bool
     {
         $this->command(CommandEnum::UPDATE);
 
-        return \call_user_func($this->repositoryCallback, 'update', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'update', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return null|string|bool|EntityInterface
-     */
-    public function updateIgnore(bool $toString = false)
+    public function updateIgnore(bool $toString = false): string|EntityInterface
     {
         $this->command(CommandEnum::UPDATE_IGNORE);
 
-        return \call_user_func($this->repositoryCallback, 'updateIgnore', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'updateIgnore', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return string|bool
-     */
-    public function delete(bool $toString = false)
+    public function delete(bool $toString = false): string|bool
     {
         $this->command(CommandEnum::DELETE);
 
-        return \call_user_func($this->repositoryCallback, 'delete', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'delete', $this, $toString);
     }
 
-    /**
-     * @param bool $toString
-     *
-     * @return int
-     */
-    public function count(bool $toString = false)
+    public function count(bool $toString = false): string|int
     {
         $this->command(CommandEnum::SELECT);
 
-        return \call_user_func($this->repositoryCallback, 'count', $this, $toString);
+        return call_user_func($this->repositoryCallback, 'count', $this, $toString);
     }
 
     /**
-     * @return string
      * @throws QueryBuilderException
      */
     public function buildQuery(): string
@@ -227,50 +168,39 @@ class QueryBuilder implements QueryBuilderInterface
                 break;
 
             default:
-                throw new QueryBuilderException(\sprintf(
+                throw new QueryBuilderException(sprintf(
                     'Could not build query, as there is no valid(%s) command provided!',
                     $this->command
                 ));
         }
 
-        return \trim(\implode(' ', \array_filter($queryParts)));
+        return trim(implode(' ', array_filter($queryParts)));
     }
 
-    /**
-     * @return null|EntityInterface
-     */
     public function getEntity(): ?EntityInterface
     {
         return $this->entity;
     }
 
-    /**
-     * @return string
-     */
     public function toString(): string
     {
         return $this->generateSqlExecuteString($this->buildQuery());
     }
 
-    /**
-     * @param string $query
-     *
-     * @return string
-     */
     protected function generateSqlExecuteString(string $query): string
     {
         foreach ($this->bind as $bindName => $bindValue) {
-            $query = \preg_replace(
-                \sprintf('/\:\b%s\b/', \preg_quote($bindName)),
-                \is_string($bindValue) ? \sprintf('\'%s\'', $bindValue) : (string)$bindValue,
+            $query = preg_replace(
+                sprintf('/\:\b%s\b/', preg_quote($bindName)),
+                is_string($bindValue) ? sprintf('\'%s\'', $bindValue) : (string)$bindValue,
                 $query
             );
         }
 
         foreach ($this->bindValue as $bindValueName => $bindValueValue) {
-            $query = \preg_replace(
-                \sprintf('/\:\b%s\b/', \preg_quote($bindValueName)),
-                \is_string($bindValueValue) ? \sprintf('\'%s\'', $bindValueValue) : (string)$bindValueValue,
+            $query = preg_replace(
+                sprintf('/\:\b%s\b/', preg_quote($bindValueName)),
+                is_string($bindValueValue) ? sprintf('\'%s\'', $bindValueValue) : (string)$bindValueValue,
                 $query
             );
         }

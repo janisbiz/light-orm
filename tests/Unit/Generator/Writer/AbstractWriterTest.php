@@ -7,39 +7,29 @@ use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriter;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriterConfig;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 #[AllowMockObjectsWithoutExpectations]
 class AbstractWriterTest extends TestCase
 {
     use FileTrait;
 
-    /**
-     * @var AbstractWriter|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $abstractWriter;
+    private AbstractWriter|MockObject $abstractWriter;
 
-    /**
-     * @var AbstractWriterConfig|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $abstractWriterConfig;
+    private AbstractWriterConfig|MockObject $abstractWriterConfig;
 
-    /**
-     * @var DmsDatabaseInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $dmsDatabase;
+    private DmsDatabaseInterface|MockObject $dmsDatabase;
 
-    /**
-     * @var DmsTableInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $dmsTable;
+    private DmsTableInterface|MockObject $dmsTable;
 
     public function setUp(): void
     {
         $this->abstractWriter = $this->createPartialMock(AbstractWriter::class, ['getWriterConfig', 'write']);
 
         $this->abstractWriterConfig = $this->createPartialMock(AbstractWriterConfig::class, []);
-        $abstractWriterConfigReflection = new \ReflectionClass($this->abstractWriterConfig);
+        $abstractWriterConfigReflection = new ReflectionClass($this->abstractWriterConfig);
 
         $directoryProperty = $abstractWriterConfigReflection->getProperty('directory');
         $directoryProperty->setValue($this->abstractWriterConfig, AbstractWriterConfigTest::DIRECTORY_VALUE);
@@ -65,7 +55,7 @@ class AbstractWriterTest extends TestCase
     public function testGenerateNamespace()
     {
         $this->assertEquals(
-            \sprintf(
+            sprintf(
                 '%s\\%s\\%s%s',
                 AbstractWriterConfigTest::NAMESPACE_VALUE_EXPECTED,
                 $this->dmsDatabase->getPhpName(),
@@ -79,7 +69,7 @@ class AbstractWriterTest extends TestCase
     public function testGenerateClassName()
     {
         $this->assertEquals(
-            \implode(
+            implode(
                 '',
                 [
                     AbstractWriterConfigTest::CLASS_PREFIX_VALUE_EXPECTED,
@@ -94,7 +84,7 @@ class AbstractWriterTest extends TestCase
     public function testGenerateFQDN()
     {
         $this->assertEquals(
-            \sprintf(
+            sprintf(
                 '%s\\%s\\%s%s\\%s%s%s',
                 AbstractWriterConfigTest::NAMESPACE_VALUE_EXPECTED,
                 $this->dmsDatabase->getPhpName(),
@@ -116,7 +106,7 @@ class AbstractWriterTest extends TestCase
                 'FileTwo.php',
                 'FileThree.php',
             ],
-            \implode('', [
+            implode('', [
                 $this->abstractWriterConfig->getDirectory(),
                 DIRECTORY_SEPARATOR,
                 $this->dmsDatabase->getPhpName(),
@@ -128,8 +118,8 @@ class AbstractWriterTest extends TestCase
 
         $files = $this->abstractWriter->read($this->dmsDatabase);
 
-        $this->assertCount(\count($expectedFiles), $files);
-        $this->assertEquals($expectedFiles, \array_keys($files));
+        $this->assertCount(count($expectedFiles), $files);
+        $this->assertEquals($expectedFiles, array_keys($files));
     }
 
     public function testReadWhenDirectoryDoesNotExist()
@@ -141,7 +131,7 @@ class AbstractWriterTest extends TestCase
 
     public function tearDown(): void
     {
-        $this->removeDirectoryRecursive(\implode(
+        $this->removeDirectoryRecursive(implode(
             '',
             [
                 JANISBIZ_LIGHT_ORM_ROOT_DIR,

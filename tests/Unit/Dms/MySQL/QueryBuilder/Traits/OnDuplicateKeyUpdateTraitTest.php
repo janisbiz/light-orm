@@ -9,16 +9,16 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
 {
-    const ON_DUPLICATE_KEY_UPDATE_DEFAULT = [
+    const array ON_DUPLICATE_KEY_UPDATE_DEFAULT = [
         'column1' => ':Column1_OnDuplicateKeyUpdate',
     ];
-    const ON_DUPLICATE_KEY_UPDATE_BIND_VALUE_DEFAULT = [
+    const array ON_DUPLICATE_KEY_UPDATE_BIND_VALUE_DEFAULT = [
         'Column1_OnDuplicateKeyUpdate' => 'value1',
     ];
-    const ON_DUPLICATE_KEY_UPDATE_BIND_VALUE_OVERRIDE = [
+    const array ON_DUPLICATE_KEY_UPDATE_BIND_VALUE_OVERRIDE = [
         'Column1_OnDuplicateKeyUpdate' => 'value1_override',
     ];
-    const ON_DUPLICATE_KEY_UPDATE_BIND_VALUE = [
+    const array ON_DUPLICATE_KEY_UPDATE_BIND_VALUE = [
         'Column2_OnDuplicateKeyUpdate' => 'value2',
     ];
 
@@ -36,19 +36,12 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
             use ValueTrait;
             use OnDuplicateKeyUpdateTrait;
 
-            /**
-             * @param array $bindValueDataDefault
-             * @param array $onDuplicateKeyUpdateDataDefault
-             */
             public function __construct(array $bindValueDataDefault, array $onDuplicateKeyUpdateDataDefault)
             {
                 $this->bindValue = $bindValueDataDefault;
                 $this->onDuplicateKeyUpdate = $onDuplicateKeyUpdateDataDefault;
             }
 
-            /**
-             * @return array
-             */
             public function onDuplicateKeyUpdateData(): array
             {
                 return $this->onDuplicateKeyUpdate;
@@ -59,9 +52,6 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
                 $this->onDuplicateKeyUpdate = [];
             }
 
-            /**
-             * @return null|string
-             */
             public function buildOnDuplicateKeyUpdateQueryPartPublic(): ?string
             {
                 return $this->buildOnDuplicateKeyUpdateQueryPart();
@@ -69,31 +59,27 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
         };
     }
 
-    /**
-     * @param string $column
-     * @param null|int|string|double $value
-     */
     #[DataProvider('onDuplicateKeyUpdateData')]
-    public function testOnDuplicateKeyUpdate(string $column, $value)
+    public function testOnDuplicateKeyUpdate(string $column, null|int|string|float $value)
     {
         $object = $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdate($column, $value);
         $this->assertObjectUsesTrait(ValueTrait::class, $object);
         $this->assertObjectUsesTrait(OnDuplicateKeyUpdateTrait::class, $object);
 
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::ON_DUPLICATE_KEY_UPDATE_DEFAULT,
-                \array_reduce(
-                    \array_map(
+                array_reduce(
+                    array_map(
                         fn($column) => [
-                            $column => \sprintf(
+                            $column => sprintf(
                                 '%s = :%s_OnDuplicateKeyUpdate',
                                 $column,
-                                \implode(
+                                implode(
                                     '_',
-                                    \array_map(
-                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                                        \explode('.', $column)
+                                    array_map(
+                                        fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        explode('.', $column)
                                     )
                                 )
                             ),
@@ -109,18 +95,18 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
             $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdateData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::ON_DUPLICATE_KEY_UPDATE_BIND_VALUE_DEFAULT,
-                \array_reduce(
-                    \array_map(
+                array_reduce(
+                    array_map(
                         fn($column, $value) => [
-                            \sprintf(
+                            sprintf(
                                 '%s_OnDuplicateKeyUpdate',
-                                \implode(
+                                implode(
                                     '_',
-                                    \array_map(
-                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                                        \explode('.', $column)
+                                    array_map(
+                                        fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        explode('.', $column)
                                     )
                                 )
                             ) => $value,
@@ -148,19 +134,15 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
         $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdate('', null);
     }
 
-    /**
-     * @param string $column
-     * @param null|int|string|double $value
-     */
     #[DataProvider('onDuplicateKeyUpdateData')]
-    public function testBuildOnDuplicateKeyUpdateQueryPart(string $column, $value)
+    public function testBuildOnDuplicateKeyUpdateQueryPart(string $column, null|int|string|float $value)
     {
         $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdate($column, $value);
 
         $this->assertEquals(
-            \sprintf(
+            sprintf(
                 'ON DUPLICATE KEY UPDATE %s',
-                \implode(', ', $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdateData())
+                implode(', ', $this->onDuplicateKeyUpdateTraitClass->onDuplicateKeyUpdateData())
             ),
             $this->onDuplicateKeyUpdateTraitClass->buildOnDuplicateKeyUpdateQueryPartPublic()
         );
@@ -173,11 +155,7 @@ class OnDuplicateKeyUpdateTraitTest extends AbstractTraitTestCase
         $this->assertEquals(null, $this->onDuplicateKeyUpdateTraitClass->buildOnDuplicateKeyUpdateQueryPartPublic());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function onDuplicateKeyUpdateData()
+    public static function onDuplicateKeyUpdateData(): array
     {
         return [
             [

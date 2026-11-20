@@ -7,20 +7,15 @@ use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 
 abstract class AbstractWriter implements WriterInterface
 {
-    /**
-     * @var WriterConfigInterface
-     */
-    protected $writerConfig;
-
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     *
-     * @return string
-     */
-    public function generateNamespace(DmsDatabaseInterface $dmsDatabase)
+    public function __construct(protected WriterConfigInterface $writerConfig)
     {
-        return \rtrim(
-            \sprintf(
+        $this->writerConfig = $writerConfig;
+    }
+
+    public function generateNamespace(DmsDatabaseInterface $dmsDatabase): string
+    {
+        return trim(
+            sprintf(
                 '%s\\%s\\%s%s',
                 $this->getWriterConfig()->getNamespace(),
                 $dmsDatabase->getPhpName(),
@@ -31,14 +26,9 @@ abstract class AbstractWriter implements WriterInterface
         );
     }
 
-    /**
-     * @param DmsTableInterface $dmsTable
-     *
-     * @return string
-     */
     public function generateClassName(DmsTableInterface $dmsTable): string
     {
-        return \implode(
+        return implode(
             '',
             [
                 $this->getWriterConfig()->getClassPrefix(),
@@ -48,26 +38,18 @@ abstract class AbstractWriter implements WriterInterface
         );
     }
 
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     *
-     * @return string
-     */
     public function generateFQDN(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
     {
-        return \sprintf('%s\\%s', $this->generateNamespace($dmsDatabase), $this->generateClassName($dmsTable));
+        return sprintf('%s\\%s', $this->generateNamespace($dmsDatabase), $this->generateClassName($dmsTable));
     }
 
     /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     *
      * @return string[]
      */
     public function read(DmsDatabaseInterface $dmsDatabase): array
     {
         $fileDirectory = $this->generateFileDirectory($dmsDatabase);
-        $handle = @\opendir($fileDirectory);
+        $handle = @opendir($fileDirectory);
 
         $files = [];
 
@@ -75,8 +57,8 @@ abstract class AbstractWriter implements WriterInterface
             return $files;
         }
 
-        while (false !== ($file = \readdir($handle))) {
-            $fileName = \implode(
+        while (false !== ($file = readdir($handle))) {
+            $fileName = implode(
                 '',
                 [
                     $fileDirectory,
@@ -85,32 +67,27 @@ abstract class AbstractWriter implements WriterInterface
                 ]
             );
 
-            if (\is_dir($fileName)) {
+            if (is_dir($fileName)) {
                 continue;
             }
 
             $files[$fileName] = $file;
         }
-        \closedir($handle);
-        \asort($files);
+        closedir($handle);
+        asort($files);
 
         return $files;
     }
 
-    /**
-     * @return WriterConfigInterface
-     */
-    abstract protected function getWriterConfig(): WriterConfigInterface;
+    protected function getWriterConfig(): WriterConfigInterface
+    {
+        return $this->writerConfig;
+    }
 
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     *
-     * @return string
-     */
     protected function generateFileDirectory(DmsDatabaseInterface $dmsDatabase): string
     {
-        return \rtrim(
-            \implode(
+        return rtrim(
+            implode(
                 '',
                 [
                     $this->getWriterConfig()->getDirectory(),
@@ -125,17 +102,11 @@ abstract class AbstractWriter implements WriterInterface
         );
     }
 
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     *
-     * @return string
-     */
     protected function generateFileName(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
     {
-        return \sprintf(
+        return sprintf(
             '%s.php',
-            \implode(
+            implode(
                 '',
                 [
                     $this->generateFileDirectory($dmsDatabase),
@@ -148,41 +119,28 @@ abstract class AbstractWriter implements WriterInterface
         );
     }
 
-    /**
-     * @param string $fileName
-     * @param string $fileContent
-     * @param bool $skipIfExists
-     *
-     * @return $this
-     */
-    protected function writeFile(string $fileName, string $fileContent, $skipIfExists = false): AbstractWriter
+    protected function writeFile(string $fileName, string $fileContent, bool $skipIfExists = false): static
     {
-        if (true === $skipIfExists && \file_exists($fileName)) {
+        if (true === $skipIfExists && file_exists($fileName)) {
             return $this;
         }
 
-        $fileDirectory = \dirname($fileName);
-        if (!\file_exists($fileDirectory)) {
-            \mkdir($fileDirectory, 0777, true);
+        $fileDirectory = dirname($fileName);
+        if (!file_exists($fileDirectory)) {
+            mkdir($fileDirectory, 0777, true);
         }
 
-        $file = \fopen($fileName, 'w');
-        \fwrite($file, $fileContent);
-        \fclose($file);
+        $file = fopen($fileName, 'w');
+        fwrite($file, $fileContent);
+        fclose($file);
 
         return $this;
     }
 
-    /**
-     * @param string $fileName
-     * @param string[] $existingFiles
-     *
-     * @return $this
-     */
-    protected function removeFileFromExistingFiles(string $fileName, array &$existingFiles): AbstractWriter
+    protected function removeFileFromExistingFiles(string $fileName, array &$existingFiles): static
     {
         foreach ($existingFiles as $i => $existingFile) {
-            if (\basename($fileName) === \basename($existingFile)) {
+            if (basename($fileName) === basename($existingFile)) {
                 unset($existingFiles[$i]);
             }
         }

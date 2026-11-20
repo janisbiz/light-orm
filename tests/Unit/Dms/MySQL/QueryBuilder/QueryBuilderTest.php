@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder;
 
+use Exception;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\CommandEnum;
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilder;
@@ -16,6 +17,9 @@ use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits\UnionTraitTest;
 use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionClass;
+use ReflectionMethod;
 
 #[AllowMockObjectsWithoutExpectations]
 class QueryBuilderTest extends AbstractTraitTestCase
@@ -26,33 +30,26 @@ class QueryBuilderTest extends AbstractTraitTestCase
     const COMMAND_INVALID = 'INVALID';
 
     /**
-     * @var \ReflectionMethod[]
+     * @var ReflectionMethod[]
      */
-    private $abstractRepositoryPublicMethods = [];
+    private array $abstractRepositoryPublicMethods = [];
+
+    private AbstractRepository|MockObject $abstractRepository;
+
+    private QueryBuilder $queryBuilder;
 
     /**
-     * @var AbstractRepository|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $abstractRepository;
-
-    /**
-     * @var QueryBuilder
-     */
-    private $queryBuilder;
-
-    /**
-     *
-     * @throws \Exception
+     * @throws Exception
      */
     public function setUp(): void
     {
         if (empty($this->abstractRepositoryPublicMethods = $this->extractAbstractRepositoryPublicMethods())) {
-            throw new \Exception('There are no AbstractRepository public methods methods!');
+            throw new Exception('There are no AbstractRepository public methods methods!');
         }
 
         $this->abstractRepository = $this->createPartialMock(
             AbstractRepository::class,
-            \array_merge($this->abstractRepositoryPublicMethods, ['getEntityClass']),
+            array_merge($this->abstractRepositoryPublicMethods, ['getEntityClass']),
         );
 
         $this->queryBuilder = $this->createQueryBuilder($this->abstractRepository);
@@ -63,10 +60,6 @@ class QueryBuilderTest extends AbstractTraitTestCase
         $this->assertObjectUsesTrait(Traits::class, $this->queryBuilder);
     }
 
-    /**
-     * @param string $method
-     * @param bool $toString
-     */
     #[DataProvider('crudData')]
     public function testCrud(string $method, bool $toString)
     {
@@ -74,22 +67,18 @@ class QueryBuilderTest extends AbstractTraitTestCase
         $this->queryBuilder->$method($toString);
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function crudData()
+    public static function crudData(): array
     {
-        return \array_reduce(
+        return array_reduce(
             [
-                \array_map(
+                array_map(
                     fn($publicMethod) => [
                         $publicMethod,
                         false
                     ],
                     static::extractAbstractRepositoryPublicMethods()
                 ),
-                \array_map(
+                array_map(
                     fn($publicMethod) => [
                         $publicMethod,
                         true
@@ -102,25 +91,16 @@ class QueryBuilderTest extends AbstractTraitTestCase
         );
     }
 
-    /**
-     * @param string $command
-     * @param array $methods
-     * @param array $expected
-     * @param array $expectedToString
-     */
     #[DataProvider('buildQueryData')]
     public function testBuildQuery(string $command, callable $methodsWrapper, array $expected, array $expectedToString)
     {
         $this->addQueryPartsToQueryBuilder($command, $methodsWrapper($this));
 
-        $this->assertEquals(\implode(' ', $expected), $this->queryBuilder->buildQuery());
-        $this->assertEquals(\implode(' ', $expectedToString), $this->queryBuilder->toString());
+        $this->assertEquals(implode(' ', $expected), $this->queryBuilder->buildQuery());
+        $this->assertEquals(implode(' ', $expectedToString), $this->queryBuilder->toString());
     }
 
-    /**
-     * @return array
-     */
-    public static function buildQueryData()
+    public static function buildQueryData(): array
     {
         /** phpcs:disable */
         return [
@@ -643,12 +623,6 @@ class QueryBuilderTest extends AbstractTraitTestCase
         /** phpcs:enable */
     }
 
-    /**
-     * @param string $command
-     * @param string[] $methods
-     * @param string $expectedException
-     * @param string $expectedExceptionMessage
-     */
     #[DataProvider('buildQueryWithMissingQueryPartsProvideData')]
     public function testBuildQueryWithMissingQueryPartsProvided(
         string $command,
@@ -664,10 +638,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
         $this->queryBuilder->buildQuery();
     }
 
-    /**
-     * @return array
-     */
-    public static function buildQueryWithMissingQueryPartsProvideData()
+    public static function buildQueryWithMissingQueryPartsProvideData(): array
     {
         return [
             [
@@ -726,7 +697,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
                 static::COMMAND_INVALID,
                 [],
                 QueryBuilderException::class,
-                \sprintf('Could not build query, as there is no valid(%s) command provided!', static::COMMAND_INVALID),
+                sprintf('Could not build query, as there is no valid(%s) command provided!', static::COMMAND_INVALID),
             ],
         ];
     }
@@ -741,13 +712,7 @@ class QueryBuilderTest extends AbstractTraitTestCase
         $this->assertTrue($queryBuilder->getEntity() instanceof EntityInterface);
     }
 
-    /**
-     * @param string $command
-     * @param string[] $methods
-     *
-     * @return $this
-     */
-    private function addQueryPartsToQueryBuilder(string $command, array $methods)
+    private function addQueryPartsToQueryBuilder(string $command, array $methods): static
     {
         $this->queryBuilder->command($command);
 
@@ -812,16 +777,13 @@ class QueryBuilderTest extends AbstractTraitTestCase
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    private static function extractAbstractRepositoryPublicMethods()
+    private static function extractAbstractRepositoryPublicMethods(): array
     {
-        $abstractRepositoryReflection = new \ReflectionClass(AbstractRepository::class);
+        $abstractRepositoryReflection = new ReflectionClass(AbstractRepository::class);
 
-        return \array_filter(\array_diff(
-            \array_map(
-                function (\ReflectionMethod $abstractRepositoryMethod) {
+        return array_filter(array_diff(
+            array_map(
+                function (ReflectionMethod $abstractRepositoryMethod) {
                     if (2 === $abstractRepositoryMethod->getNumberOfParameters()
                         && 'queryBuilder' === $abstractRepositoryMethod->getParameters()[0]->getName()
                         && 'toString' === $abstractRepositoryMethod->getParameters()[1]->getName()
@@ -831,17 +793,17 @@ class QueryBuilderTest extends AbstractTraitTestCase
 
                     return null;
                 },
-                $abstractRepositoryReflection->getMethods(\ReflectionMethod::IS_PROTECTED)
+                $abstractRepositoryReflection->getMethods(ReflectionMethod::IS_PROTECTED)
             ),
-            \array_reduce(
-                \array_map(
-                    fn(array $publicMethods) => \array_map(
-                        fn(\ReflectionMethod $publicMethod) => $publicMethod->getName(),
+            array_reduce(
+                array_map(
+                    fn(array $publicMethods) => array_map(
+                        fn(ReflectionMethod $publicMethod) => $publicMethod->getName(),
                         $publicMethods
                     ),
                     [
-                        (new \ReflectionClass(BaseAbstractRepository::class))
-                            ->getMethods(\ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_ABSTRACT),
+                        (new ReflectionClass(BaseAbstractRepository::class))
+                            ->getMethods(ReflectionMethod::IS_PROTECTED | ReflectionMethod::IS_ABSTRACT),
                     ]
                 ),
                 array_merge(...),

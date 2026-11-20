@@ -5,15 +5,13 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Connection;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\Connection;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionPDOException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 #[AllowMockObjectsWithoutExpectations]
 class ConnectionTest extends TestCase
 {
-    /**
-     * @var Connection|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $connection;
+    private Connection|MockObject $connection;
 
     public function setUp(): void
     {

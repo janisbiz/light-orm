@@ -4,28 +4,13 @@ namespace Janisbiz\LightOrm\Connection;
 
 interface ConnectionConfigInterface
 {
-    /**
-     * @return string
-     */
-    public function generateDsn();
+    public function generateDsn(): string;
 
-    /**
-     * @return string
-     */
-    public function getUsername();
+    public function getUsername(): string;
 
-    /**
-     * @return string
-     */
-    public function getPassword();
+    public function getPassword(): string;
 
-    /**
-     * @return string
-     */
-    public function getDbname();
+    public function getDbname(): string;
 
-    /**
-     * @return string
-     */
-    public function getAdapterConnectionClass();
+    public function getAdapterConnectionClass(): string;
 }

@@ -11,19 +11,14 @@ class ConnectionPool
     /**
      * @var ConnectionConfigInterface[]
      */
-    protected static $connectionConfig = [];
+    protected static array $connectionConfig = [];
 
     /**
      * @var ConnectionInterface[]
      */
-    protected static $connections = [];
+    protected static array $connections = [];
 
-    /**
-     * @param ConnectionConfigInterface $connectionConfig
-     *
-     * @return $this
-     */
-    public function addConnectionConfig(ConnectionConfigInterface $connectionConfig): ConnectionPool
+    public function addConnectionConfig(ConnectionConfigInterface $connectionConfig): static
     {
         static::$connectionConfig[$connectionConfig->getDbname()] = $connectionConfig;
 
@@ -31,24 +26,21 @@ class ConnectionPool
     }
 
     /**
-     * @param string $dbName
-     *
-     * @return ConnectionInterface
      * @throws ConnectionInvalidArgumentException
      */
     public function getConnection(string $dbName): ConnectionInterface
     {
-        if (!\array_key_exists($dbName, static::$connectionConfig)) {
+        if (!array_key_exists($dbName, static::$connectionConfig)) {
             if (empty(static::$connectionConfig)) {
-                throw new ConnectionInvalidArgumentException(\sprintf(
+                throw new ConnectionInvalidArgumentException(sprintf(
                     'Could not find connection by name "%s"!',
                     $dbName
                 ));
             } else {
-                throw new ConnectionInvalidArgumentException(\sprintf(
+                throw new ConnectionInvalidArgumentException(sprintf(
                     'Could not find connection by name "%s"! Available connections: "%s".',
                     $dbName,
-                    \implode('", "', \array_keys(static::$connectionConfig))
+                    implode('", "', array_keys(static::$connectionConfig))
                 ));
             }
         }
@@ -60,11 +52,6 @@ class ConnectionPool
         return static::$connections[$dbName];
     }
 
-    /**
-     * @param string $dbName
-     *
-     * @return ConnectionInterface
-     */
     public static function getConnectionStatic($dbName): ConnectionInterface
     {
         return (new self())->getConnection($dbName);
@@ -73,10 +60,6 @@ class ConnectionPool
     /**
      * Ignoring for code coverage, as this requires to have a real connection to be tested.
      * @codeCoverageIgnore
-     *
-     * @param ConnectionConfigInterface $connectionConfig
-     *
-     * @return ConnectionInterface
      */
     protected function createConnection(ConnectionConfigInterface $connectionConfig): ConnectionInterface
     {

@@ -12,45 +12,31 @@ use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsDatabaseTest;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsTableTest;
 use Janisbiz\LightOrm\Tests\Unit\Generator\Writer\FileTrait;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 class BaseEntityClassWriterTest extends TestCase
 {
     use FileTrait;
 
-    const WRITER_CONFIG_DIRECTORY_VALUE = JANISBIZ_LIGHT_ORM_ROOT_DIR
+    const string WRITER_CONFIG_DIRECTORY_VALUE = JANISBIZ_LIGHT_ORM_ROOT_DIR
         . 'var'
         . DIRECTORY_SEPARATOR
         . 'light-orm'
         . DIRECTORY_SEPARATOR
         . 'phpunit'
     ;
-    const WRITER_CONFIG_NAMESPACE_VALUE = 'None\Existent\Namespace';
-    const WRITER_CONFIG_CLASS_PREFIX_VALUE = 'Base';
+    const string WRITER_CONFIG_NAMESPACE_VALUE = 'None\Existent\Namespace';
+    const string WRITER_CONFIG_CLASS_PREFIX_VALUE = 'Base';
 
-    /**
-     * @var WriterConfig
-     */
-    private $writerConfig;
+    private WriterConfig $writerConfig;
 
-    /**
-     * @var BaseEntityClassWriter
-     */
-    protected $baseEntityClassWriter;
+    protected BaseEntityClassWriter $baseEntityClassWriter;
 
-    /**
-     * @var DmsDatabase
-     */
-    protected $dmsDatabase;
+    protected DmsDatabase $dmsDatabase;
 
-    /**
-     * @var DmsTable
-     */
-    protected $dmsTable;
+    protected DmsTable $dmsTable;
 
-    /**
-     * @var string
-     */
-    protected $dmsGeneratedDirectory;
+    protected string $dmsGeneratedDirectory;
 
     public function setUp(): void
     {
@@ -66,7 +52,7 @@ class BaseEntityClassWriterTest extends TestCase
         $dmsColumns = [];
         for ($i = 1; $i <= 3; $i++) {
             $dmsColumns[] = new DmsColumn(
-                \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
+                sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
                 DmsColumnTest::COLUMN_TYPE,
                 DmsColumnTest::COLUMN_NULLABLE,
                 2 >= $i ? DmsColumnTest::COLUMN_KEY : '',
@@ -76,13 +62,13 @@ class BaseEntityClassWriterTest extends TestCase
         }
 
         $this->dmsTable = new DmsTable(
-            \sprintf('%s_%d', DmsTableTest::TABLE_NAME, $i),
+            sprintf('%s_%d', DmsTableTest::TABLE_NAME, $i),
             $dmsColumns
         );
 
         $this->dmsDatabase = new DmsDatabase(DmsDatabaseTest::DATABASE_NAME, [$this->dmsTable]);
 
-        $this->dmsGeneratedDirectory = \implode(
+        $this->dmsGeneratedDirectory = implode(
             '',
             [
                 $this->writerConfig->getDirectory(),
@@ -96,24 +82,21 @@ class BaseEntityClassWriterTest extends TestCase
 
     public function testConstruct()
     {
-        $getWriterConfigMethod = new \ReflectionMethod($this->baseEntityClassWriter, 'getWriterConfig');
+        $getWriterConfigMethod = new ReflectionMethod($this->baseEntityClassWriter, 'getWriterConfig');
 
         $this->assertTrue($getWriterConfigMethod->invoke($this->baseEntityClassWriter) instanceof $this->writerConfig);
     }
 
-    /**
-     * @param array $files
-     */
     public function testWrite(array &$files = [])
     {
         $this->baseEntityClassWriter->write($this->dmsDatabase, $this->dmsTable, $files);
 
-        $baseEntityFilePath = \implode(
+        $baseEntityFilePath = implode(
             '',
             [
                 $this->dmsGeneratedDirectory,
                 DIRECTORY_SEPARATOR,
-                \sprintf('%s%s.php', $this->writerConfig->getClassPrefix(), $this->dmsTable->getPhpName())
+                sprintf('%s%s.php', $this->writerConfig->getClassPrefix(), $this->dmsTable->getPhpName())
             ]
         );
         $this->assertFileExists($baseEntityFilePath);
@@ -135,10 +118,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
     const COLUMN_NAME_SNAKE_CASE_2 = 'name_snake_case_2';
     const COLUMN_NAME_SNAKE_CASE_3 = 'name_snake_case_3';
     
-    /**
-     * @param bool \$isNew
-     */
-    public function __construct(\$isNew = true)
+    public function __construct(bool \$isNew = true)
     {
         \$this->primaryKeys = [
             static::COLUMN_NAME_SNAKE_CASE_1,
@@ -159,19 +139,11 @@ class BaseTableNameSnakeCase4 extends BaseEntity
         }
     }
     
-    /**
-     * @return null|string
-     */
     public function getNameSnakeCase1(): ?string
     {
         return \$this->data['name_snake_case_1'];
     }
-    
-    /**
-     * @param null|string \$nameSnakeCase1
-     *
-     * @return \$this
-     */
+
     public function setNameSnakeCase1(?string \$nameSnakeCase1): BaseTableNameSnakeCase4
     {
         \$this->data['name_snake_case_1'] = \$nameSnakeCase1;
@@ -179,20 +151,11 @@ class BaseTableNameSnakeCase4 extends BaseEntity
         return \$this;
     }
 
-
-    /**
-     * @return null|string
-     */
     public function getNameSnakeCase2(): ?string
     {
         return \$this->data['name_snake_case_2'];
     }
-    
-    /**
-     * @param null|string \$nameSnakeCase2
-     *
-     * @return \$this
-     */
+
     public function setNameSnakeCase2(?string \$nameSnakeCase2): BaseTableNameSnakeCase4
     {
         \$this->data['name_snake_case_2'] = \$nameSnakeCase2;
@@ -200,20 +163,11 @@ class BaseTableNameSnakeCase4 extends BaseEntity
         return \$this;
     }
 
-
-    /**
-     * @return null|string
-     */
     public function getNameSnakeCase3(): ?string
     {
         return \$this->data['name_snake_case_3'];
     }
-    
-    /**
-     * @param null|string \$nameSnakeCase3
-     *
-     * @return \$this
-     */
+
     public function setNameSnakeCase3(?string \$nameSnakeCase3): BaseTableNameSnakeCase4
     {
         \$this->data['name_snake_case_3'] = \$nameSnakeCase3;
@@ -224,7 +178,7 @@ class BaseTableNameSnakeCase4 extends BaseEntity
 
 PHP
             ,
-            \file_get_contents($baseEntityFilePath)
+            file_get_contents($baseEntityFilePath)
         );
     }
 
@@ -232,7 +186,7 @@ PHP
     {
         $files = $this->createTestFiles(
             [
-                \sprintf('%s%s.php', $this->writerConfig->getClassPrefix(), $this->dmsTable->getPhpName())
+                sprintf('%s%s.php', $this->writerConfig->getClassPrefix(), $this->dmsTable->getPhpName())
             ],
             $this->dmsGeneratedDirectory
         );
@@ -243,7 +197,7 @@ PHP
 
     public function tearDown(): void
     {
-        $this->removeDirectoryRecursive(\implode(
+        $this->removeDirectoryRecursive(implode(
             '',
             [
                 JANISBIZ_LIGHT_ORM_ROOT_DIR,

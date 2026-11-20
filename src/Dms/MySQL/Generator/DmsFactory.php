@@ -10,39 +10,29 @@ use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsTable;
 use Janisbiz\LightOrm\Generator\Dms\DmsColumnInterface;
 use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
 use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
+use PDO;
+use stdClass;
 
 class DmsFactory extends AbstractDmsFactory
 {
-    /**
-     * @param string $databaseName
-     * @param ConnectionInterface $connection
-     *
-     * @return DmsDatabase
-     */
     public function createDmsDatabase(string $databaseName, ConnectionInterface $connection): DmsDatabaseInterface
     {
-        $tablesInDatabase = $connection->query('SHOW TABLES', \PDO::FETCH_CLASS, \stdClass::class);
+        $tablesInDatabase = $connection->query('SHOW TABLES', PDO::FETCH_CLASS, stdClass::class);
 
         $tables = [];
         foreach ($tablesInDatabase as $tableInDatabase) {
-            $tables[] = $this->createDmsTable($tableInDatabase->{\sprintf('Tables_in_%s', $databaseName)}, $connection);
+            $tables[] = $this->createDmsTable($tableInDatabase->{sprintf('Tables_in_%s', $databaseName)}, $connection);
         }
 
         return new DmsDatabase($databaseName, $tables);
     }
 
-    /**
-     * @param string $tableName
-     * @param ConnectionInterface $connection
-     *
-     * @return DmsTable
-     */
     protected function createDmsTable(string $tableName, ConnectionInterface $connection): DmsTableInterface
     {
         $columnsInTable = $connection->query(
-            \sprintf('SHOW COLUMNS FROM %s', $tableName),
-            \PDO::FETCH_CLASS,
-            \stdClass::class
+            sprintf('SHOW COLUMNS FROM %s', $tableName),
+            PDO::FETCH_CLASS,
+            stdClass::class
         );
 
         $columns = [];
@@ -60,16 +50,6 @@ class DmsFactory extends AbstractDmsFactory
         return new DmsTable($tableName, $columns);
     }
 
-    /**
-     * @param string $name
-     * @param string $type
-     * @param bool $nullable
-     * @param string $key
-     * @param string $default
-     * @param null|string $extra
-     *
-     * @return DmsColumn
-     */
     protected function createDmsColumn(
         string $name,
         string $type,

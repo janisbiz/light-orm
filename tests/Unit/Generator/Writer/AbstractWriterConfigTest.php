@@ -5,11 +5,12 @@ namespace Janisbiz\LightOrm\Tests\Unit\Generator\Writer;
 use Janisbiz\LightOrm\Generator\Writer\AbstractWriterConfig;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 #[AllowMockObjectsWithoutExpectations]
 class AbstractWriterConfigTest extends TestCase
 {
-    const DIRECTORY_VALUE = JANISBIZ_LIGHT_ORM_ROOT_DIR
+    const string DIRECTORY_VALUE = JANISBIZ_LIGHT_ORM_ROOT_DIR
         . 'var'
         . DIRECTORY_SEPARATOR
         . 'light-orm'
@@ -17,7 +18,7 @@ class AbstractWriterConfigTest extends TestCase
         . 'phpunit'
         . DIRECTORY_SEPARATOR
     ;
-    const DIRECTORY_VALUE_EXPECTED = JANISBIZ_LIGHT_ORM_ROOT_DIR
+    const string DIRECTORY_VALUE_EXPECTED = JANISBIZ_LIGHT_ORM_ROOT_DIR
         . 'var'
         . DIRECTORY_SEPARATOR
         . 'light-orm'
@@ -25,24 +26,21 @@ class AbstractWriterConfigTest extends TestCase
         . 'phpunit'
     ;
 
-    const NAMESPACE_VALUE = 'This\Is\A\Namespace\\';
-    const NAMESPACE_VALUE_EXPECTED = 'This\Is\A\Namespace';
+    const string NAMESPACE_VALUE = 'This\Is\A\Namespace\\';
+    const string NAMESPACE_VALUE_EXPECTED = 'This\Is\A\Namespace';
 
-    const CLASS_PREFIX_VALUE = ' classPrefix ';
-    const CLASS_PREFIX_VALUE_EXPECTED = 'Classprefix';
+    const string CLASS_PREFIX_VALUE = ' classPrefix ';
+    const string CLASS_PREFIX_VALUE_EXPECTED = 'Classprefix';
 
-    const CLASS_SUFFIX_VALUE = ' classSuffix ';
-    const CLASS_SUFFIX_VALUE_EXPECTED = 'Classsuffix';
+    const string CLASS_SUFFIX_VALUE = ' classSuffix ';
+    const string CLASS_SUFFIX_VALUE_EXPECTED = 'Classsuffix';
 
-    /**
-     * @var AbstractWriterConfig
-     */
-    private $abstractWriterConfig;
+    private AbstractWriterConfig $abstractWriterConfig;
 
     public function setUp(): void
     {
         $this->abstractWriterConfig = $this->createPartialMock(AbstractWriterConfig::class, []);
-        $abstractWriterConfigReflection = new \ReflectionClass($this->abstractWriterConfig);
+        $abstractWriterConfigReflection = new ReflectionClass($this->abstractWriterConfig);
 
         $directoryProperty = $abstractWriterConfigReflection->getProperty('directory');
         $directoryProperty->setValue($this->abstractWriterConfig, static::DIRECTORY_VALUE);

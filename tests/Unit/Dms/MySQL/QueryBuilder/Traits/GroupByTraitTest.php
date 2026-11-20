@@ -8,16 +8,16 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\GroupByTrait;
 
 class GroupByTraitTest extends AbstractTraitTestCase
 {
-    const GROUP_BY_DEFAULT = [
+    const array GROUP_BY_DEFAULT = [
         'group_by1',
         'group_by2',
     ];
-    const GROUP_BY_ARRAY = [
+    const array GROUP_BY_ARRAY = [
         'group_by3',
         'group_by4',
     ];
-    const GROUP_BY_EMPTY = '';
-    const GROUP_BY = 'group_by5';
+    const string GROUP_BY_EMPTY = '';
+    const string GROUP_BY = 'group_by5';
 
     /**
      * @var GroupByTrait
@@ -30,17 +30,11 @@ class GroupByTraitTest extends AbstractTraitTestCase
         {
             use GroupByTrait;
 
-            /**
-             * @param array $groupByDefault
-             */
             public function __construct(array $groupByDefault)
             {
                 $this->groupBy = $groupByDefault;
             }
 
-            /**
-             * @return array
-             */
             public function groupByData(): array
             {
                 return $this->groupBy;
@@ -51,9 +45,6 @@ class GroupByTraitTest extends AbstractTraitTestCase
                 $this->groupBy = [];
             }
 
-            /**
-             * @return null|string
-             */
             public function buildGroupByQueryPartPublic(): ?string
             {
                 return $this->buildGroupByQueryPart();
@@ -68,14 +59,14 @@ class GroupByTraitTest extends AbstractTraitTestCase
         $object = $this->groupByTraitClass->groupBy(static::GROUP_BY_ARRAY);
         $this->assertObjectUsesTrait(GroupByTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY),
+            array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY),
             $this->groupByTraitClass->groupByData()
         );
 
         $object = $this->groupByTraitClass->groupBy(static::GROUP_BY);
         $this->assertObjectUsesTrait(GroupByTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY, [static::GROUP_BY]),
+            array_merge(static::GROUP_BY_DEFAULT, static::GROUP_BY_ARRAY, [static::GROUP_BY]),
             $this->groupByTraitClass->groupByData()
         );
     }
@@ -97,7 +88,7 @@ class GroupByTraitTest extends AbstractTraitTestCase
         ;
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::GROUP_BY, \implode(', ', $this->groupByTraitClass->groupByData())),
+            sprintf('%s %s', ConditionEnum::GROUP_BY, implode(', ', $this->groupByTraitClass->groupByData())),
             $this->groupByTraitClass->buildGroupByQueryPartPublic()
         );
     }

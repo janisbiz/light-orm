@@ -7,53 +7,40 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait TableTrait
 {
-    /**
-     * @var string[]
-     */
-    protected $table = [];
+    protected array $table = [];
 
     /**
-     * @param string[]|string $table
-     * @param bool $clearAll
-     *
-     * @return $this
      * @throws QueryBuilderException
      */
-    public function table($table, bool $clearAll = false)
+    public function table(array|string $table, bool $clearAll = false): static
     {
         if (empty($table)) {
             throw new QueryBuilderException('You must pass $table to table method!');
         }
 
-        if (!\is_array($table)) {
+        if (!is_array($table)) {
             $table = [$table];
         }
 
         if ($clearAll == true) {
             $this->table = $table;
         } else {
-            $this->table = \array_merge($this->table, $table);
+            $this->table = array_merge($this->table, $table);
         }
 
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     protected function buildTableQueryPart(): ?string
     {
-        return \reset($this->table) ?: null;
+        return reset($this->table) ?: null;
     }
 
-    /**
-     * @return null|string
-     */
     protected function buildFromQueryPart(): ?string
     {
         return empty($this->table)
             ? null
-            : \sprintf('%s %s', ConditionEnum::FROM, \implode(', ', $this->table))
+            : sprintf('%s %s', ConditionEnum::FROM, implode(', ', $this->table))
         ;
     }
 }

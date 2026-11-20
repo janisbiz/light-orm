@@ -6,15 +6,15 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 
 class BindTraitTest extends AbstractTraitTestCase
 {
-    const BIND = [
+    const array BIND = [
         'key2' => 'val2',
         'key3' => 'val3',
         'key4' => 'val4',
     ];
-    const BIND_DEFAULT = [
+    const array BIND_DEFAULT = [
         'key1' => 'val1',
     ];
-    const BIND_OVERRIDE = [
+    const array BIND_OVERRIDE = [
         'key1' => 'valN',
     ];
 
@@ -29,9 +29,6 @@ class BindTraitTest extends AbstractTraitTestCase
         {
             use BindTrait;
 
-            /**
-             * @param array $bindDefault
-             */
             public function __construct(array $bindDefault)
             {
                 $this->bind = $bindDefault;
@@ -45,12 +42,12 @@ class BindTraitTest extends AbstractTraitTestCase
 
         $object = $this->bindTraitClass->bind(static::BIND);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
-        $this->assertEquals(\array_merge(static::BIND_DEFAULT, static::BIND), $this->bindTraitClass->bindData());
+        $this->assertEquals(array_merge(static::BIND_DEFAULT, static::BIND), $this->bindTraitClass->bindData());
 
         $object = $this->bindTraitClass->bind(static::BIND_OVERRIDE);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::BIND_DEFAULT, static::BIND, static::BIND_OVERRIDE),
+            array_merge(static::BIND_DEFAULT, static::BIND, static::BIND_OVERRIDE),
             $this->bindTraitClass->bindData()
         );
     }

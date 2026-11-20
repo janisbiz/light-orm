@@ -4,11 +4,5 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
 interface OnDuplicateKeyUpdateTraitInterface
 {
-    /**
-     * @param string $column
-     * @param null|int|string|double $value
-     *
-     * @return $this
-     */
-    public function onDuplicateKeyUpdate(string $column, $value);
+    public function onDuplicateKeyUpdate(string $column, string|int|float|null $value): static;
 }

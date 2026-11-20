@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Repository;
 
+use Closure;
 use Janisbiz\LightOrm\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\ConnectionPool;
@@ -9,6 +10,7 @@ use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\Paginator\Paginator;
 use Janisbiz\LightOrm\Paginator\PaginatorInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface;
+use PDOStatement;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LogLevel;
@@ -17,24 +19,10 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var ConnectionPool
-     */
-    protected $connectionPool;
+    protected ?ConnectionPool $connectionPool = null;
 
-    /**
-     * @var null|bool
-     */
-    protected $commit;
+    protected ?bool $commit = null;
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param int $pageSize
-     * @param int $currentPage
-     * @param array $options
-     *
-     * @return PaginatorInterface
-     */
     protected function paginator(
         QueryBuilderInterface $queryBuilder,
         int $pageSize,
@@ -61,14 +49,7 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         );
     }
 
-    /**
-     * @param string $level
-     * @param string $message
-     * @param array $context
-     *
-     * @return $this
-     */
-    protected function log(string $level, string $message, array $context = []): AbstractRepository
+    protected function log(string $level, string $message, array $context = []): static
     {
         if (null === $this->logger) {
             return $this;
@@ -79,12 +60,7 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         return $this;
     }
 
-    /**
-     * @param ConnectionInterface|null $connection
-     *
-     * @return $this
-     */
-    protected function beginTransaction(?ConnectionInterface $connection): AbstractRepository
+    protected function beginTransaction(?ConnectionInterface $connection): static
     {
         $connection ??= $this->getConnection();
 
@@ -95,11 +71,6 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         return $this;
     }
 
-    /**
-     * @param ConnectionInterface|null $connection
-     *
-     * @return bool
-     */
     protected function commit(?ConnectionInterface $connection): bool
     {
         $connection ??= $this->getConnection();
@@ -111,12 +82,7 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         return true;
     }
 
-    /**
-     * @param ConnectionInterface|null $connection
-     *
-     * @return $this
-     */
-    protected function rollback(?ConnectionInterface $connection = null): AbstractRepository
+    protected function rollback(?ConnectionInterface $connection = null): static
     {
         $connection ??= $this->getConnection();
 
@@ -127,18 +93,11 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         return $this;
     }
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param array $bindData
-     * @param ConnectionInterface|null $connection
-     *
-     * @return \PDOStatement
-     */
     protected function prepareAndExecute(
         QueryBuilderInterface $queryBuilder,
         array $bindData,
         ?ConnectionInterface $connection = null
-    ): \PDOStatement {
+    ): PDOStatement {
         $connection ??= $this->getConnection();
 
         $statement = $connection->prepare($queryBuilder->buildQuery());
@@ -156,9 +115,6 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         return $statement;
     }
 
-    /**
-     * @return ConnectionInterface
-     */
     protected function getConnection(): ConnectionInterface
     {
         if (null === $this->connectionPool) {
@@ -170,54 +126,28 @@ abstract class AbstractRepository implements RepositoryInterface, LoggerAwareInt
         );
     }
 
-    /**
-     * @param string $constant
-     *
-     * @return string
-     */
-    protected function getEntityClassConstant($constant): string
+    protected function getEntityClassConstant(string $constant): string
     {
-        return \constant(\sprintf('%s::%s', $this->getEntityClass(), $constant));
+        return constant(sprintf('%s::%s', $this->getEntityClass(), $constant));
     }
 
-    /**
-     * @return \Closure
-     */
-    protected function createRepositoryCallClosure(): \Closure
+    protected function createRepositoryCallClosure(): Closure
     {
         return fn($methodName, QueryBuilderInterface $queryBuilder, $toString) =>
             $this->$methodName($queryBuilder, $toString);
     }
 
-    /**
-     * @param EntityInterface|null $entity
-     *
-     * @return QueryBuilderInterface
-     */
     abstract protected function createQueryBuilder(?EntityInterface $entity): QueryBuilderInterface;
 
-    /**
-     * @return string
-     */
     abstract protected function getEntityClass(): string;
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param int $pageSize
-     * @param int $currentPage
-     *
-     * @return $this
-     */
     abstract protected function addPaginateQuery(
         QueryBuilderInterface $queryBuilder,
         int $pageSize,
         int $currentPage
-    ): AbstractRepository;
+    ): static;
 
     /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
      * @return EntityInterface[]
      */
     abstract protected function getPaginateResult(QueryBuilderInterface $queryBuilder, bool $toString = false): array;

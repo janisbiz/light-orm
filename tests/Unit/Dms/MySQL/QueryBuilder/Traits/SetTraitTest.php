@@ -9,10 +9,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class SetTraitTest extends AbstractTraitTestCase
 {
-    const SET_DEFAULT = [
+    const array SET_DEFAULT = [
         'column1' => 'column1 = :Column1_Update',
     ];
-    const SET_BIND_DEFAULT = [
+    const array SET_BIND_DEFAULT = [
         'Column1_Update' => 'value1',
     ];
 
@@ -28,19 +28,12 @@ class SetTraitTest extends AbstractTraitTestCase
             use BindTrait;
             use SetTrait;
 
-            /**
-             * @param array $bindDataDefault
-             * @param array $setDataDefault
-             */
             public function __construct(array $bindDataDefault, array $setDataDefault)
             {
                 $this->bind = $bindDataDefault;
                 $this->set = $setDataDefault;
             }
 
-            /**
-             * @return array
-             */
             public function setData(): array
             {
                 return $this->set;
@@ -58,30 +51,26 @@ class SetTraitTest extends AbstractTraitTestCase
         };
     }
 
-    /**
-     * @param string $column
-     * @param string|int|double|null $value
-     */
     #[DataProvider('setTestData')]
-    public function testSet($column, $value)
+    public function testSet(string $column, string|int|float|null $value)
     {
         $object = $this->setTraitClass->set($column, $value);
         $this->assertObjectUsesTrait(BindTrait::class, $object);
         $this->assertObjectUsesTrait(SetTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::SET_DEFAULT,
-                \array_reduce(
-                    \array_map(
+                array_reduce(
+                    array_map(
                         fn($column) => [
-                            $column => \sprintf(
+                            $column => sprintf(
                                 '%s = :%s_Update',
                                 $column,
-                                \implode(
+                                implode(
                                     '_',
-                                    \array_map(
-                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                                        \explode('.', $column)
+                                    array_map(
+                                        fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        explode('.', $column)
                                     )
                                 )
                             ),
@@ -97,18 +86,18 @@ class SetTraitTest extends AbstractTraitTestCase
             $this->setTraitClass->setData()
         );
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::SET_BIND_DEFAULT,
-                \array_reduce(
-                    \array_map(
+                array_reduce(
+                    array_map(
                         fn($column, $value) => [
-                            \sprintf(
+                            sprintf(
                                 '%s_Update',
-                                \implode(
+                                implode(
                                     '_',
-                                    \array_map(
-                                        fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                                        \explode('.', $column)
+                                    array_map(
+                                        fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                                        explode('.', $column)
                                     )
                                 )
                             ) => $value,
@@ -128,17 +117,17 @@ class SetTraitTest extends AbstractTraitTestCase
         );
     }
 
-    /**
-     * @param string $column
-     * @param string|int|double|null $value
-     */
     #[DataProvider('setTestData')]
-    public function testBuildSetQueryPart($column, $value)
+    public function testBuildSetQueryPart(string $column, string|int|float|null $value)
     {
         $this->setTraitClass->set($column, $value);
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::SET, \implode(', ', \array_unique($this->setTraitClass->setData()))),
+            sprintf(
+                '%s %s',
+                ConditionEnum::SET,
+                implode(', ', array_unique($this->setTraitClass->setData()))
+            ),
             $this->setTraitClass->buildSetQueryPartPublic()
         );
     }
@@ -150,10 +139,7 @@ class SetTraitTest extends AbstractTraitTestCase
         $this->assertEquals(null, $this->setTraitClass->buildSetQueryPartPublic());
     }
 
-    /**
-     * @return array
-     */
-    public static function setTestData()
+    public static function setTestData(): array
     {
         return [
             [

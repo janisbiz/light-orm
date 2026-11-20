@@ -6,31 +6,22 @@ use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 
 trait SetTrait
 {
-    /**
-     * @var array
-     */
-    protected $set = [];
+    protected array $set = [];
 
-    /**
-     * @param string $column
-     * @param null|int|string $value
-     *
-     * @return $this
-     */
-    public function set(string $column, $value)
+    public function set(string $column, string|int|float|null $value): static
     {
-        $columnNormalised = \sprintf(
+        $columnNormalised = sprintf(
             '%s_Update',
-            \implode(
+            implode(
                 '_',
-                \array_map(
-                    fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                    \explode('.', $column)
+                array_map(
+                    fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                    explode('.', $column)
                 )
             )
         );
 
-        $this->set[$column] = \sprintf('%s = :%s', $column, $columnNormalised);
+        $this->set[$column] = sprintf('%s = :%s', $column, $columnNormalised);
         $this->bind([
             $columnNormalised => $value,
         ]);
@@ -38,14 +29,11 @@ trait SetTrait
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     protected function buildSetQueryPart(): ?string
     {
         return empty($this->set)
             ? null
-            : \sprintf('%s %s', ConditionEnum::SET, \implode(', ', \array_unique($this->set)))
+            : sprintf('%s %s', ConditionEnum::SET, implode(', ', array_unique($this->set)))
         ;
     }
 }

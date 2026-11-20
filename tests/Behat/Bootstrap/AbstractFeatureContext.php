@@ -4,32 +4,25 @@ namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Exception;
 use Janisbiz\LightOrm\ConnectionPool;
+use ReflectionProperty;
 use Symfony\Component\Yaml\Parser;
 
 abstract class AbstractFeatureContext implements Context
 {
     const CONFIG_FILE_NAME = 'light-orm.yaml';
 
-    /**
-     * @var array
-     */
-    private $config;
+    private ?array $config = null;
 
-    /**
-     * @var ConnectionPool
-     */
-    protected $connectionPool;
+    protected ConnectionPool $connectionPool;
 
-    /**
-     * @var string
-     */
-    protected $rootDir;
+    protected string $rootDir;
 
     public function __construct()
     {
         $this->connectionPool = new ConnectionPool();
-        $this->rootDir = \implode(
+        $this->rootDir = implode(
             '',
             [
                 __DIR__,
@@ -44,16 +37,13 @@ abstract class AbstractFeatureContext implements Context
     }
 
     /**
-     * @param null|string $connectionName
-     *
-     * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getConnectionConfig(?string $connectionName = null): array
     {
         if (null !== $connectionName) {
             if (!isset($this->getConfig()['connections'][$connectionName])) {
-                throw new \Exception(\sprintf('Could not get connection "%s"', $connectionName));
+                throw new Exception(sprintf('Could not get connection "%s"', $connectionName));
             }
 
             return $this->getConfig()['connections'][$connectionName];
@@ -63,30 +53,22 @@ abstract class AbstractFeatureContext implements Context
     }
 
     /**
-     * @param string $connectionName
-     *
-     * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getWritersConfig(string $connectionName): array
     {
         if (!isset($this->getConfig()['generator'][$connectionName]['writers'])) {
-            throw new \Exception(\sprintf('Could not get writer config for connection "%s"', $connectionName));
+            throw new Exception(sprintf('Could not get writer config for connection "%s"', $connectionName));
         }
 
         return $this->getConfig()['generator'][$connectionName]['writers'];
     }
 
-    /**
-     * @param TableNode $tableNode
-     *
-     * @return TableNode
-     */
     protected function normalizeTableNode(TableNode $tableNode): TableNode
     {
         $tableNodeParsedArray = [
-            0 => \array_map(
-                fn(string $column): string => \explode(':', $column)[0],
+            0 => array_map(
+                fn(string $column): string => explode(':', $column)[0],
                 $tableNode->getRow(0)
             ),
         ];
@@ -94,7 +76,7 @@ abstract class AbstractFeatureContext implements Context
         foreach ($tableNode as $rowIndex => $nodeRow) {
             $nodeRowParsed = [];
             foreach ($nodeRow as $cellNameWithDataType => $cellValue) {
-                $cellNameWithDataType = \explode(':', $cellNameWithDataType);
+                $cellNameWithDataType = explode(':', $cellNameWithDataType);
                 $cellDataType = $cellNameWithDataType[1] ?? false;
 
                 if (false !== $cellDataType) {
@@ -102,11 +84,11 @@ abstract class AbstractFeatureContext implements Context
                         if ('' === $cellValue) {
                             $cellValue = null;
                         } else {
-                            $cellDataType = \ltrim($cellDataType, '?');
-                            \settype($cellValue, $cellDataType);
+                            $cellDataType = ltrim($cellDataType, '?');
+                            settype($cellValue, $cellDataType);
                         }
                     } else {
-                        \settype($cellValue, $cellDataType);
+                        settype($cellValue, $cellDataType);
                     }
                 }
 
@@ -134,20 +116,17 @@ abstract class AbstractFeatureContext implements Context
 
         $tableNodeParsed = new TableNode([]);
 
-        $tableProperty = new \ReflectionProperty($tableNodeParsed, 'table');
+        $tableProperty = new ReflectionProperty($tableNodeParsed, 'table');
         $tableProperty->setValue($tableNodeParsed, $tableNodeParsedArray);
 
         return $tableNodeParsed;
     }
 
-    /**
-     * @return array
-     */
     private function getConfig(): array
     {
         if (null === $this->config) {
             $this->config = (new Parser())
-                ->parseFile(\implode(
+                ->parseFile(implode(
                     '',
                     [
                         JANISBIZ_LIGHT_ORM_BEHAT_CONFIG_DIR,
@@ -158,7 +137,7 @@ abstract class AbstractFeatureContext implements Context
 
             foreach ($this->config['generator'] as &$connectionConfigs) {
                 foreach ($connectionConfigs['writers'] as &$writerConfig) {
-                    $writerConfig['directory'] = \preg_replace(
+                    $writerConfig['directory'] = preg_replace(
                         '/\/\\\/',
                         DIRECTORY_SEPARATOR,
                         $writerConfig['directory']

@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Dms\MySQL\Connection;
 
 use PDO;
+use ReturnTypeWillChange;
 
 class Connection extends PDO implements ConnectionInterface
 {
@@ -14,11 +15,6 @@ class Connection extends PDO implements ConnectionInterface
     /**
      * Ignoring for code coverage, as this requires to have a real connection to be tested.
      * @codeCoverageIgnore
-     *
-     * @param string $dsn
-     * @param string $username
-     * @param string $passwd
-     * @param array $options
      */
     public function __construct(string $dsn, string $username, string $passwd, array $options = [])
     {
@@ -31,11 +27,10 @@ class Connection extends PDO implements ConnectionInterface
     }
 
     /**
-     * @return $this
      * @throws ConnectionPDOException
      */
-    #[\ReturnTypeWillChange]
-    public function beginTransaction(): Connection
+    #[ReturnTypeWillChange]
+    public function beginTransaction(): static
     {
         if (false === $this->inTransaction()) {
             if (false === $this->parentBeginTransaction()) {
@@ -46,20 +41,14 @@ class Connection extends PDO implements ConnectionInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setSqlSafeUpdates(): Connection
+    public function setSqlSafeUpdates(): static
     {
         $this->exec('SET SESSION SQL_SAFE_UPDATES = 1;');
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function unsetSqlSafeUpdates(): Connection
+    public function unsetSqlSafeUpdates(): static
     {
         $this->exec('SET SESSION SQL_SAFE_UPDATES = 0;');
 
@@ -70,8 +59,6 @@ class Connection extends PDO implements ConnectionInterface
      * Ignoring for code coverage, as this requires to have a real connection to be tested and it is not possible
      * to mock parent method call.
      * @codeCoverageIgnore
-     *
-     * @return bool
      */
     protected function parentBeginTransaction(): bool
     {

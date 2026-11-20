@@ -5,21 +5,17 @@ namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Writer;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\EntityClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\RepositoryClassWriter;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\WriterConfig;
+use ReflectionMethod;
+use ReflectionProperty;
 
 class RepositoryClassWriterTest extends EntityClassWriterTest
 {
-    const WRITER_CONFIG_CLASS_PREFIX_VALUE = '';
-    const WRITER_CONFIG_CLASS_SUFFIX_VALUE = 'Repository';
+    const string WRITER_CONFIG_CLASS_PREFIX_VALUE = '';
+    const string WRITER_CONFIG_CLASS_SUFFIX_VALUE = 'Repository';
 
-    /**
-     * @var WriterConfig
-     */
-    private $writerConfig;
+    private WriterConfig $writerConfig;
 
-    /**
-     * @var EntityClassWriter
-     */
-    private $repositoryClassWriter;
+    private RepositoryClassWriter $repositoryClassWriter;
 
     public function setUp(): void
     {
@@ -34,7 +30,7 @@ class RepositoryClassWriterTest extends EntityClassWriterTest
 
         $this->repositoryClassWriter = new RepositoryClassWriter($this->writerConfig, $this->entityClassWriter);
 
-        $this->dmsGeneratedDirectory = \implode(
+        $this->dmsGeneratedDirectory = implode(
             '',
             [
                 $this->writerConfig->getDirectory(),
@@ -48,9 +44,9 @@ class RepositoryClassWriterTest extends EntityClassWriterTest
 
     public function testConstruct()
     {
-        $getWriterConfigMethod = new \ReflectionMethod($this->repositoryClassWriter, 'getWriterConfig');
+        $getWriterConfigMethod = new ReflectionMethod($this->repositoryClassWriter, 'getWriterConfig');
 
-        $baseEntityClassWriterProperty = new \ReflectionProperty($this->repositoryClassWriter, 'entityClassWriter');
+        $baseEntityClassWriterProperty = new ReflectionProperty($this->repositoryClassWriter, 'entityClassWriter');
 
         $this->assertTrue($getWriterConfigMethod->invoke($this->repositoryClassWriter) instanceof $this->writerConfig);
         $this->assertTrue(
@@ -58,20 +54,17 @@ class RepositoryClassWriterTest extends EntityClassWriterTest
         );
     }
 
-    /**
-     * @param array $files
-     */
     public function testWrite(array &$files = [])
     {
         $files = [];
         $this->repositoryClassWriter->write($this->dmsDatabase, $this->dmsTable, $files);
 
-        $repositoryFilePath = \implode(
+        $repositoryFilePath = implode(
             '',
             [
                 $this->dmsGeneratedDirectory,
                 DIRECTORY_SEPARATOR,
-                \sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
+                sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
             ]
         );
         $this->assertFileExists($repositoryFilePath);
@@ -87,9 +80,6 @@ use None\Existent\Namespace\DatabaseNameSnakeCase\Repository\TableNameSnakeCase4
 
 class TableNameSnakeCase4Repository extends AbstractRepository
 {
-    /**
-     * @return string
-     */
     protected function getEntityClass(): string
     {
         return TableNameSnakeCase4Repository::class;
@@ -98,7 +88,7 @@ class TableNameSnakeCase4Repository extends AbstractRepository
 
 PHP
             ,
-            \file_get_contents($repositoryFilePath)
+            file_get_contents($repositoryFilePath)
         );
     }
 
@@ -106,22 +96,22 @@ PHP
     {
         $files = $this->createTestFiles(
             [
-                \sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
+                sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
             ],
             $this->dmsGeneratedDirectory
         );
 
         $this->repositoryClassWriter->write($this->dmsDatabase, $this->dmsTable, $files);
 
-        $repositoryFilePath = \implode(
+        $repositoryFilePath = implode(
             '',
             [
                 $this->dmsGeneratedDirectory,
                 DIRECTORY_SEPARATOR,
-                \sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
+                sprintf('%s%s.php', $this->dmsTable->getPhpName(), $this->writerConfig->getClassSuffix())
             ]
         );
         $this->assertFileExists($repositoryFilePath);
-        $this->assertEquals('', \file_get_contents($repositoryFilePath));
+        $this->assertEquals('', file_get_contents($repositoryFilePath));
     }
 }

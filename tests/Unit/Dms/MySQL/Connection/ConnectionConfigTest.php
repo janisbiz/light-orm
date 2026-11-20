@@ -8,18 +8,15 @@ use PHPUnit\Framework\TestCase;
 
 class ConnectionConfigTest extends TestCase
 {
-    const CONFIG_HOST = 'host';
-    const CONFIG_USERNAME = 'username';
-    const CONFIG_PASSWORD = 'password';
-    const CONFIG_DBNAME = 'dbname';
-    const CONFIG_ADAPTER = ConnectionConfig::ADAPTER;
-    const CONFIG_ADAPTER_INVALID = 'adapter_invalid';
-    const CONFIG_PORT = 1234;
+    const string CONFIG_HOST = 'host';
+    const string CONFIG_USERNAME = 'username';
+    const string CONFIG_PASSWORD = 'password';
+    const string CONFIG_DBNAME = 'dbname';
+    const string CONFIG_ADAPTER = ConnectionConfig::ADAPTER;
+    const string CONFIG_ADAPTER_INVALID = 'adapter_invalid';
+    const int CONFIG_PORT = 1234;
 
-    /**
-     * @var ConnectionConfig
-     */
-    private $connectionConfig;
+    private ConnectionConfig $connectionConfig;
 
     public function setUp(): void
     {
@@ -35,7 +32,7 @@ class ConnectionConfigTest extends TestCase
     public function testGenerateDsn()
     {
         $this->assertEquals(
-            \sprintf(
+            sprintf(
                 '%s:host=%s;dbname=%s;charset=utf8mb4;port=%d',
                 static::CONFIG_ADAPTER,
                 static::CONFIG_HOST,

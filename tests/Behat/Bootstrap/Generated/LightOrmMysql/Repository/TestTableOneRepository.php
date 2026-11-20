@@ -5,25 +5,13 @@ namespace Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Reposi
 use Janisbiz\LightOrm\Dms\MySQL\Enum\KeywordEnum;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Repository\AbstractRepository;
+use Janisbiz\LightOrm\Paginator\PaginatorInterface;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneEntity;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableOneTwoEntity;
 use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestTableTwoEntity;
 
 class TestTableOneRepository extends AbstractRepository
 {
-    /**
-     * @param null|int $id
-     * @param int $intColNotNull
-     * @param string $varcharColNotNull
-     * @param float $floatColNotNull
-     * @param null|int $intColNull
-     * @param null|string $varcharColNull
-     * @param null|float $floatColNull
-     * @param null|string $createdAt
-     * @param null|string $updatedAt
-     *
-     * @return TestTableOneEntity
-     */
     public function create(
         ?int $id,
         int $intColNotNull,
@@ -34,7 +22,7 @@ class TestTableOneRepository extends AbstractRepository
         ?float $floatColNull = null,
         ?string $createdAt = null,
         ?string $updatedAt = null
-    ) {
+    ): TestTableOneEntity {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)
             ->setIntColNotNull($intColNotNull)
@@ -55,19 +43,6 @@ class TestTableOneRepository extends AbstractRepository
         return $testTableOneEntity;
     }
 
-    /**
-     * @param null|int $id
-     * @param int $intColNotNull
-     * @param string $varcharColNotNull
-     * @param float $floatColNotNull
-     * @param null|int $intColNull
-     * @param null|string $varcharColNull
-     * @param null|float $floatColNull
-     * @param null|string $createdAt
-     * @param null|string $updatedAt
-     *
-     * @return TestTableOneEntity
-     */
     public function createOnDuplicateKeyUpdate(
         ?int $id,
         int $intColNotNull,
@@ -78,7 +53,7 @@ class TestTableOneRepository extends AbstractRepository
         ?float $floatColNull = null,
         ?string $createdAt = null,
         ?string $updatedAt = null
-    ) {
+    ): TestTableOneEntity {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)
             ->setIntColNotNull($intColNotNull)
@@ -100,19 +75,6 @@ class TestTableOneRepository extends AbstractRepository
         return $testTableOneEntity;
     }
 
-    /**
-     * @param null|int $id
-     * @param int $intColNotNull
-     * @param string $varcharColNotNull
-     * @param float $floatColNotNull
-     * @param null|int $intColNull
-     * @param null|string $varcharColNull
-     * @param null|float $floatColNull
-     * @param null|string $createdAt
-     * @param null|string $updatedAt
-     *
-     * @return TestTableOneEntity
-     */
     public function createIgnore(
         ?int $id,
         int $intColNotNull,
@@ -123,7 +85,7 @@ class TestTableOneRepository extends AbstractRepository
         ?float $floatColNull = null,
         ?string $createdAt = null,
         ?string $updatedAt = null
-    ) {
+    ): TestTableOneEntity {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)
             ->setIntColNotNull($intColNotNull)
@@ -144,19 +106,6 @@ class TestTableOneRepository extends AbstractRepository
         return $testTableOneEntity;
     }
 
-    /**
-     * @param null|int $id
-     * @param int $intColNotNull
-     * @param string $varcharColNotNull
-     * @param float $floatColNotNull
-     * @param null|int $intColNull
-     * @param null|string $varcharColNull
-     * @param null|float $floatColNull
-     * @param null|string $createdAt
-     * @param null|string $updatedAt
-     *
-     * @return TestTableOneEntity
-     */
     public function createReplace(
         ?int $id,
         int $intColNotNull,
@@ -167,7 +116,7 @@ class TestTableOneRepository extends AbstractRepository
         ?float $floatColNull = null,
         ?string $createdAt = null,
         ?string $updatedAt = null
-    ) {
+    ): TestTableOneEntity {
         $testTableOneEntity = (new TestTableOneEntity())
             ->setId($id)
             ->setIntColNotNull($intColNotNull)
@@ -191,7 +140,7 @@ class TestTableOneRepository extends AbstractRepository
     /**
      * @return TestTableOneEntity[]
      */
-    public function read()
+    public function read(): array
     {
         return $this->createQueryBuilder()->find();
     }
@@ -199,57 +148,32 @@ class TestTableOneRepository extends AbstractRepository
     /**
      * @return TestTableOneEntity[]
      */
-    public function readWithAllQueryParts()
+    public function readWithAllQueryParts(): array
     {
         return $this->readWithAllQueryPartsQuery()->find();
     }
 
-    /**
-     * @return int
-     */
-    public function readCount()
+    public function readCount(): int
     {
         return $this->createQueryBuilder()->count();
     }
 
-    /**
-     * @return int
-     */
-    public function readCountWithAllQueryParts()
+    public function readCountWithAllQueryParts(): int
     {
         return $this->readWithAllQueryPartsQuery()->count();
     }
 
-    /**
-     * @param int $pageSize
-     * @param int $currentPage
-     *
-     * @return TestTableOneEntity[]
-     */
-    public function createPaginator($pageSize, $currentPage)
+    public function createPaginator(int $pageSize, int $currentPage): PaginatorInterface
     {
         return $this->paginator($this->createQueryBuilder(), (int) $pageSize, (int) $currentPage);
     }
 
-    /**
-     * @param int $id
-     * @param int $intColNotNull
-     * @param string $varcharColNotNull
-     * @param float $floatColNotNull
-     * @param null|int $intColNull
-     * @param null|string $varcharColNull
-     * @param null|float $floatColNull
-     * @param null|string $createdAt
-     * @param null|string $updatedAt
-     *
-     * @return TestTableOneEntity
-     */
     public function updateRow(
-        $id,
-        $varcharColNotNull,
-        $varcharColNull = null,
-        $updatedAt = null
-    ) {
+        int $id,
+        string $varcharColNotNull,
+        ?string $varcharColNull = null,
+        ?string $updatedAt = null
+    ): TestTableOneEntity {
         $testTableOneEntity = $this
             ->createQueryBuilder()
             ->where(
@@ -270,10 +194,7 @@ class TestTableOneRepository extends AbstractRepository
         return $this->createQueryBuilder($testTableOneEntity)->update();
     }
 
-    /**
-     * @param int $id
-     */
-    public function deleteRow($id)
+    public function deleteRow(int $id)
     {
         $testTableOneEntity = $this
             ->createQueryBuilder()
@@ -289,18 +210,12 @@ class TestTableOneRepository extends AbstractRepository
         $this->createQueryBuilder($testTableOneEntity)->delete();
     }
 
-    /**
-     * @param TestTableOneEntity $testTableOneEntity
-     */
     public function deleteEntity(TestTableOneEntity $testTableOneEntity)
     {
         $this->createQueryBuilder($testTableOneEntity)->delete();
     }
 
-    /**
-     * @return QueryBuilderInterface
-     */
-    private function readWithAllQueryPartsQuery()
+    private function readWithAllQueryPartsQuery(): QueryBuilderInterface
     {
         return $this
             ->createQueryBuilder()
@@ -335,9 +250,6 @@ class TestTableOneRepository extends AbstractRepository
         ;
     }
 
-    /**
-     * @return string
-     */
     protected function getEntityClass(): string
     {
         return TestTableOneEntity::class;

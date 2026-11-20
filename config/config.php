@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-\defined('JANISBIZ_LIGHT_ORM_ROOT_DIR') || \define(
+defined('JANISBIZ_LIGHT_ORM_ROOT_DIR') || define(
     'JANISBIZ_LIGHT_ORM_ROOT_DIR',
-    \implode(
+    implode(
         '',
         [
             __DIR__,
@@ -12,9 +12,9 @@
         ]
     )
 );
-\defined('JANISBIZ_LIGHT_ORM_BEHAT_CONFIG_DIR') || \define(
+defined('JANISBIZ_LIGHT_ORM_BEHAT_CONFIG_DIR') || define(
     'JANISBIZ_LIGHT_ORM_BEHAT_CONFIG_DIR',
-    \implode(
+    implode(
         '',
         [
             __DIR__,

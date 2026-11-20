@@ -8,24 +8,22 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\BindTrait;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\UnionTrait;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 
 #[AllowMockObjectsWithoutExpectations]
 class UnionTraitTest extends AbstractTraitTestCase
 {
-    const COMMAND_INVALID = 'INVALID';
+    const string COMMAND_INVALID = 'INVALID';
 
-    const QUERY_BUILDER_COMMAND = CommandEnum::SELECT;
-    const QUERY_BUILDER_QUERY = <<<MySQL
+    const string QUERY_BUILDER_COMMAND = CommandEnum::SELECT;
+    const string QUERY_BUILDER_QUERY = <<<MySQL
 SELECT col1, col2, col3 FROM table1 WHERE table1.col1 = :col1 AND table1.col2 IS NOT NULL
 MySQL;
-    const QUERY_BUILDER_BIND_DATA = [
+    const array QUERY_BUILDER_BIND_DATA = [
         'col1' => 'val1',
     ];
 
-    /**
-     * @var QueryBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $queryBuilder;
+    private QueryBuilderInterface|MockObject $queryBuilder;
 
     /**
      * @var BindTrait|UnionTrait
@@ -43,9 +41,6 @@ MySQL;
             use BindTrait;
             use UnionTrait;
 
-            /**
-             * @return array
-             */
             public function unionAllData(): array
             {
                 return $this->unionAll;
@@ -56,9 +51,6 @@ MySQL;
                 $this->unionAll = [];
             }
 
-            /**
-             * @return null|string
-             */
             public function buildUnionAllQueryPartPublic(): ?string
             {
                 return $this->buildUnionAllQueryPart();
@@ -80,15 +72,15 @@ MySQL;
             $this->unionTraitClass->unionAll($unionAllQuery);
         }
 
-        $this->assertCount(\count($unionAllQueries), $this->unionTraitClass->unionAllData());
+        $this->assertCount(count($unionAllQueries), $this->unionTraitClass->unionAllData());
         $this->assertEquals(
-            \array_map(
-                fn(QueryBuilderInterface $unionAllQuery) => \sprintf('(%s)', $unionAllQuery->buildQuery()),
+            array_map(
+                fn(QueryBuilderInterface $unionAllQuery) => sprintf('(%s)', $unionAllQuery->buildQuery()),
                 $unionAllQueries
             ),
             $this->unionTraitClass->unionAllData()
         );
-        $this->assertCount(\count(self::QUERY_BUILDER_BIND_DATA), $this->unionTraitClass->bindData());
+        $this->assertCount(count(self::QUERY_BUILDER_BIND_DATA), $this->unionTraitClass->bindData());
         $this->assertEquals(self::QUERY_BUILDER_BIND_DATA, $this->unionTraitClass->bindData());
     }
 
@@ -115,10 +107,10 @@ MySQL;
         }
 
         $this->assertEquals(
-            \implode(
+            implode(
                 ' UNION ALL ',
-                \array_map(
-                    fn(QueryBuilderInterface $unionAllQuery) => \sprintf('(%s)', $unionAllQuery->buildQuery()),
+                array_map(
+                    fn(QueryBuilderInterface $unionAllQuery) => sprintf('(%s)', $unionAllQuery->buildQuery()),
                     $unionAllQueries
                 )
             ),

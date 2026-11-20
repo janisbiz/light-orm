@@ -4,27 +4,9 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
 interface WhereTraitInterface
 {
-    /**
-     * @param string $condition
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function where(string $condition, array $bind = []);
+    public function where(string $condition, array $bind = []): static;
 
-    /**
-     * @param string $column
-     * @param array $params
-     *
-     * @return $this
-     */
-    public function whereIn(string $column, array $params = []);
+    public function whereIn(string $column, array $params = []): static;
 
-    /**
-     * @param string $column
-     * @param array $params
-     *
-     * @return $this
-     */
-    public function whereNotIn(string $column, array $params = []);
+    public function whereNotIn(string $column, array $params = []): static;
 }

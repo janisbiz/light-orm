@@ -8,22 +8,19 @@ use PHPUnit\Framework\TestCase;
 
 class BaseEntityTest extends TestCase
 {
-    const COL_ONE_VALUE = '<b>valOne</b>';
-    const COL_ONE_VALUE_REPLACEMENT = 'valOneReplacement';
-    const COL_TWO_VALUE = 2;
-    const COL_TWO_VALUE_REPLACEMENT = 2.2;
-    const COL_THREE_VALUE = 3.3;
-    const COL_THREE_VALUE_REPLACEMENT = 3.33;
-    const COL_THREE_VALUE_REPLACEMENT_EMPTY = '';
-    const COL_FOUR_VALUE = 'This is column four!';
-    const COL_FIVE_VALUE = 'This is column five!';
-    const COL_NON_EXISTENT = 'non_existent';
-    const COL_NON_EXISTENT_VALUE = null;
+    const string COL_ONE_VALUE = '<b>valOne</b>';
+    const string COL_ONE_VALUE_REPLACEMENT = 'valOneReplacement';
+    const int COL_TWO_VALUE = 2;
+    const float COL_TWO_VALUE_REPLACEMENT = 2.2;
+    const float COL_THREE_VALUE = 3.3;
+    const float COL_THREE_VALUE_REPLACEMENT = 3.33;
+    const string COL_THREE_VALUE_REPLACEMENT_EMPTY = '';
+    const string COL_FOUR_VALUE = 'This is column four!';
+    const string COL_FIVE_VALUE = 'This is column five!';
+    const string COL_NON_EXISTENT = 'non_existent';
+    const ?string COL_NON_EXISTENT_VALUE = null;
 
-    /**
-     * @var BaseEntity
-     */
-    private $baseEntity;
+    private BaseEntity $baseEntity;
 
     public function setUp(): void
     {
@@ -40,7 +37,7 @@ class BaseEntityTest extends TestCase
     {
         $this->assertEquals(static::COL_ONE_VALUE, $this->baseEntity->getColOne());
         $this->assertEquals(
-            \nl2br(\htmlspecialchars(\trim(static::COL_ONE_VALUE), ENT_QUOTES, 'UTF-8')),
+            nl2br(htmlspecialchars(trim(static::COL_ONE_VALUE), ENT_QUOTES, 'UTF-8')),
             $this->baseEntity->getColOne(true)
         );
         $this->assertEquals(static::COL_ONE_VALUE, $this->baseEntity->col_one);

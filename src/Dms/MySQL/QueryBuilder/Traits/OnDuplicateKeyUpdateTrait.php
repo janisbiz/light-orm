@@ -6,39 +6,32 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderException;
 
 trait OnDuplicateKeyUpdateTrait
 {
-    /**
-     * @var array
-     */
-    protected $onDuplicateKeyUpdate = [];
+    protected array $onDuplicateKeyUpdate = [];
 
     /**
-     * @param string $column
-     * @param null|int|string|double $value
-     *
      * @throws QueryBuilderException
-     * @return $this
      */
-    public function onDuplicateKeyUpdate(string $column, $value)
+    public function onDuplicateKeyUpdate(string $column, string|int|float|null $value): static
     {
         if (empty($column)) {
             throw new QueryBuilderException('You must pass $column to onDuplicateKeyUpdate function!');
         }
 
-        $columnNormalised = \sprintf(
+        $columnNormalised = sprintf(
             '%s_OnDuplicateKeyUpdate',
-            \implode(
+            implode(
                 '_',
-                \array_map(
-                    fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                    \explode('.', $column)
+                array_map(
+                    fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                    explode('.', $column)
                 )
             )
         );
 
-        $this->onDuplicateKeyUpdate = \array_merge(
+        $this->onDuplicateKeyUpdate = array_merge(
             $this->onDuplicateKeyUpdate,
             [
-                $column => \sprintf('%s = :%s', $column, $columnNormalised),
+                $column => sprintf('%s = :%s', $column, $columnNormalised),
             ]
         );
 
@@ -49,14 +42,11 @@ trait OnDuplicateKeyUpdateTrait
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     protected function buildOnDuplicateKeyUpdateQueryPart(): ?string
     {
         return empty($this->onDuplicateKeyUpdate)
             ? null
-            : \sprintf('ON DUPLICATE KEY UPDATE %s', \implode(', ', $this->onDuplicateKeyUpdate))
+            : sprintf('ON DUPLICATE KEY UPDATE %s', implode(', ', $this->onDuplicateKeyUpdate))
         ;
     }
 }

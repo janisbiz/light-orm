@@ -11,101 +11,62 @@ use Janisbiz\LightOrm\Repository\AbstractRepository;
 use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use ReflectionMethod;
+use ReflectionProperty;
 
 #[AllowMockObjectsWithoutExpectations]
 class AbstractRepositoryTest extends TestCase
 {
     use ReflectionTrait;
 
-    const DATABASE_NAME = 'database_name';
+    const string DATABASE_NAME = 'database_name';
 
-    const CONSTANT = 'constant_value';
-    const CONSTANT_NAME = 'CONSTANT';
-    const CONSTANT_NAME_NON_EXISTENT = 'CONSTANT_NON_EXISTENT';
+    const string CONSTANT = 'constant_value';
+    const string CONSTANT_NAME = 'CONSTANT';
+    const string CONSTANT_NAME_NON_EXISTENT = 'CONSTANT_NON_EXISTENT';
 
-    const VALUE_INVALID = [];
+    const array VALUE_INVALID = [];
 
-    const QUERY_BUILDER_COUNT_RESULT = 5;
+    const int QUERY_BUILDER_COUNT_RESULT = 5;
 
-    const PAGINATOR_PAGE = 1;
-    const PAGINATOR_PAGE_INVALID = 0;
-    const PAGINATOR_PAGE_FIRST_PAGE = 1;
-    const PAGINATOR_PAGE_SIZE = 2;
-    const PAGINATOR_PAGE_SIZE_INVALID = 0;
-    const PAGINATOR_PAGE_SIZE_FIRST_PAGE = 1;
+    const int PAGINATOR_PAGE = 1;
+    const int PAGINATOR_PAGE_INVALID = 0;
+    const int PAGINATOR_PAGE_FIRST_PAGE = 1;
+    const int PAGINATOR_PAGE_SIZE = 2;
+    const int PAGINATOR_PAGE_SIZE_INVALID = 0;
+    const int PAGINATOR_PAGE_SIZE_FIRST_PAGE = 1;
 
-    /**
-     * @var ConnectionInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $connection;
+    private ConnectionInterface|MockObject $connection;
 
-    /**
-     * @var \PDOStatement|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $pdoStatement;
+    private PDOStatement|MockObject $pdoStatement;
 
-    /**
-     * @var QueryBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $queryBuilder;
+    private QueryBuilderInterface|MockObject $queryBuilder;
 
-    /**
-     * @var AbstractRepository|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $abstractRepository;
+    private AbstractRepository|MockObject $abstractRepository;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryPaginatorMethod;
+    private ReflectionMethod $abstractRepositoryPaginatorMethod;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryLogMethod;
+    private ReflectionMethod $abstractRepositoryLogMethod;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryBeginTransactionMethod;
+    private ReflectionMethod $abstractRepositoryBeginTransactionMethod;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryCommitMethod;
+    private ReflectionMethod $abstractRepositoryCommitMethod;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryRollBackMethod;
+    private ReflectionMethod $abstractRepositoryRollBackMethod;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryPrepareAndExecuteMethod;
+    private ReflectionMethod $abstractRepositoryPrepareAndExecuteMethod;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryGetConnectionMethod;
+    private ReflectionMethod $abstractRepositoryGetConnectionMethod;
 
-    /**
-     * @var \ReflectionMethod
-     */
-    private $abstractRepositoryGetEntityClassConstantMethod;
+    private ReflectionMethod $abstractRepositoryGetEntityClassConstantMethod;
 
-    /**
-     * @var ConnectionPool|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $connectionPool;
+    private ConnectionPool|MockObject $connectionPool;
 
-    /**
-     * @var \ReflectionProperty
-     */
-    private $abstractRepositoryConnectionPoolProperty;
+    private ReflectionProperty $abstractRepositoryConnectionPoolProperty;
 
     public function setUp(): void
     {
@@ -382,7 +343,7 @@ class AbstractRepositoryTest extends TestCase
 
     public function testGetConnectionWithoutConnectionPool()
     {
-        $this->abstractRepositoryConnectionPoolProperty->setValue($this->abstractRepository, null);
+        $this->abstractRepositoryConnectionPoolProperty->setValue($this->abstractRepository, new ConnectionPool());
 
         $this->expectException(ConnectionInvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/Could not find connection by name "(.*)"\!/');

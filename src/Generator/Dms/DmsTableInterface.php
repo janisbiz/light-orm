@@ -4,14 +4,8 @@ namespace Janisbiz\LightOrm\Generator\Dms;
 
 interface DmsTableInterface
 {
-    /**
-     * @return string
-     */
     public function getName(): string;
 
-    /**
-     * @return string
-     */
     public function getPhpName(): string;
 
     /**

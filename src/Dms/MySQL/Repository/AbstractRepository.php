@@ -10,6 +10,8 @@ use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface as BaseQueryBuilderInterface;
 use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\QueryBuilderInterface;
 use Janisbiz\LightOrm\Repository\AbstractRepository as BaseAbstractRepository;
+use PDO;
+use Throwable;
 
 /**
  * @method ConnectionInterface getConnection()
@@ -17,13 +19,9 @@ use Janisbiz\LightOrm\Repository\AbstractRepository as BaseAbstractRepository;
 abstract class AbstractRepository extends BaseAbstractRepository
 {
     /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     * @throws RepositoryException|\Exception
+     * @throws RepositoryException|Throwable
      */
-    protected function insert(QueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function insert(QueryBuilderInterface $queryBuilder, bool $toString = false): string|EntityInterface
     {
         if (!($entity = $queryBuilder->getEntity())) {
             throw new RepositoryException(
@@ -42,7 +40,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
         try {
             $this->prepareAndExecute($queryBuilder, $queryBuilder->bindValueData(), $connection);
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->rollBack($connection);
 
             throw $e;
@@ -61,36 +59,20 @@ abstract class AbstractRepository extends BaseAbstractRepository
         return $entity;
     }
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     */
-    protected function insertIgnore(QueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function insertIgnore(QueryBuilderInterface $queryBuilder, bool $toString = false): string|EntityInterface
+    {
+        return $this->insert($queryBuilder, $toString);
+    }
+
+    protected function replace(QueryBuilderInterface $queryBuilder, bool $toString = false): string|EntityInterface
     {
         return $this->insert($queryBuilder, $toString);
     }
 
     /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
+     * @throws Throwable
      */
-    protected function replace(QueryBuilderInterface $queryBuilder, bool $toString = false)
-    {
-        return $this->insert($queryBuilder, $toString);
-    }
-
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return null|string
-     * @throws \Exception
-     */
-    protected function findOne(QueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function findOne(QueryBuilderInterface $queryBuilder, bool $toString = false): string|EntityInterface|null
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -99,13 +81,13 @@ abstract class AbstractRepository extends BaseAbstractRepository
         try {
             $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData());
             $statement->setFetchMode(
-                \PDO::FETCH_CLASS,
+                PDO::FETCH_CLASS,
                 ($entity = $queryBuilder->getEntity()) ? $entity::class : $this->getEntityClass(),
                 [
                     false,
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->rollback();
 
             throw $e;
@@ -115,13 +97,9 @@ abstract class AbstractRepository extends BaseAbstractRepository
     }
 
     /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return array|string
-     * @throws \Exception
+     * @throws Throwable
      */
-    protected function find(QueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function find(QueryBuilderInterface $queryBuilder, bool $toString = false): array|string
     {
         if (true === $toString) {
             return $queryBuilder->toString();
@@ -130,13 +108,13 @@ abstract class AbstractRepository extends BaseAbstractRepository
         try {
             $statement = $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData(), null);
             $statement->setFetchMode(
-                \PDO::FETCH_CLASS,
+                PDO::FETCH_CLASS,
                 ($entity = $queryBuilder->getEntity()) ? $entity::class : $this->getEntityClass(),
                 [
                     false,
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->rollback(null);
 
             throw $e;
@@ -146,13 +124,9 @@ abstract class AbstractRepository extends BaseAbstractRepository
     }
 
     /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return null|bool|EntityInterface|string
-     * @throws \Exception
+     * @throws Throwable
      */
-    protected function update(QueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function update(QueryBuilderInterface $queryBuilder, bool $toString = false): string|EntityInterface|bool
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityUpdateQuery($queryBuilder, $entity, $toString)) {
             return $entity;
@@ -170,7 +144,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData(), $connection);
 
             $connection->unsetSqlSafeUpdates();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->rollBack($connection);
             $connection->unsetSqlSafeUpdates();
 
@@ -180,25 +154,15 @@ abstract class AbstractRepository extends BaseAbstractRepository
         return $this->commit($connection) ? ($entity ?: true) : false;
     }
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return null|string|bool|EntityInterface
-     */
-    protected function updateIgnore(QueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function updateIgnore(QueryBuilderInterface $queryBuilder, bool $toString = false): string|EntityInterface
     {
         return $this->update($queryBuilder, $toString);
     }
 
     /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return bool|string
-     * @throws \Exception
+     * @throws Throwable
      */
-    protected function delete(QueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function delete(QueryBuilderInterface $queryBuilder, bool $toString = false): string|bool
     {
         if (($entity = $queryBuilder->getEntity()) && !$this->addEntityDeleteQuery($queryBuilder, $entity)) {
             return false;
@@ -216,7 +180,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
             $this->prepareAndExecute($queryBuilder, $queryBuilder->bindData(), $connection);
 
             $connection->unsetSqlSafeUpdates();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->rollBack($connection);
             $connection->unsetSqlSafeUpdates();
 
@@ -227,16 +191,12 @@ abstract class AbstractRepository extends BaseAbstractRepository
     }
 
     /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
-     *
-     * @return int
-     * @throws RepositoryException|\Exception
+     * @throws RepositoryException|Throwable
      */
-    protected function count(BaseQueryBuilderInterface $queryBuilder, bool $toString = false)
+    protected function count(QueryBuilderInterface $queryBuilder, bool $toString = false): string|int
     {
         if (CommandEnum::SELECT !== $queryBuilder->commandData()) {
-            throw new RepositoryException(\sprintf(
+            throw new RepositoryException(sprintf(
                 'Command "%s" is not a valid command for count query! Use "%s" command to execute count query.',
                 $queryBuilder->commandData(),
                 CommandEnum::SELECT
@@ -259,7 +219,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
         try {
             $statement = $this->prepareAndExecute($queryBuilderCount, $queryBuilderCount->bindData(), $connection);
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->rollBack($connection);
 
             throw $e;
@@ -268,32 +228,21 @@ abstract class AbstractRepository extends BaseAbstractRepository
         return $statement->fetchColumn(0);
     }
 
-    /**
-     * @param EntityInterface|null $entity
-     *
-     * @return QueryBuilderInterface
-     */
-    protected function createQueryBuilder(?EntityInterface $entity = null): BaseQueryBuilderInterface
+    protected function createQueryBuilder(?EntityInterface $entity = null): QueryBuilderInterface
     {
         return (new QueryBuilder($this->createRepositoryCallClosure(), $entity))
-            ->column(\sprintf('%s.*', $this->getEntityClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME)))
+            ->column(sprintf('%s.*', $this->getEntityClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME)))
             ->table($this->getEntityClassConstant(WriterInterface::CLASS_CONSTANT_TABLE_NAME))
         ;
     }
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param EntityInterface $entity
-     *
-     * @return $this
-     */
-    protected function addEntityInsertQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity)
+    protected function addEntityInsertQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity): static
     {
         $entityColumns = $entity->columns();
         $entityData = &$entity->data();
 
         foreach ($entityColumns as $column) {
-            if (\array_key_exists($column, $entityData)) {
+            if (array_key_exists($column, $entityData)) {
                 $queryBuilder->value($column, $entityData[$column]);
             }
         }
@@ -301,18 +250,11 @@ abstract class AbstractRepository extends BaseAbstractRepository
         return $this;
     }
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param EntityInterface $entity
-     * @param bool $toString
-     *
-     * @return bool
-     */
     protected function addEntityUpdateQuery(
         QueryBuilderInterface $queryBuilder,
         EntityInterface $entity,
         bool $toString
-    ) {
+    ): string|bool {
         $performUpdate = false;
         $entityData = &$entity->data();
         $entityDataOriginal = &$entity->dataOriginal();
@@ -321,9 +263,9 @@ abstract class AbstractRepository extends BaseAbstractRepository
             foreach ($entity->primaryKeys() as $primaryKey) {
                 if (isset($entityDataOriginal[$primaryKey])) {
                     $queryBuilder->where(
-                        \sprintf('%s.%s = :%s_WhereUpdate', $entity::TABLE_NAME, $primaryKey, $primaryKey),
+                        sprintf('%s.%s = :%s_WhereUpdate', $entity::TABLE_NAME, $primaryKey, $primaryKey),
                         [
-                            \sprintf('%s_WhereUpdate', $primaryKey) => $entityDataOriginal[$primaryKey],
+                            sprintf('%s_WhereUpdate', $primaryKey) => $entityDataOriginal[$primaryKey],
                         ]
                     );
                 }
@@ -334,7 +276,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
         foreach ($entity->columns() as $column) {
             /** Updating only what is needed to update, for faster queries, skipping equal values */
-            if (!\array_key_exists($column, $entityDataOriginal)
+            if (!array_key_exists($column, $entityDataOriginal)
                 || (isset($entityDataOriginal[$column]) && $entityDataOriginal[$column] == $entityData[$column])
             ) {
                 continue;
@@ -342,7 +284,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
                 $performUpdate = true;
             }
 
-            $queryBuilder->set(\sprintf('%s.%s', $entity::TABLE_NAME, $column), $entityData[$column]);
+            $queryBuilder->set(sprintf('%s.%s', $entity::TABLE_NAME, $column), $entityData[$column]);
 
             /**
              * If we want to get query as astring, we don't perform actions on original data as update won't be
@@ -356,31 +298,25 @@ abstract class AbstractRepository extends BaseAbstractRepository
         return $performUpdate;
     }
 
-    /**
-     * @param QueryBuilderInterface $queryBuilder
-     * @param EntityInterface $entity
-     *
-     * @return bool
-     */
-    protected function addEntityDeleteQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity)
+    protected function addEntityDeleteQuery(QueryBuilderInterface $queryBuilder, EntityInterface $entity): bool
     {
         $performDelete = false;
         $entityData = $entity->data();
 
         foreach ($entity->primaryKeys() as $primaryKey) {
-            if (isset($entityData[$primaryKey]) && !\is_null($entityData[$primaryKey])) {
+            if (isset($entityData[$primaryKey]) && !is_null($entityData[$primaryKey])) {
                 if (false === $performDelete) {
                     $performDelete = true;
                 }
 
-                $primaryKeyNormalised = \sprintf(
+                $primaryKeyNormalised = sprintf(
                     '%s_Delete',
-                    \implode(
+                    implode(
                         '',
-                        \array_map(
-                            fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                            \array_merge(
-                                \explode('.', $entity::TABLE_NAME),
+                        array_map(
+                            fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                            array_merge(
+                                explode('.', $entity::TABLE_NAME),
                                 [
                                     $primaryKey,
                                 ]
@@ -390,7 +326,7 @@ abstract class AbstractRepository extends BaseAbstractRepository
                 );
 
                 $queryBuilder->where(
-                    \sprintf('%s.%s = :%s', $entity::TABLE_NAME, $primaryKey, $primaryKeyNormalised),
+                    sprintf('%s.%s = :%s', $entity::TABLE_NAME, $primaryKey, $primaryKeyNormalised),
                     [
                         $primaryKeyNormalised => $entityData[$primaryKey],
                     ]
@@ -403,16 +339,12 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
     /**
      * @param QueryBuilderInterface $queryBuilder
-     * @param int $pageSize
-     * @param int $currentPage
-     *
-     * @return $this
      */
     protected function addPaginateQuery(
         BaseQueryBuilderInterface $queryBuilder,
         int $pageSize,
         int $currentPage
-    ): BaseAbstractRepository {
+    ): static {
         $queryBuilder->limitWithOffset($pageSize, $pageSize * $currentPage - $pageSize);
 
         return $this;
@@ -420,7 +352,6 @@ abstract class AbstractRepository extends BaseAbstractRepository
 
     /**
      * @param QueryBuilderInterface $queryBuilder
-     * @param bool $toString
      *
      * @return EntityInterface[]
      */

@@ -7,64 +7,21 @@ use Janisbiz\LightOrm\QueryBuilder\QueryBuilderInterface as BaseQueryBuilderInte
 
 interface QueryBuilderInterface extends BaseQueryBuilderInterface, TraitsInterface
 {
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     */
-    public function insert(bool $toString = false);
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     */
-    public function insertIgnore(bool $toString = false);
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface
-     */
-    public function replace(bool $toString = false);
+    public function insert(bool $toString = false): string|EntityInterface;
 
-    /**
-     * @param bool $toString
-     *
-     * @return string|EntityInterface[]
-     */
-    public function find(bool $toString = false);
+    public function insertIgnore(bool $toString = false): string|EntityInterface;
 
-    /**
-     * @param bool $toString
-     *
-     * @return null|string|EntityInterface
-     */
-    public function findOne(bool $toString = false);
+    public function replace(bool $toString = false): string|EntityInterface;
 
-    /**
-     * @param bool $toString
-     *
-     * @return bool|string|EntityInterface
-     */
-    public function update(bool $toString = false);
+    public function find(bool $toString = false): string|array;
 
-    /**
-     * @param bool $toString
-     *
-     * @return bool|string|EntityInterface
-     */
-    public function updateIgnore(bool $toString = false);
+    public function findOne(bool $toString = false): string|EntityInterface|null;
 
-    /**
-     * @param bool $toString
-     *
-     * @return string|bool
-     */
-    public function delete(bool $toString = false);
+    public function update(bool $toString = false): string|EntityInterface|bool;
 
-    /**
-     * @param bool $toString
-     *
-     * @return int
-     */
-    public function count(bool $toString = false);
+    public function updateIgnore(bool $toString = false): string|EntityInterface;
+
+    public function delete(bool $toString = false): string|bool;
+
+    public function count(bool $toString = false): string|int;
 }

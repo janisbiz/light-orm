@@ -2,23 +2,20 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Connection;
 
+use Exception;
 use Janisbiz\LightOrm\Connection\AbstractConnectionConfig;
-use Override;
 use PHPUnit\Framework\TestCase;
 
 class AbstractConnectionConfigTest extends TestCase
 {
-    const CONFIG_HOST = 'host';
-    const CONFIG_USERNAME = 'username';
-    const CONFIG_PASSWORD = 'password';
-    const CONFIG_DBNAME = 'dbname';
-    const CONFIG_ADAPTER = 'adapter';
-    const CONFIG_PORT = 3306;
+    const string CONFIG_HOST = 'host';
+    const string CONFIG_USERNAME = 'username';
+    const string CONFIG_PASSWORD = 'password';
+    const string CONFIG_DBNAME = 'dbname';
+    const string CONFIG_ADAPTER = 'adapter';
+    const int CONFIG_PORT = 3306;
 
-    /**
-     * @var AbstractConnectionConfig
-     */
-    private $abstractConnectionConfig;
+    private AbstractConnectionConfig $abstractConnectionConfig;
 
     public function setUp(): void
     {
@@ -32,12 +29,12 @@ class AbstractConnectionConfigTest extends TestCase
         ) extends AbstractConnectionConfig {
             public function generateDsn(): never
             {
-                throw new \Exception('Not implemented');
+                throw new Exception('Not implemented');
             }
 
             public function getAdapterConnectionClass(): never
             {
-                throw new \Exception('Not implemented');
+                throw new Exception('Not implemented');
             }
         };
     }

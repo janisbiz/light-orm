@@ -8,11 +8,11 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\LimitOffsetTrait;
 
 class LimitOffsetTraitTest extends AbstractTraitTestCase
 {
-    const LIMIT_INVALID = -1;
-    const LIMIT_DEFAULT = 1;
-    const LIMIT = 2;
-    const OFFSET_INVALID = -1;
-    const OFFSET = 1;
+    const int LIMIT_INVALID = -1;
+    const int LIMIT_DEFAULT = 1;
+    const int LIMIT = 2;
+    const int OFFSET_INVALID = -1;
+    const int OFFSET = 1;
 
     /**
      * @var LimitOffsetTrait
@@ -25,33 +25,21 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         {
             use LimitOffsetTrait;
 
-            /**
-             * @return null|int
-             */
             public function limitData(): ?int
             {
                 return $this->limit;
             }
 
-            /**
-             * @return null|int
-             */
             public function offsetData(): ?int
             {
                 return $this->offset;
             }
 
-            /**
-             * @return null|string
-             */
             public function buildLimitQueryPartPublic(): ?string
             {
                 return $this->buildLimitQueryPart();
             }
 
-            /**
-             * @return null|string
-             */
             public function buildOffsetQueryPartPublic(): ?string
             {
                 return $this->buildOffsetQueryPart();
@@ -126,7 +114,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->limitOffsetTraitClass->limit(static::LIMIT);
 
         $this->assertEquals(
-            \sprintf('%s %d', ConditionEnum::LIMIT, $this->limitOffsetTraitClass->limitData()),
+            sprintf('%s %d', ConditionEnum::LIMIT, $this->limitOffsetTraitClass->limitData()),
             $this->limitOffsetTraitClass->buildLimitQueryPartPublic()
         );
     }
@@ -141,7 +129,7 @@ class LimitOffsetTraitTest extends AbstractTraitTestCase
         $this->limitOffsetTraitClass->limitWithOffset(static::LIMIT, static::OFFSET);
 
         $this->assertEquals(
-            \sprintf('%s %d', ConditionEnum::OFFSET, $this->limitOffsetTraitClass->offsetData()),
+            sprintf('%s %d', ConditionEnum::OFFSET, $this->limitOffsetTraitClass->offsetData()),
             $this->limitOffsetTraitClass->buildOffsetQueryPartPublic()
         );
     }

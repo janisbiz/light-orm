@@ -10,17 +10,17 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class OrderByTraitTest extends AbstractTraitTestCase
 {
-    const ORDER_BY_DEFAULT = [
+    const array ORDER_BY_DEFAULT = [
         'col1 DESC',
         'col2 ASC',
     ];
-    const ORDER_BY_COLUMN = 'col3';
-    const ORDER_BY_COLUMNS = [
+    const string ORDER_BY_COLUMN = 'col3';
+    const array ORDER_BY_COLUMNS = [
         'col4',
         'col5',
     ];
-    const ORDER_BY_EMPTY = null;
-    const ORDER_BY_INVALID_KEYWORD = 'INVALID';
+    const ?string ORDER_BY_EMPTY = null;
+    const string ORDER_BY_INVALID_KEYWORD = 'INVALID';
 
     /**
      * @var OrderByTrait
@@ -34,17 +34,11 @@ class OrderByTraitTest extends AbstractTraitTestCase
         {
             use OrderByTrait;
 
-            /**
-             * @param array $orderByDataDefault
-             */
             public function __construct(array $orderByDataDefault)
             {
                 $this->orderBy = $orderByDataDefault;
             }
 
-            /**
-             * @return array
-             */
             public function orderByData(): array
             {
                 return $this->orderBy;
@@ -55,9 +49,6 @@ class OrderByTraitTest extends AbstractTraitTestCase
                 $this->orderBy = [];
             }
 
-            /**
-             * @return null|string
-             */
             public function buildOrderByQueryPartPublic(): ?string
             {
                 return $this->buildOrderByQueryPart();
@@ -65,38 +56,30 @@ class OrderByTraitTest extends AbstractTraitTestCase
         };
     }
 
-    /**
-     * @param array|string $columns
-     * @param string $keyword
-     */
     #[DataProvider('orderByData')]
-    public function testOrderBy($columns, $keyword)
+    public function testOrderBy(array|string $columns, string $keyword)
     {
         $object = $this->orderByTraitClass->orderBy($columns, $keyword);
         $this->assertObjectUsesTrait(OrderByTrait::class, $object);
         $this->assertEquals(
-            \array_merge(
+            array_merge(
                 static::ORDER_BY_DEFAULT,
-                \array_map(
-                    fn($column) => \sprintf('%s %s', $column, $keyword),
-                    \is_array($columns) ? $columns : [$columns]
+                array_map(
+                    fn($column) => sprintf('%s %s', $column, $keyword),
+                    is_array($columns) ? $columns : [$columns]
                 )
             ),
             $this->orderByTraitClass->orderByData()
         );
     }
 
-    /**
-     * @param array|string $columns
-     * @param string $keyword
-     */
     #[DataProvider('orderByData')]
-    public function testBuildOrderByQueryPart($columns, $keyword)
+    public function testBuildOrderByQueryPart(array|string $columns, string $keyword)
     {
         $this->orderByTraitClass->orderBy($columns, $keyword);
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::ORDER_BY, \implode(', ', $this->orderByTraitClass->orderByData())),
+            sprintf('%s %s', ConditionEnum::ORDER_BY, implode(', ', $this->orderByTraitClass->orderByData())),
             $this->orderByTraitClass->buildOrderByQueryPartPublic()
         );
     }
@@ -108,11 +91,7 @@ class OrderByTraitTest extends AbstractTraitTestCase
         $this->assertEquals(null, $this->orderByTraitClass->buildOrderByQueryPartPublic());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function orderByData()
+    public static function orderByData(): array
     {
         return [
             [

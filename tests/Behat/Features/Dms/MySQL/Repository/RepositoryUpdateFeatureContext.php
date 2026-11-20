@@ -6,21 +6,12 @@ use Behat\Gherkin\Node\TableNode;
 
 class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
 {
-    /**
-     *
-     * @param string $method
-     * @param TableNode $parameters
-     */
     #[\Behat\Step\When('/^I call method "(.*)" on repository with existing entities and parameters:$/')]
     public function iCallMethodOnRepositoryWithExistingEntitiesAndParameters(string $method, TableNode $parameters)
     {
         $this->callMethodOnRepositoryWithExistingEntitiesAndParameters($method, $parameters);
     }
-    /**
-     *
-     * @param string $method
-     * @param TableNode $parameters
-     */
+    
     #[\Behat\Step\When('/^I call method "(.*)" on repository with existing entities and parameters and expecting exception:$/')] // phpcs:ignore
     public function iCallMethodOnRepositoryWithExistingEntitiesAndParametersAndExpectingException(
         string $method,
@@ -34,17 +25,13 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
         }
     }
 
-    /**
-     * @param string $method
-     * @param TableNode $parameters
-     */
     private function callMethodOnRepositoryWithExistingEntitiesAndParameters(string $method, TableNode $parameters)
     {
         $entitiesStorage = static::$entities;
         static::$entities = [];
 
         foreach ($this->normalizeTableNode($parameters) as $i => $methodParameters) {
-            static::$entities[] = \call_user_func_array(
+            static::$entities[] = call_user_func_array(
                 [
                     static::$repository,
                     $method,
@@ -56,6 +43,6 @@ class RepositoryUpdateFeatureContext extends AbstractRepositoryFeatureContext
             );
         }
 
-        \array_filter(static::$entities);
+        array_filter(static::$entities);
     }
 }

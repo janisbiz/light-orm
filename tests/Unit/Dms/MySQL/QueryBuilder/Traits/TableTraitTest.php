@@ -8,16 +8,16 @@ use Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\TableTrait;
 
 class TableTraitTest extends AbstractTraitTestCase
 {
-    const TABLE_DEFAULT = [
+    const array TABLE_DEFAULT = [
         'table1',
         'table2',
     ];
-    const TABLE_ARRAY = [
+    const array TABLE_ARRAY = [
         'table3',
         'table4',
     ];
-    const TABLE_EMPTY = '';
-    const TABLE = 'table5';
+    const string TABLE_EMPTY = '';
+    const string TABLE = 'table5';
 
     /**
      * @var TableTrait
@@ -30,17 +30,11 @@ class TableTraitTest extends AbstractTraitTestCase
         {
             use TableTrait;
 
-            /**
-             * @param array $tableDataDefault
-             */
             public function __construct(array $tableDataDefault)
             {
                 $this->table = $tableDataDefault;
             }
 
-            /**
-             * @return array
-             */
             public function &tableData(): array
             {
                 return $this->table;
@@ -51,17 +45,11 @@ class TableTraitTest extends AbstractTraitTestCase
                 $this->table = [];
             }
 
-            /**
-             * @return null|string
-             */
             public function buildTableQueryPartPublic(): ?string
             {
                 return $this->buildTableQueryPart();
             }
 
-            /**
-             * @return null|string
-             */
             public function buildFromQueryPartPublic(): ?string
             {
                 return $this->buildFromQueryPart();
@@ -76,14 +64,14 @@ class TableTraitTest extends AbstractTraitTestCase
         $object = $this->tableTraitClass->table(static::TABLE_ARRAY);
         $this->assertObjectUsesTrait(TableTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY),
+            array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY),
             $this->tableTraitClass->tableData()
         );
 
         $object = $this->tableTraitClass->table(static::TABLE);
         $this->assertObjectUsesTrait(TableTrait::class, $object);
         $this->assertEquals(
-            \array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY, [static::TABLE]),
+            array_merge(static::TABLE_DEFAULT, static::TABLE_ARRAY, [static::TABLE]),
             $this->tableTraitClass->tableData()
         );
     }
@@ -107,7 +95,7 @@ class TableTraitTest extends AbstractTraitTestCase
         $this->tableTraitClass->table(static::TABLE);
 
         $this->assertEquals(
-            \reset($this->tableTraitClass->tableData()),
+            reset($this->tableTraitClass->tableData()),
             $this->tableTraitClass->buildTableQueryPartPublic()
         );
     }
@@ -124,7 +112,7 @@ class TableTraitTest extends AbstractTraitTestCase
         $this->tableTraitClass->table(static::TABLE);
 
         $this->assertEquals(
-            \sprintf('%s %s', ConditionEnum::FROM, \implode(', ', $this->tableTraitClass->tableData())),
+            sprintf('%s %s', ConditionEnum::FROM, implode(', ', $this->tableTraitClass->tableData())),
             $this->tableTraitClass->buildFromQueryPartPublic()
         );
     }

@@ -4,14 +4,14 @@ namespace Janisbiz\LightOrm\Dms\MySQL\Enum;
 
 class CommandEnum
 {
-    const INSERT_INTO = 'INSERT INTO';
-    const INSERT_IGNORE_INTO = 'INSERT IGNORE INTO';
-    const REPLACE_INTO = 'REPLACE INTO';
-    const SELECT = 'SELECT';
-    const UPDATE = 'UPDATE';
-    const UPDATE_IGNORE = 'UPDATE IGNORE';
-    const DELETE = 'DELETE';
-    const COMMANDS = [
+    const string INSERT_INTO = 'INSERT INTO';
+    const string INSERT_IGNORE_INTO = 'INSERT IGNORE INTO';
+    const string REPLACE_INTO = 'REPLACE INTO';
+    const string SELECT = 'SELECT';
+    const string UPDATE = 'UPDATE';
+    const string UPDATE_IGNORE = 'UPDATE IGNORE';
+    const string DELETE = 'DELETE';
+    const array COMMANDS = [
         self::INSERT_INTO,
         self::INSERT_IGNORE_INTO,
         self::REPLACE_INTO,

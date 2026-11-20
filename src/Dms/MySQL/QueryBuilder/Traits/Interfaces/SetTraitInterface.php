@@ -4,11 +4,5 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
 interface SetTraitInterface
 {
-    /**
-     * @param string $column
-     * @param null|int|string $value
-     *
-     * @return $this
-     */
-    public function set(string $column, $value);
+    public function set(string $column, string|int|float|null $value): static;
 }

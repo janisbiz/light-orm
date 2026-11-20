@@ -4,25 +4,9 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
 interface LimitOffsetTraitInterface
 {
-    /**
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return $this
-     */
-    public function limitWithOffset(int $limit, int $offset);
+    public function limitWithOffset(int $limit, int $offset): static;
 
-    /**
-     * @param int $offset
-     *
-     * @return $this
-     */
-    public function offset(int $offset);
+    public function offset(int $offset): static;
 
-    /**
-     * @param int $limit
-     *
-     * @return $this
-     */
-    public function limit(int $limit);
+    public function limit(int $limit): static;
 }

@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Paginator;
 
+use Closure;
 use Janisbiz\LightOrm\Entity\EntityInterface;
 use Janisbiz\LightOrm\Paginator\Paginator;
 use Janisbiz\LightOrm\Paginator\PaginatorException;
@@ -11,6 +12,7 @@ use Janisbiz\LightOrm\Repository\RepositoryInterface;
 use Janisbiz\LightOrm\Tests\Unit\ReflectionTrait;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 #[AllowMockObjectsWithoutExpectations]
@@ -18,39 +20,24 @@ class PaginatorTest extends TestCase
 {
     use ReflectionTrait;
 
-    const PAGE_SIZE = 10;
-    const PREVIOUS_PAGE_NON_EXISTENT = null;
-    const NEXT_PAGE_NON_EXISTENT = null;
-    const CURRENT_PAGE = 4;
-    const CURRENT_PAGE_LOW = 1;
-    const RESULT_COUNT = 80;
-    const RESULT_COUNT_LOW = 10;
-    const RESULT_COUNT_ODD = 81;
+    const int PAGE_SIZE = 10;
+    const ?int PREVIOUS_PAGE_NON_EXISTENT = null;
+    const ?int NEXT_PAGE_NON_EXISTENT = null;
+    const int CURRENT_PAGE = 4;
+    const int CURRENT_PAGE_LOW = 1;
+    const int RESULT_COUNT = 80;
+    const int RESULT_COUNT_LOW = 10;
+    const int RESULT_COUNT_ODD = 81;
 
-    /**
-     * @var EntityInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $entity;
+    private EntityInterface|MockObject $entity;
 
-    /**
-     * @var QueryBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $queryBuilder;
+    private QueryBuilderInterface|MockObject $queryBuilder;
 
-    /**
-     * @var RepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $abstractRepository;
+    private RepositoryInterface|MockObject $abstractRepository;
 
-    /**
-     * @var \Closure
-     */
-    private $addPaginateQuery;
+    private Closure $addPaginateQuery;
 
-    /**
-     * @var \Closure
-     */
-    private $getPaginateResult;
+    private Closure $getPaginateResult;
 
     public function setUp(): void
     {
@@ -93,10 +80,7 @@ class PaginatorTest extends TestCase
         );
     }
 
-    /**
-     * @return Paginator
-     */
-    public function testPaginate()
+    public function testPaginate(): Paginator
     {
         $this->queryBuilder->method('count')->willReturn(static::RESULT_COUNT);
         $this
@@ -121,7 +105,7 @@ class PaginatorTest extends TestCase
         $paginator = $this->createPaginator();
         $result = $paginator->paginate();
 
-        $this->assertCount(\count($resultExpected), $result);
+        $this->assertCount(count($resultExpected), $result);
         $this->assertEquals($resultExpected, $result);
 
         $paginator->paginate();
@@ -129,10 +113,7 @@ class PaginatorTest extends TestCase
         return $paginator;
     }
 
-    /**
-     * @return Paginator
-     */
-    public function testPaginateWhenCurrentPageIsHigherThanExistingPage()
+    public function testPaginateWhenCurrentPageIsHigherThanExistingPage(): Paginator
     {
         $this->queryBuilder->method('count')->willReturn(static::RESULT_COUNT_LOW);
         $this
@@ -157,16 +138,13 @@ class PaginatorTest extends TestCase
         $paginator = $this->createPaginator();
         $result = $paginator->paginate();
 
-        $this->assertCount(\count($resultExpected), $result);
+        $this->assertCount(count($resultExpected), $result);
         $this->assertEquals($resultExpected, $result);
 
         return $paginator;
     }
 
-    /**
-     * @return Paginator
-     */
-    public function testPaginateFake()
+    public function testPaginateFake(): Paginator
     {
         $this
             ->abstractRepository
@@ -190,7 +168,7 @@ class PaginatorTest extends TestCase
         $paginator = $this->createPaginator();
         $result = $paginator->paginateFake();
 
-        $this->assertCount(\count($resultExpected), $result);
+        $this->assertCount(count($resultExpected), $result);
         $this->assertEquals($resultExpected, $result);
 
         $paginator->paginateFake();
@@ -198,10 +176,7 @@ class PaginatorTest extends TestCase
         return $paginator;
     }
 
-    /**
-     * @return Paginator
-     */
-    public function testPaginateFakeWithoutResult()
+    public function testPaginateFakeWithoutResult(): Paginator
     {
         $this
             ->abstractRepository
@@ -222,7 +197,7 @@ class PaginatorTest extends TestCase
         $paginator = $this->createPaginator();
         $result = $paginator->paginateFake();
 
-        $this->assertCount(\count($resultExpected), $result);
+        $this->assertCount(count($resultExpected), $result);
         $this->assertEquals($resultExpected, $result);
 
         return $paginator;
@@ -236,8 +211,8 @@ class PaginatorTest extends TestCase
             ->getValue($paginator)[Paginator::OPTION_SHOW_PAGES_BEFORE_AND_AFTER_CURRENT_PAGE]
         ;
 
-        $pages = \range(static::CURRENT_PAGE - $pagesBeforeAfter, static::CURRENT_PAGE + $pagesBeforeAfter);
-        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
+        $pages = range(static::CURRENT_PAGE - $pagesBeforeAfter, static::CURRENT_PAGE + $pagesBeforeAfter);
+        $this->assertEquals(array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWithUnlimitedOption()
@@ -255,8 +230,8 @@ class PaginatorTest extends TestCase
         ;
 
         $totalPages = static::RESULT_COUNT / static::PAGE_SIZE;
-        $pages = \range($totalPages - $totalPages + 1, $totalPages);
-        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
+        $pages = range($totalPages - $totalPages + 1, $totalPages);
+        $this->assertEquals(array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWhenPaginateFake()
@@ -268,8 +243,8 @@ class PaginatorTest extends TestCase
         ;
 
         $totalPages = static::CURRENT_PAGE;
-        $pages = \range($totalPages - $pagesBeforeAfter, $totalPages + 1);
-        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
+        $pages = range($totalPages - $pagesBeforeAfter, $totalPages + 1);
+        $this->assertEquals(array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWhenPaginateFakeWithoutResult()
@@ -281,9 +256,9 @@ class PaginatorTest extends TestCase
         ;
 
         $totalPages = static::CURRENT_PAGE - 1;
-        $pages = \range($totalPages - $pagesBeforeAfter, $totalPages);
+        $pages = range($totalPages - $pagesBeforeAfter, $totalPages);
 
-        $this->assertEquals(\array_combine($pages, $pages), $paginator->getPageNumbers());
+        $this->assertEquals(array_combine($pages, $pages), $paginator->getPageNumbers());
     }
 
     public function testGetPageNumbersWhenNotPaginated()
@@ -294,10 +269,6 @@ class PaginatorTest extends TestCase
         $this->createPaginator()->getPageNumbers();
     }
 
-    /**
-     * @param int $resultCount
-     * @param int $expectedTotalPages
-     */
     #[DataProvider('getTotalPagesData')]
     public function testGetTotalPages(int $resultCount, int $expectedTotalPages)
     {
@@ -309,19 +280,16 @@ class PaginatorTest extends TestCase
         $this->assertEquals($expectedTotalPages, $paginator->getTotalPages());
     }
 
-    /**
-     * @return array
-     */
-    public static function getTotalPagesData()
+    public static function getTotalPagesData(): array
     {
         return [
             [
                 static::RESULT_COUNT,
-                (int) \ceil(static::RESULT_COUNT / static::PAGE_SIZE),
+                (int) ceil(static::RESULT_COUNT / static::PAGE_SIZE),
             ],
             [
                 static::RESULT_COUNT_ODD,
-                (int) \ceil(static::RESULT_COUNT_ODD / static::PAGE_SIZE),
+                (int) ceil(static::RESULT_COUNT_ODD / static::PAGE_SIZE),
             ],
         ];
     }
@@ -456,10 +424,7 @@ class PaginatorTest extends TestCase
         $this->createPaginator()->getPageSize();
     }
 
-    /**
-     * @return Paginator
-     */
-    private function createPaginator()
+    private function createPaginator(): Paginator
     {
         $this->addPaginateQuery = function (QueryBuilderInterface $queryBuilder, $pageSize, $currentPage): void {
             $this

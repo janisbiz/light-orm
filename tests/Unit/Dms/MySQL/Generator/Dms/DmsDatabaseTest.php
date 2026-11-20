@@ -10,24 +10,21 @@ use PHPUnit\Framework\TestCase;
 
 class DmsDatabaseTest extends TestCase
 {
-    const DATABASE_NAME = 'database_name_snake_case';
+    const string DATABASE_NAME = 'database_name_snake_case';
 
     /**
      * @var DmsTable[]
      */
-    private $dmsTables = [];
+    private array $dmsTables = [];
 
-    /**
-     * @var DmsDatabase
-     */
-    private $dmsDatabase;
+    private DmsDatabase $dmsDatabase;
 
     public function setUp(): void
     {
         $dmsColumns = [];
         for ($i = 1; $i <= 3; $i++) {
             $dmsColumns[] = new DmsColumn(
-                \sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
+                sprintf('%s_%d', DmsColumnTest::COLUMN_NAME, $i),
                 DmsColumnTest::COLUMN_TYPE,
                 DmsColumnTest::COLUMN_NULLABLE,
                 DmsColumnTest::COLUMN_KEY,
@@ -38,7 +35,7 @@ class DmsDatabaseTest extends TestCase
 
         for ($i = 1; $i <= 3; $i++) {
             $this->dmsTables[] = new DmsTable(
-                \sprintf('%s_%d', DmsTableTest::TABLE_NAME, $i),
+                sprintf('%s_%d', DmsTableTest::TABLE_NAME, $i),
                 $dmsColumns
             );
         }
@@ -51,10 +48,6 @@ class DmsDatabaseTest extends TestCase
         $this->assertEquals(static::DATABASE_NAME, $this->dmsDatabase->getName());
     }
 
-    /**
-     * @param string $name
-     * @param string $phpName
-     */
     #[DataProvider('getPhpNameData')]
     public function testGetPhpName(string $name, string $phpName)
     {
@@ -66,11 +59,7 @@ class DmsDatabaseTest extends TestCase
         $this->assertEquals($phpName, $dmsDatabase->getPhpName());
     }
 
-    /**
-     *
-     * @return array
-     */
-    public static function getPhpNameData()
+    public static function getPhpNameData(): array
     {
         return [
             [
@@ -102,6 +91,6 @@ class DmsDatabaseTest extends TestCase
 
     public function testGetTables()
     {
-        $this->assertEquals(\count($this->dmsTables), \count($this->dmsDatabase->getDmsTables()));
+        $this->assertEquals(count($this->dmsTables), count($this->dmsDatabase->getDmsTables()));
     }
 }

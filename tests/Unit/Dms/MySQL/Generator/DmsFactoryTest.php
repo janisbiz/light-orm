@@ -2,6 +2,7 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator;
 
+use Exception;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionInterface;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Dms\DmsDatabase;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory;
@@ -9,13 +10,14 @@ use Janisbiz\LightOrm\Generator\Dms\DmsDatabaseInterface;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsColumnTest;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsDatabaseTest;
 use Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\Generator\Dms\DmsTableTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DmsFactoryTest extends TestCase
 {
     public function testCreateDmsDatabase()
     {
-        /** @var ConnectionInterface|\PHPUnit_Framework_MockObject_MockObject $connection */
+        /** @var ConnectionInterface|MockObject $connection */
         $connection = $this->createPartialMock(
             ConnectionInterface::class,
             [
@@ -45,11 +47,11 @@ class DmsFactoryTest extends TestCase
                     case 'SHOW TABLES':
                         return [
                             (object) [
-                                \sprintf('Tables_in_%s', DmsDatabaseTest::DATABASE_NAME) => DmsTableTest::TABLE_NAME,
+                                sprintf('Tables_in_%s', DmsDatabaseTest::DATABASE_NAME) => DmsTableTest::TABLE_NAME,
                             ],
                         ];
 
-                    case false !== \preg_match('/^SHOW COLUMNS FROM (\w+)$/', $query):
+                    case false !== preg_match('/^SHOW COLUMNS FROM (\w+)$/', $query):
                         $dmsColumns = [];
                         for ($i = 1; $i <= 3; $i++) {
                             $dmsColumns[] = (object) [
@@ -65,7 +67,7 @@ class DmsFactoryTest extends TestCase
                         return $dmsColumns;
                 }
 
-                throw new \Exception();
+                throw new Exception();
             })
         ;
 

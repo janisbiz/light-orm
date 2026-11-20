@@ -14,26 +14,11 @@ class BaseEntityClassWriter extends AbstractWriter
 {
     use HeredocTrait;
 
-    /**
-     * @param WriterConfigInterface $writerConfig
-     */
-    public function __construct(WriterConfigInterface $writerConfig)
-    {
-        $this->writerConfig = $writerConfig;
-    }
-
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     * @param array $existingFiles
-     *
-     * @return BaseEntityClassWriter
-     */
     public function write(
         DmsDatabaseInterface $dmsDatabase,
         DmsTableInterface $dmsTable,
         array &$existingFiles
-    ) {
+    ): static {
         $fileName = $this->generateFileName($dmsDatabase, $dmsTable);
 
         return $this
@@ -42,45 +27,23 @@ class BaseEntityClassWriter extends AbstractWriter
         ;
     }
 
-    /**
-     * @return WriterConfigInterface
-     */
-    protected function getWriterConfig(): WriterConfigInterface
-    {
-        return $this->writerConfig;
-    }
-
-    /**
-     * @param DmsDatabaseInterface $dmsDatabase
-     * @param DmsTableInterface $dmsTable
-     *
-     * @return string
-     */
     protected function generateFileContents(DmsDatabaseInterface $dmsDatabase, DmsTableInterface $dmsTable): string
     {
         $gettersAndSetters = $dmsTable->getDmsColumns();
-        $gettersAndSetters = \implode("\n\n", \array_map(
+        $gettersAndSetters = implode("\n", array_map(
             function (DmsColumn $column) use ($dmsTable) {
                 /** phpcs:disable */
                 return /** @lang PHP */
                     <<<PHP
 
-    /**
-     * @return {$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? 'null|' : '')}{$column->getPhpType()}
-     */
     public function get{$column->getPhpName()}(): {$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? '?' : '')}{$column->getPhpType()}
     {
         return \$this->data['{$column->getName()}'];
     }
-    
-    /**
-     * @param {$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? 'null|' : '')}{$column->getPhpType()} \${$this->heredoc(\lcfirst($column->getPhpName()))}
-     *
-     * @return \$this
-     */
-    public function set{$column->getPhpName()}({$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? '?' : '')}{$column->getPhpType()} \${$this->heredoc(\lcfirst($column->getPhpName()))}): {$this->generateClassName($dmsTable)}
+
+    public function set{$column->getPhpName()}({$this->heredoc($column->isNullable() || 'auto_increment' === $column->getExtra() ? '?' : '')}{$column->getPhpType()} \${$this->heredoc(lcfirst($column->getPhpName()))}): {$this->generateClassName($dmsTable)}
     {
-        \$this->data['{$column->getName()}'] = \${$this->heredoc(\lcfirst($column->getPhpName()))};
+        \$this->data['{$column->getName()}'] = \${$this->heredoc(lcfirst($column->getPhpName()))};
 
         return \$this;
     }
@@ -91,12 +54,12 @@ PHP;
         ));
 
         $columnsConstants = $dmsTable->getDmsColumns();
-        $columnsConstants = \implode(
+        $columnsConstants = implode(
             "\n    ",
-            \array_map(
-                fn(DmsColumn $column) => \sprintf(
+            array_map(
+                fn(DmsColumn $column) => sprintf(
                     'const COLUMN_%s = \'%s\';',
-                    \mb_strtoupper($column->getName()),
+                    mb_strtoupper($column->getName()),
                     $column->getName()
                 ),
                 $columnsConstants
@@ -104,40 +67,40 @@ PHP;
         );
 
         $primaryKeys = $dmsTable->getDmsColumns();
-        $primaryKeys = \implode(
+        $primaryKeys = implode(
             "\n            ",
-            \array_filter(\array_map(
+            array_filter(array_map(
                 function (DmsColumn $column) {
                     if ($column->getKey() !== 'PRI') {
                         return null;
                     }
 
-                    return \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName()));
+                    return sprintf('static::COLUMN_%s,', mb_strtoupper($column->getName()));
                 },
                 $primaryKeys
             ))
         );
 
         $primaryKeysAutoIncrement = $dmsTable->getDmsColumns();
-        $primaryKeysAutoIncrement = \implode(
+        $primaryKeysAutoIncrement = implode(
             "\n            ",
-            \array_filter(\array_map(
+            array_filter(array_map(
                 function (DmsColumn $column) {
                     if ($column->getExtra() !== 'auto_increment') {
                         return null;
                     }
 
-                    return \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName()));
+                    return sprintf('static::COLUMN_%s,', mb_strtoupper($column->getName()));
                 },
                 $primaryKeysAutoIncrement
             ))
         );
 
         $columns = $dmsTable->getDmsColumns();
-        $columns = \implode(
+        $columns = implode(
             "\n            ",
-            \array_map(
-                fn(DmsColumn $column) => \sprintf('static::COLUMN_%s,', \mb_strtoupper($column->getName())),
+            array_map(
+                fn(DmsColumn $column) => sprintf('static::COLUMN_%s,', mb_strtoupper($column->getName())),
                 $columns
             )
         );
@@ -158,10 +121,7 @@ class {$this->generateClassName($dmsTable)} extends BaseEntity
     
     {$columnsConstants}
     
-    /**
-     * @param bool \$isNew
-     */
-    public function __construct(\$isNew = true)
+    public function __construct(bool \$isNew = true)
     {
         \$this->primaryKeys = [
             {$primaryKeys}

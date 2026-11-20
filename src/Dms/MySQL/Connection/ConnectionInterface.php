@@ -6,13 +6,7 @@ use Janisbiz\LightOrm\Connection\ConnectionInterface as BaseConnectionInterface;
 
 interface ConnectionInterface extends BaseConnectionInterface
 {
-    /**
-     * @return $this
-     */
-    public function setSqlSafeUpdates();
+    public function setSqlSafeUpdates(): self;
 
-    /**
-     * @return $this
-     */
-    public function unsetSqlSafeUpdates();
+    public function unsetSqlSafeUpdates(): self;
 }

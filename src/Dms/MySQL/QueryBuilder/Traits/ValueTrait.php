@@ -6,36 +6,24 @@ use Janisbiz\LightOrm\Dms\MySQL\Enum\ConditionEnum;
 
 trait ValueTrait
 {
-    /**
-     * @var array
-     */
-    protected $value = [];
+    protected array $value = [];
 
-    /**
-     * @var array
-     */
-    protected $bindValue = [];
+    protected array $bindValue = [];
 
-    /**
-     * @param string $column
-     * @param null|int|string|double $value
-     *
-     * @return $this
-     */
-    public function value(string $column, $value)
+    public function value(string $column, string|int|float|null $value): static
     {
-        $columnNormalised = \sprintf(
+        $columnNormalised = sprintf(
             '%s_Value',
-            \implode(
+            implode(
                 '_',
-                \array_map(
-                    fn($columnPart) => \mb_convert_case($columnPart, MB_CASE_TITLE),
-                    \explode('.', $column)
+                array_map(
+                    fn($columnPart) => mb_convert_case($columnPart, MB_CASE_TITLE),
+                    explode('.', $column)
                 )
             )
         );
 
-        $this->value[$column] = \sprintf(':%s', $columnNormalised);
+        $this->value[$column] = sprintf(':%s', $columnNormalised);
         $this->bindValue([
             $columnNormalised => $value,
         ]);
@@ -43,38 +31,27 @@ trait ValueTrait
         return $this;
     }
 
-    /**
-     * @param array $bindValue
-     *
-     * @return $this
-     */
-    public function bindValue(array $bindValue = [])
+    public function bindValue(array $bindValue = []): static
     {
-        $this->bindValue = \array_merge($this->bindValue, $bindValue);
+        $this->bindValue = array_merge($this->bindValue, $bindValue);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function bindValueData(): array
     {
         return $this->bindValue;
     }
 
-    /**
-     * @return null|string
-     */
     protected function buildValueQueryPart(): ?string
     {
         return empty($this->value)
             ? null
-            : \sprintf(
+            : sprintf(
                 '(%s) %s (%s)',
-                \implode(', ', \array_keys($this->value)),
+                implode(', ', array_keys($this->value)),
                 ConditionEnum::VALUES,
-                \implode(', ', $this->value)
+                implode(', ', $this->value)
             )
         ;
     }

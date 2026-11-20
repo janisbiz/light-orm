@@ -3,6 +3,7 @@
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Generator;
 
 use Behat\Gherkin\Node\TableNode;
+use Exception;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig as MySQLConnectionConfig;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\DmsFactory as MySQLDmsFactory;
 use Janisbiz\LightOrm\Dms\MySQL\Generator\Writer\BaseEntityClassWriter;
@@ -15,25 +16,17 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\AbstractFeatureContext;
 
 class GeneratorFeatureContext extends AbstractFeatureContext
 {
-    /**
-     * @var string
-     */
-    private $connectionName;
+    private string $connectionName;
 
-    /**
-     * @var Generator
-     */
-    private $generator;
+    private Generator $generator;
 
     /**
      * @var WriterInterface[]
      */
-    private $writers = [];
+    private array $writers = [];
 
     /**
-     *
-     * @param string $connectionName
-     * @throws \Exception
+     * @throws Exception
      */
     #[\Behat\Step\Given('/^I create generator for connection "(\w+)"$/')]
     public function iCreateGeneratorForConnection(string $connectionName)
@@ -47,25 +40,19 @@ class GeneratorFeatureContext extends AbstractFeatureContext
                 return;
         }
 
-        throw new \Exception(\sprintf('Could not create generator for connection "%s"!', $this->connectionName));
+        throw new Exception(sprintf('Could not create generator for connection "%s"!', $this->connectionName));
     }
 
-    /**
-     * @throws \Exception
-     */
     #[\Behat\Step\Given('I add writers to generator')]
     public function iAddWritersToGenerator()
     {
         $this->addWritersToGenerator();
     }
 
-    /**
-     * @param null|string $directoryOverride
-     */
     #[\Behat\Step\Given('/^I add writers to generator with directory override "(.*)"$/')]
-    public function iAddWritersToGeneratorWithDirectoryOverride(string $directoryOverride)
+    public function iAddWritersToGeneratorWithDirectoryOverride(?string $directoryOverride = null)
     {
-        $directoryOverride = \preg_replace('/\/\\\/', DIRECTORY_SEPARATOR, $directoryOverride);
+        $directoryOverride = preg_replace('/\/\\\/', DIRECTORY_SEPARATOR, $directoryOverride);
 
         $this->addWritersToGenerator($directoryOverride);
     }
@@ -77,16 +64,14 @@ class GeneratorFeatureContext extends AbstractFeatureContext
     }
 
     /**
-     *
-     * @param TableNode $files
-     * @throws \Exception
+     * @throws Exception
      */
     #[\Behat\Step\Then('/^Then I have following files generated:$/')]
     public function iShouldGetTheseRowsInDatabaseFilteredByScopeId(TableNode $files)
     {
         foreach ($this->normalizeTableNode($files) as $file) {
             $relativeFilePath = $file['path'];
-            $absoluteFilePath = \implode(
+            $absoluteFilePath = implode(
                 '',
                 [
                     $this->rootDir,
@@ -95,19 +80,16 @@ class GeneratorFeatureContext extends AbstractFeatureContext
                 ]
             );
 
-            if (!\file_exists($absoluteFilePath)) {
-                throw new \Exception(\sprintf('File "%s" does not exist!', $relativeFilePath));
+            if (!file_exists($absoluteFilePath)) {
+                throw new Exception(sprintf('File "%s" does not exist!', $relativeFilePath));
             }
         }
     }
 
-    /**
-     * @param string $directory
-     */
     #[\Behat\Step\Given('/^I remove directory "(.*)"$/')]
     public function iRemoveDirectory(string $directory)
     {
-        if (\is_dir($directory)) {
+        if (is_dir($directory)) {
             $recursiveDirectoryIterator = new \RecursiveDirectoryIterator(
                 $directory,
                 \RecursiveDirectoryIterator::SKIP_DOTS
@@ -118,18 +100,15 @@ class GeneratorFeatureContext extends AbstractFeatureContext
             );
             foreach ($files as $file) {
                 if ($file->isDir()) {
-                    \rmdir($file->getRealPath());
+                    rmdir($file->getRealPath());
                 } else {
-                    \unlink($file->getRealPath());
+                    unlink($file->getRealPath());
                 }
             }
-            \rmdir($directory);
+            rmdir($directory);
         }
     }
 
-    /**
-     * @param null|string $directoryOverride
-     */
     private function addWritersToGenerator(?string $directoryOverride = null)
     {
         switch ($this->getConnectionConfig($this->connectionName)['adapter']) {
@@ -139,14 +118,9 @@ class GeneratorFeatureContext extends AbstractFeatureContext
                 return;
         }
 
-        throw new \Exception(\sprintf('Could not add writers for connection "%s"!', $this->connectionName));
+        throw new Exception(sprintf('Could not add writers for connection "%s"!', $this->connectionName));
     }
 
-    /**
-     * @param null|string $directoryOverride
-     *
-     * @throws \Exception
-     */
     private function addMySQLWriters(?string $directoryOverride)
     {
         foreach ($this->getWritersConfig($this->connectionName) as $writerClass => $writerConfig) {

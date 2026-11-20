@@ -2,31 +2,18 @@
 
 namespace Janisbiz\LightOrm\Tests\Unit;
 
+use ReflectionMethod;
+use ReflectionProperty;
+
 trait ReflectionTrait
 {
-    /**
-     * @param object|string $class
-     * @param string $method
-     *
-     * @return \ReflectionMethod
-     */
-    protected function createAccessibleMethod($class, string $method)
+    protected function createAccessibleMethod(object|string $class, string $method): ReflectionMethod
     {
-        $reflectionMethod = new \ReflectionMethod($class, $method);
-
-        return $reflectionMethod;
+        return new ReflectionMethod($class, $method);
     }
 
-    /**
-     * @param object|string $class
-     * @param string $property
-     *
-     * @return \ReflectionProperty
-     */
-    protected function createAccessibleProperty($class, string $property)
+    protected function createAccessibleProperty(object|string $class, string $property): ReflectionProperty
     {
-        $reflectionProperty = new \ReflectionProperty($class, $property);
-
-        return $reflectionProperty;
+        return new ReflectionProperty($class, $property);
     }
 }

@@ -4,34 +4,20 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits;
 
 trait CommandTrait
 {
-    /**
-     * @var string
-     */
-    protected $command;
+    protected string $command;
 
-    /**
-     * @param string $command
-     *
-     * @return $this
-     */
-    public function command(string $command)
+    public function command(string $command): static
     {
         $this->command = $command;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function commandData(): string
     {
         return $this->command;
     }
 
-    /**
-     * @return string
-     */
     protected function buildCommandQueryPart(): string
     {
         return $this->command;

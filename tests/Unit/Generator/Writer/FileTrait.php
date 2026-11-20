@@ -4,12 +4,9 @@ namespace Janisbiz\LightOrm\Tests\Unit\Generator\Writer;
 
 trait FileTrait
 {
-    /**
-     * @param string $directory
-     */
-    protected function removeDirectoryRecursive($directory)
+    protected function removeDirectoryRecursive(string $directory)
     {
-        if (\is_dir($directory)) {
+        if (is_dir($directory)) {
             $recursiveDirectoryIterator = new \RecursiveDirectoryIterator(
                 $directory,
                 \RecursiveDirectoryIterator::SKIP_DOTS
@@ -22,38 +19,32 @@ trait FileTrait
 
             foreach ($files as $file) {
                 if ($file->isDir()) {
-                    \rmdir($file->getRealPath());
+                    rmdir($file->getRealPath());
                 } else {
-                    \unlink($file->getRealPath());
+                    unlink($file->getRealPath());
                 }
             }
 
-            \rmdir($directory);
+            rmdir($directory);
         }
     }
 
-    /**
-     * @param array $fileNames
-     * @param string $fileDirectory
-     *
-     * @return array
-     */
-    protected function createTestFiles(array $fileNames, $fileDirectory)
+    protected function createTestFiles(array $fileNames, string $fileDirectory): array
     {
-        if (!\file_exists($fileDirectory)) {
-            \mkdir($fileDirectory, 0777, true);
+        if (!file_exists($fileDirectory)) {
+            mkdir($fileDirectory, 0777, true);
         }
 
         $files = [];
         foreach ($fileNames as $fileName) {
-            $files[] = sprintf('%s/%s', \rtrim($fileDirectory, '/'), $fileName);
+            $files[] = sprintf('%s/%s', rtrim($fileDirectory, '/'), $fileName);
         }
 
         foreach ($files as $file) {
-            \file_put_contents($file, '');
+            file_put_contents($file, '');
         }
 
-        \sort($files);
+        sort($files);
 
         return $files;
     }

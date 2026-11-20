@@ -11,37 +11,24 @@ use Janisbiz\LightOrm\Generator\Writer\WriterInterface;
 use Janisbiz\LightOrm\Tests\Unit\Generator\Writer\AbstractWriterConfigTest;
 use Janisbiz\LightOrm\Tests\Unit\Generator\Writer\FileTrait;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 #[AllowMockObjectsWithoutExpectations]
 class GeneratorTest extends TestCase
 {
     use FileTrait;
 
-    /**
-     * @var WriterInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $writer;
+    private WriterInterface|MockObject $writer;
 
-    /**
-     * @var DmsTableInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $dmsTable;
+    private DmsTableInterface|MockObject $dmsTable;
 
-    /**
-     * @var DmsDatabaseInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $dmsDatabase;
+    private DmsDatabaseInterface|MockObject $dmsDatabase;
 
-    /**
-     * @var DmsFactory|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $dmsFactory;
+    private DmsFactory|MockObject $dmsFactory;
 
-    /**
-     * @var Generator
-     */
-    private $generator;
+    private Generator $generator;
 
     public function setUp(): void
     {
@@ -64,7 +51,7 @@ class GeneratorTest extends TestCase
 
     public function testConstruct()
     {
-        $dmsFactoryProperty = new \ReflectionProperty($this->generator, 'dmsFactory');
+        $dmsFactoryProperty = new ReflectionProperty($this->generator, 'dmsFactory');
 
         $this->assertTrue($dmsFactoryProperty->getValue($this->generator) instanceof $this->dmsFactory);
     }
@@ -81,7 +68,7 @@ class GeneratorTest extends TestCase
             $this->generator->addWriter($writerToSet);
         }
 
-        $writersProperty = new \ReflectionProperty($this->generator, 'writers');
+        $writersProperty = new ReflectionProperty($this->generator, 'writers');
 
         $writers = $writersProperty->getValue($this->generator);
 
@@ -97,7 +84,7 @@ class GeneratorTest extends TestCase
     {
         $this->testAddWriter();
 
-        $testFiles = \array_flip($this->createTestFiles(
+        $testFiles = array_flip($this->createTestFiles(
             [
                 'FileOne.php',
                 'FileTwo.php',
@@ -106,26 +93,26 @@ class GeneratorTest extends TestCase
             AbstractWriterConfigTest::DIRECTORY_VALUE
         ));
 
-        \array_walk($testFiles, function (&$i, $path): void {
-            $i = \basename($path);
+        array_walk($testFiles, function (&$i, $path): void {
+            $i = basename($path);
         });
 
         $this->writer->expects($this->once())->method('read')->willReturn($testFiles);
-        $this->writer->expects($this->exactly(\count($this->dmsDatabase->getDmsTables())))->method('write');
+        $this->writer->expects($this->exactly(count($this->dmsDatabase->getDmsTables())))->method('write');
 
-        /** @var ConnectionInterface|\PHPUnit_Framework_MockObject_MockObject $connection */
+        /** @var ConnectionInterface|MockObject $connection */
         $connection = $this->createMock(ConnectionInterface::class);
 
         $this->generator->generate($connection, 'database_name');
 
-        foreach (\array_keys($testFiles) as $testFilePath) {
-            $this->assertFalse(\file_exists($testFilePath));
+        foreach (array_keys($testFiles) as $testFilePath) {
+            $this->assertFalse(file_exists($testFilePath));
         }
     }
 
     public function tearDown(): void
     {
-        $this->removeDirectoryRecursive(\implode(
+        $this->removeDirectoryRecursive(implode(
             '',
             [
                 JANISBIZ_LIGHT_ORM_ROOT_DIR,

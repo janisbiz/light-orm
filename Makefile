@@ -15,7 +15,7 @@ help:
 test: test-phpcs test-phpstan test-phpunit test-behat test-infection ## Run tests
 
 test-phpcs: ## Run PHPCS tests
-	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs --standard=phpcs.xml -p ./src -p ./tests
+	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpcs
 
 test-phpstan: ## Run PHPSTAN tests
 	@$(DOCKER_COMPOSE_EXEC_PHP) vendor/bin/phpstan analyse -l 2 src

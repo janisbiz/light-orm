@@ -7,12 +7,7 @@ use Janisbiz\LightOrm\Tests\Behat\Bootstrap\Generated\LightOrmMysql\Entity\TestT
 
 class TestTableTwoRepository extends AbstractRepository
 {
-    /**
-     * @param null|int $id
-     *
-     * @return TestTableTwoEntity
-     */
-    public function create(?int $id)
+    public function create(?int $id): TestTableTwoEntity
     {
         $testTableTwoEntity = (new TestTableTwoEntity())->setId($id);
 
@@ -27,30 +22,21 @@ class TestTableTwoRepository extends AbstractRepository
     /**
      * @return TestTableTwoEntity[]
      */
-    public function read()
+    public function read(): array
     {
         return $this->createQueryBuilder()->find();
     }
 
-    /**
-     * @return int
-     */
-    public function readCount()
+    public function readCount(): int
     {
         return $this->createQueryBuilder()->count();
     }
 
-    /**
-     * @param TestTableTwoEntity $testTableTwoEntity
-     */
     public function deleteEntity(TestTableTwoEntity $testTableTwoEntity)
     {
         $this->createQueryBuilder($testTableTwoEntity)->delete();
     }
 
-    /**
-     * @return string
-     */
     protected function getEntityClass(): string
     {
         return TestTableTwoEntity::class;

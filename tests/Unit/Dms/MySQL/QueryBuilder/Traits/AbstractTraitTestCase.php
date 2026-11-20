@@ -3,27 +3,23 @@
 namespace Janisbiz\LightOrm\Tests\Unit\Dms\MySQL\QueryBuilder\Traits;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 abstract class AbstractTraitTestCase extends TestCase
 {
     protected array $orderBy;
 
-    /**
-     * @param string $trait
-     * @param string|object $object
-     * @param string $message
-     */
     protected function assertObjectUsesTrait(string $trait, $object, string $message = '')
     {
         $traits = [];
         $this->getTraits($object, $traits);
 
         parent::assertThat(
-            \in_array($trait, $traits),
+            in_array($trait, $traits),
             static::isTrue(),
-            \mb_strlen($message)
+            mb_strlen($message)
                 ? $message
-                : \sprintf(
+                : sprintf(
                     'Failed asserting that "%s" is used in object "%s"',
                     $trait,
                     $object::class
@@ -31,15 +27,11 @@ abstract class AbstractTraitTestCase extends TestCase
         );
     }
 
-    /**
-     * @param string|object $class
-     * @param array $traits
-     */
-    private function getTraits($class, array &$traits)
+    private function getTraits(string|object $class, array &$traits)
     {
-        $classTraits = \array_keys((new \ReflectionClass($class))->getTraits());
+        $classTraits = array_keys((new ReflectionClass($class))->getTraits());
 
-        $traits = \array_merge($traits, $classTraits);
+        $traits = array_merge($traits, $classTraits);
 
         foreach ($classTraits as $classTrait) {
             $this->getTraits($classTrait, $traits);

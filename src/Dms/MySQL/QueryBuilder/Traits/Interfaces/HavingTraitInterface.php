@@ -4,11 +4,5 @@ namespace Janisbiz\LightOrm\Dms\MySQL\QueryBuilder\Traits\Interfaces;
 
 interface HavingTraitInterface
 {
-    /**
-     * @param string $condition
-     * @param array $bind
-     *
-     * @return $this
-     */
-    public function having(string $condition, array $bind = []);
+    public function having(string $condition, array $bind = []): static;
 }

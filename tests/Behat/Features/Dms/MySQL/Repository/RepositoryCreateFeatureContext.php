@@ -3,30 +3,22 @@
 namespace Janisbiz\LightOrm\Tests\Behat\Features\Dms\MySQL\Repository;
 
 use Behat\Gherkin\Node\TableNode;
+use Exception;
 
 class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
 {
-    /**
-     *
-     * @param string $method
-     * @param TableNode $parameters
-     */
     #[\Behat\Step\When('/^I call method "(.*)" on repository with parameters:$/')]
     public function iCallMethodOnRepositoryWithParameters(string $method, TableNode $parameters)
     {
         $this->callMethodOnRepositoryWithParameters($method, $parameters);
     }
-    /**
-     *
-     * @param string $method
-     * @param TableNode $parameters
-     */
+
     #[\Behat\Step\When('/^I call method "(.*)" on repository with parameters and expecting exception:$/')]
     public function iCallMethodOnRepositoryWithParametersAndExpectingException(string $method, TableNode $parameters)
     {
         try {
             $this->callMethodOnRepositoryWithParameters($method, $parameters);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             static::$entities = [];
 
             static::$exception = $e;
@@ -34,17 +26,15 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
     }
 
     /**
-     *
-     * @param TableNode $identifiers
-     * @throws \Exception
+     * @throws Exception
      */
     #[\Behat\Step\Then('I have following entities with identifiers set:')]
     public function iHaveFollowingEntitiesWithIdentifiersSet(TableNode $identifiers)
     {
-        if (($entitiesCount = \count(static::$entities))
-            !== ($identifiersCount = \count($identifiers->getRows()) - 1)
+        if (($entitiesCount = count(static::$entities))
+            !== ($identifiersCount = count($identifiers->getRows()) - 1)
         ) {
-            throw new \Exception(\sprintf(
+            throw new Exception(sprintf(
                 'Count of entities(%d) does not match to count of identifiers(%d)!',
                 $entitiesCount,
                 $identifiersCount
@@ -55,9 +45,9 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
             $entity = static::$entities[$i];
 
             foreach ($identifier as $identifierName => $identifierValue) {
-                $getterMethod = \sprintf('get%s', \ucfirst($identifierName));
+                $getterMethod = sprintf('get%s', ucfirst($identifierName));
                 if ($identifierValue != $entity->$getterMethod()) {
-                    throw new \Exception(\sprintf(
+                    throw new Exception(sprintf(
                         'Identifiers does not match! %s::%s => %s != %s => %s',
                         $entity::class,
                         $getterMethod,
@@ -70,24 +60,20 @@ class RepositoryCreateFeatureContext extends AbstractRepositoryFeatureContext
         }
     }
 
-    /**
-     * @param string $method
-     * @param TableNode $parameters
-     */
     private function callMethodOnRepositoryWithParameters(string $method, TableNode $parameters)
     {
         static::$entities = [];
 
         foreach ($this->normalizeTableNode($parameters) as $methodParameters) {
-            $methodResult = \call_user_func_array([static::$repository, $method], $methodParameters);
+            $methodResult = call_user_func_array([static::$repository, $method], $methodParameters);
 
-            if (\is_array($methodResult)) {
-                static::$entities = \array_merge(static::$entities, $methodResult);
+            if (is_array($methodResult)) {
+                static::$entities = array_merge(static::$entities, $methodResult);
             } else {
                 static::$entities[] = $methodResult;
             }
         }
 
-        \array_filter(static::$entities);
+        array_filter(static::$entities);
     }
 }

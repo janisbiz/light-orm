@@ -8,41 +8,25 @@ use Janisbiz\LightOrm\Generator\Dms\DmsTableInterface;
 class DmsTable implements DmsTableInterface
 {
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var DmsColumnInterface[]
-     */
-    protected $dmsColumns = [];
-
-    /**
-     * @param string $name
      * @param DmsColumnInterface[] $dmsColumns
      */
-    public function __construct(string $name, array $dmsColumns)
-    {
-        $this->name = $name;
-        $this->dmsColumns = $dmsColumns;
+    public function __construct(
+        protected string $name,
+        protected array $dmsColumns
+    ) {
+        (static fn(DmsColumnInterface ...$dmsColumns) => $dmsColumns)(...$this->dmsColumns);
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getPhpName(): string
     {
-        return \ucfirst(\preg_replace_callback(
+        return ucfirst(preg_replace_callback(
             '/[^a-z0-9]+(?<name>\w{1})/i',
-            fn($matches) => \strtoupper($matches['name']),
+            fn($matches) => strtoupper($matches['name']),
             $this->getName()
         ));
     }

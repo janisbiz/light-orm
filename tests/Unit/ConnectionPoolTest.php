@@ -7,30 +7,26 @@ use Janisbiz\LightOrm\ConnectionPool;
 use Janisbiz\LightOrm\Dms\MySQL\Connection\ConnectionConfig;
 use Janisbiz\LightOrm\Exception\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 #[AllowMockObjectsWithoutExpectations]
 class ConnectionPoolTest extends TestCase
 {
     use ReflectionTrait;
 
-    const CONNECTION_CONFIG_HOST = 'host';
-    const CONNECTION_CONFIG_USERNAME = 'username';
-    const CONNECTION_CONFIG_PASSWORD = 'password';
-    const CONNECTION_CONFIG_DBNAME_ONE = 'dbname_one';
-    const CONNECTION_CONFIG_DBNAME_TWO = 'dbname_two';
-    const CONNECTION_CONFIG_DBNAME_NON_EXISTENT = 'dbname_non_existent';
-    const CONNECTION_CONFIG_ADAPTER = ConnectionConfig::ADAPTER;
+    const string CONNECTION_CONFIG_HOST = 'host';
+    const string CONNECTION_CONFIG_USERNAME = 'username';
+    const string CONNECTION_CONFIG_PASSWORD = 'password';
+    const string CONNECTION_CONFIG_DBNAME_ONE = 'dbname_one';
+    const string CONNECTION_CONFIG_DBNAME_TWO = 'dbname_two';
+    const string CONNECTION_CONFIG_DBNAME_NON_EXISTENT = 'dbname_non_existent';
+    const string CONNECTION_CONFIG_ADAPTER = ConnectionConfig::ADAPTER;
 
-    /**
-     * @var ConnectionPool
-     */
-    private $connectionPool;
+    private ConnectionPool $connectionPool;
 
-    /**
-     * @var ConnectionPool
-     */
-    private $connectionPoolMock;
+    private ConnectionPool|MockObject $connectionPoolMock;
 
     public function setUp(): void
     {
@@ -63,7 +59,7 @@ class ConnectionPoolTest extends TestCase
 
     public function testAddConnectionConfig()
     {
-        $connectionPoolReflection = new \ReflectionClass($this->connectionPool);
+        $connectionPoolReflection = new ReflectionClass($this->connectionPool);
         $connectionConfigProperty = $connectionPoolReflection->getProperty('connectionConfig');
         $connectionConfig = $connectionConfigProperty->getValue($this->connectionPool);
 
